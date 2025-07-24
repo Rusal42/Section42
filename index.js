@@ -71,5 +71,18 @@ client.on('messageCreate', message => {
     }
 });
 
+// Simple HTTP server to keep Render happy
+const http = require('http');
+const port = process.env.PORT || 3000;
+
+const server = http.createServer((req, res) => {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end('Section42 Discord Bot is running!');
+});
+
+server.listen(port, () => {
+    console.log(`🌐 HTTP server running on port ${port}`);
+});
+
 // Log in to Discord with your bot token
 client.login(process.env.DISCORD_TOKEN);
