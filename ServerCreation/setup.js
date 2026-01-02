@@ -237,6 +237,92 @@ module.exports = {
                 reason: 'Server setup - Game role for onboarding'
             });
 
+            // Gender roles
+            await message.guild.roles.create({
+                name: 'Male',
+                color: '#3498db',
+                hoist: false,
+                reason: 'Server setup - Gender role'
+            });
+
+            await message.guild.roles.create({
+                name: 'Female',
+                color: '#e91e63',
+                hoist: false,
+                reason: 'Server setup - Gender role'
+            });
+
+            await message.guild.roles.create({
+                name: 'They/Them',
+                color: '#9b59b6',
+                hoist: false,
+                reason: 'Server setup - Gender role'
+            });
+
+            // Color roles
+            await message.guild.roles.create({
+                name: 'Red',
+                color: '#e74c3c',
+                hoist: false,
+                reason: 'Server setup - Color role'
+            });
+
+            await message.guild.roles.create({
+                name: 'Orange',
+                color: '#e67e22',
+                hoist: false,
+                reason: 'Server setup - Color role'
+            });
+
+            await message.guild.roles.create({
+                name: 'Yellow',
+                color: '#f1c40f',
+                hoist: false,
+                reason: 'Server setup - Color role'
+            });
+
+            await message.guild.roles.create({
+                name: 'Green',
+                color: '#2ecc71',
+                hoist: false,
+                reason: 'Server setup - Color role'
+            });
+
+            await message.guild.roles.create({
+                name: 'Blue',
+                color: '#3498db',
+                hoist: false,
+                reason: 'Server setup - Color role'
+            });
+
+            await message.guild.roles.create({
+                name: 'Purple',
+                color: '#9b59b6',
+                hoist: false,
+                reason: 'Server setup - Color role'
+            });
+
+            await message.guild.roles.create({
+                name: 'Pink',
+                color: '#e91e63',
+                hoist: false,
+                reason: 'Server setup - Color role'
+            });
+
+            await message.guild.roles.create({
+                name: 'White',
+                color: '#ecf0f1',
+                hoist: false,
+                reason: 'Server setup - Color role'
+            });
+
+            await message.guild.roles.create({
+                name: 'Black',
+                color: '#2c3e50',
+                hoist: false,
+                reason: 'Server setup - Color role'
+            });
+
             
             const welcomeCategory = await message.guild.channels.create({
                 name: 'WELCOME',

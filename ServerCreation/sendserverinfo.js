@@ -1,5 +1,6 @@
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { OWNER_IDS } = require('../config/constants');
+const messageTracker = require('../utils/messageTracker');
 
 module.exports = {
     name: 'sendserverinfo',
@@ -97,13 +98,17 @@ module.exports = {
             .setTimestamp()
             .setFooter({ text: 'Ready to bring your vision to life? Contact crucifyym today!', iconURL: message.guild.iconURL() });
 
-        await serverInfoChannel.send({ embeds: [serverInfoEmbed] });
-        await serverInfoChannel.send({ embeds: [designServicesEmbed] });
+        const infoMessage = await serverInfoChannel.send({ embeds: [serverInfoEmbed] });
+        const designMessage = await serverInfoChannel.send({ embeds: [designServicesEmbed] });
+
+        // Track message IDs
+        messageTracker.saveMessage(message.guild.id, 'server_info_welcome', serverInfoChannel.id, infoMessage.id);
+        messageTracker.saveMessage(message.guild.id, 'server_info_design', serverInfoChannel.id, designMessage.id);
 
         const successEmbed = new EmbedBuilder()
             .setColor('#27ae60')
             .setTitle('Server Info Sent!')
-            .setDescription('All server information embeds have been posted successfully, including your graphic design services!')
+            .setDescription('All server information embeds have been posted to the server-info channel and tracked!')
             .setTimestamp();
 
         try {

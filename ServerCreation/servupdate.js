@@ -172,22 +172,43 @@ module.exports = {
 
             const requiredRoles = [
                 { name: 'Crucifyym', color: '#9b59b6', hoist: true, mentionable: false },
-                { name: 'Content Creator', color: '#e74c3c', hoist: true, mentionable: false },
-                { name: 'Developer', color: '#9b59b6', hoist: true, mentionable: false },
-                { name: 'Tester', color: '#3498db', hoist: true, mentionable: false },
-                { name: 'Moderator', color: '#f39c12', hoist: true, permissions: [
+                { name: 'Co owner', color: '#000000', hoist: true, mentionable: false },
+                { name: 'Admin', color: '#27ae60', hoist: true, mentionable: false },
+                { name: 'Amazing Je-Woah!!!', color: '#f4b5d0', hoist: true, mentionable: false },
+                { name: 'Moderator', color: '#ae48bd', hoist: true, permissions: [
                     PermissionsBitField.Flags.ManageMessages,
                     PermissionsBitField.Flags.ModerateMembers,
                     PermissionsBitField.Flags.KickMembers,
                     PermissionsBitField.Flags.ViewAuditLog
                 ], mentionable: false },
-                { name: 'Admin', color: '#27ae60', hoist: true, mentionable: false },
-                { name: 'Announcements', color: '#3498db', mentionable: false },
-                { name: 'Revive', color: '#e67e22', mentionable: false },
+                { name: 'Developer', color: '#9b59b6', hoist: true, mentionable: false },
+                { name: 'Content Creator', color: '#e74c3c', hoist: true, mentionable: false },
+                { name: 'Yaoi Jesus', color: '#009eff', hoist: true, mentionable: false },
                 { name: 'Member', color: '#95a5a6', hoist: true, mentionable: false },
+                { name: 'Tester', color: '#3498db', hoist: true, mentionable: false },
+                { name: 'Revive', color: '#e67e22', mentionable: true },
+                { name: 'Announcements', color: '#3498db', mentionable: true },
                 { name: 'Pic Perms', color: '#2ecc71', hoist: false, mentionable: false },
                 { name: 'Pic Muted', color: '#e74c3c', hoist: false, mentionable: false },
-                { name: 'Bots', color: '#7289da', hoist: true, mentionable: false }
+                { name: 'Bots', color: '#7289da', hoist: true, mentionable: false },
+                { name: 'temp announce', color: '#000000', hoist: false, mentionable: false },
+                { name: 'bb333', color: '#000000', hoist: false, mentionable: false },
+                { name: 'Cuck', color: '#000000', hoist: false, mentionable: false },
+                { name: 'TikTok', color: '#000000', hoist: false, mentionable: false },
+                { name: 'Anti Sky', color: '#000000', hoist: false, mentionable: false },
+                { name: 'Goated amazing huzzorus humble huge dih uwu sama machine Je-woah!', color: '#ffd4e3', hoist: false, mentionable: false },
+                { name: 'color', color: '#010203', hoist: false, mentionable: false },
+                { name: 'Male', color: '#3498db', hoist: false, mentionable: false },
+                { name: 'Female', color: '#e91e63', hoist: false, mentionable: false },
+                { name: 'Red', color: '#e74c3c', hoist: false, mentionable: false },
+                { name: 'Orange', color: '#e67e22', hoist: false, mentionable: false },
+                { name: 'Yellow', color: '#f1c40f', hoist: false, mentionable: false },
+                { name: 'Green', color: '#2ecc71', hoist: false, mentionable: false },
+                { name: 'Blue', color: '#3498db', hoist: false, mentionable: false },
+                { name: 'Purple', color: '#9b59b6', hoist: false, mentionable: false },
+                { name: 'Pink', color: '#e91e63', hoist: false, mentionable: false },
+                { name: 'White', color: '#ecf0f1', hoist: false, mentionable: false },
+                { name: 'Black', color: '#2c3e50', hoist: false, mentionable: false }
             ];
 
             const gameRoles = [
@@ -343,6 +364,12 @@ module.exports = {
                     ]
                 },
                 {
+                    category: 'Roles',
+                    channels: [
+                        { name: '👤', type: 'text', topic: 'Select your roles here!' }
+                    ]
+                },
+                {
                     category: 'GAME DEVELOPMENT',
                     channels: [
                         { name: 'game-ideas', type: 'text', topic: 'Game ideas - Everyone can read, Developer+ can post' },
@@ -374,9 +401,10 @@ module.exports = {
                     category: 'MEDIA & SHOWCASES',
                     channels: [
                         { name: 'screenshots', type: 'text', topic: 'Screenshots - Everyone can read, Content Creator+ can post' },
-                        { name: 'clips', type: 'text', topic: 'Clips - Everyone can read, Content Creator+ can post' },
+                        { name: 'videos-clips', type: 'text', topic: 'Videos and clips - Everyone can read, Content Creator+ can post' },
                         { name: 'fan-art', type: 'text', topic: 'Fan Art - Everyone can read, Content Creator+ can post' },
-                        { name: 'achievements', type: 'text', topic: 'Achievements - Everyone can read, Content Creator+ can post' }
+                        { name: 'achievements', type: 'text', topic: 'Achievements - Everyone can read, Content Creator+ can post' },
+                        { name: 'clips', type: 'text', topic: 'Short clips and highlights - Everyone can read' }
                     ]
                 },
                 {
@@ -401,6 +429,7 @@ module.exports = {
                 {
                     category: 'STAFF & MODERATION',
                     channels: [
+                        { name: 'ah', type: 'voice' },
                         { name: 'staff-chat', type: 'text', topic: 'Private staff discussion and coordination' },
                         { name: 'mod-logs', type: 'text', topic: 'Moderation actions and logs' },
                         { name: 'analytics', type: 'text', topic: 'Server statistics and growth metrics' }
@@ -411,6 +440,18 @@ module.exports = {
                     channels: [
                         { name: 'create-ticket', type: 'text', topic: 'React with 🎫 to create a support ticket - Staff will help you!' },
                         { name: 'ticket-logs', type: 'text', topic: 'Ticket creation and closure logs for staff tracking' }
+                    ]
+                },
+                {
+                    category: 'blackblood333 superultra larp',
+                    channels: [
+                        { name: 'gern', type: 'text', topic: 'Private channel for bb333' }
+                    ]
+                },
+                {
+                    category: 'ugh bro',
+                    channels: [
+                        { name: 'h', type: 'text', topic: 'Bot-only channel' }
                     ]
                 }
             ];

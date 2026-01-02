@@ -8,11 +8,12 @@ const client = new Client({
         GatewayIntentBits.Guilds, 
         GatewayIntentBits.GuildMessages, 
         GatewayIntentBits.MessageContent,
-        GatewayIntentBits.GuildMembers  // Required for member update events
+        GatewayIntentBits.GuildMembers,  // Required for member update events
+        GatewayIntentBits.GuildMessageReactions  // Required for reaction roles
     ] 
 });
 
-const ALLOWED_GUILD_ID = '1421592736221626572'; // Section42 Discord server
+const ALLOWED_GUILD_IDS = ['1421592736221626572', '1392710210862321694']; // Section42 Discord servers (main + test)
 const { OWNER_IDS } = require('./config/constants');
 
 client.once('ready', async () => {
@@ -84,7 +85,7 @@ if (fs.existsSync(eventsPath)) {
 }
 
 client.on('messageCreate', message => {
-    if (message.guild.id !== ALLOWED_GUILD_ID || !message.content.startsWith('!') || message.author.bot) return;
+    if (!ALLOWED_GUILD_IDS.includes(message.guild.id) || !message.content.startsWith('!') || message.author.bot) return;
     const args = message.content.slice(1).split(/ +/);
     const commandName = args.shift().toLowerCase();
     const command = commands.get(commandName);
@@ -104,7 +105,7 @@ client.on('messageCreate', message => {
 });
 
 client.on('interactionCreate', async interaction => {
-    if (!interaction.isChatInputCommand() || interaction.guild.id !== ALLOWED_GUILD_ID) return;
+    if (!interaction.isChatInputCommand() || !ALLOWED_GUILD_IDS.includes(interaction.guild.id)) return;
     
     const command = slashCommands.get(interaction.commandName);
     
@@ -127,6 +128,99 @@ client.on('interactionCreate', async interaction => {
         } else {
             await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
         }
+    }
+});
+
+// Reaction role mappings
+const reactionRoleMap = {
+    // Gender roles (using different emojis to avoid conflicts)
+    '♂️': 'Male',
+    '♀️': 'Female',
+    // Color roles
+    '🔴': 'Red',
+    '🟠': 'Orange',
+    '🟡': 'Yellow',
+    '🟢': 'Green',
+    '🔵': 'Blue',
+    '🟣': 'Purple',
+    '🩷': 'Pink',
+    '⚪': 'White',
+    '⚫': 'Black'
+};
+
+const colorRoles = ['Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Purple', 'Pink', 'White', 'Black'];
+
+// Handle reaction add
+client.on('messageReactionAdd', async (reaction, user) => {
+    if (user.bot) return;
+    if (!ALLOWED_GUILD_IDS.includes(reaction.message.guild.id)) return;
+
+    // Fetch partial reactions
+    if (reaction.partial) {
+        try {
+            await reaction.fetch();
+        } catch (error) {
+            console.error('Error fetching reaction:', error);
+            return;
+        }
+    }
+
+    const emoji = reaction.emoji.name;
+    const roleName = reactionRoleMap[emoji];
+
+    if (!roleName) return;
+
+    const role = reaction.message.guild.roles.cache.find(r => r.name === roleName);
+    if (!role) return;
+
+    const member = await reaction.message.guild.members.fetch(user.id);
+
+    try {
+        // If it's a color role, remove all other color roles first
+        if (colorRoles.includes(roleName)) {
+            const memberColorRoles = member.roles.cache.filter(r => colorRoles.includes(r.name));
+            for (const [, colorRole] of memberColorRoles) {
+                await member.roles.remove(colorRole);
+            }
+        }
+
+        await member.roles.add(role);
+        console.log(`Added ${roleName} role to ${user.tag}`);
+    } catch (error) {
+        console.error(`Error adding role ${roleName} to ${user.tag}:`, error);
+    }
+});
+
+// Handle reaction remove
+client.on('messageReactionRemove', async (reaction, user) => {
+    if (user.bot) return;
+    if (!ALLOWED_GUILD_IDS.includes(reaction.message.guild.id)) return;
+
+    // Fetch partial reactions
+    if (reaction.partial) {
+        try {
+            await reaction.fetch();
+        } catch (error) {
+            console.error('Error fetching reaction:', error);
+            return;
+        }
+    }
+
+    const emoji = reaction.emoji.name;
+    const roleName = reactionRoleMap[emoji];
+
+    if (!roleName) return;
+
+    const role = reaction.message.guild.roles.cache.find(r => r.name === roleName);
+    if (!role) return;
+
+    const member = await reaction.message.guild.members.fetch(user.id);
+
+    try {
+        await member.roles.remove(role);
+        console.log(`Removed ${roleName} role from ${user.tag}`);
+    } catch (error) {
+        console.error(`Error removing role ${roleName} from ${user.tag}:`, error);
     }
 });
 

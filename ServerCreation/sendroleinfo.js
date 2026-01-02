@@ -1,5 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
 const { OWNER_IDS } = require('../config/constants');
+const messageTracker = require('../utils/messageTracker');
 
 module.exports = {
     name: 'sendroleinfo',
@@ -61,12 +62,15 @@ module.exports = {
             )
             .setTimestamp();
 
-        await roleInfoChannel.send({ embeds: [roleInfoEmbed1] });
+        const roleMessage = await roleInfoChannel.send({ embeds: [roleInfoEmbed1] });
+
+        // Track message ID
+        messageTracker.saveMessage(message.guild.id, 'role_info', roleInfoChannel.id, roleMessage.id);
 
         const successEmbed = new EmbedBuilder()
             .setColor('#27ae60')
             .setTitle('Role Info Sent!')
-            .setDescription('All role information embeds have been posted to the role-info channel!')
+            .setDescription('All role information embeds have been posted to the role-info channel and tracked!')
             .setTimestamp();
 
         try {
