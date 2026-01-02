@@ -1,7 +1,10 @@
-
 require('dotenv').config();
 
 const { Client, GatewayIntentBits, REST, Routes, Collection } = require('discord.js');
+const { OWNER_IDS } = require('./config/constants');
+const messageTracker = require('./utils/messageTracker');
+const fs = require('fs');
+const path = require('path');
 
 const client = new Client({ 
     intents: [
@@ -14,7 +17,6 @@ const client = new Client({
 });
 
 const ALLOWED_GUILD_IDS = ['1421592736221626572', '1392710210862321694']; // Section42 Discord servers (main + test)
-const { OWNER_IDS } = require('./config/constants');
 
 client.once('ready', async () => {
     console.log(`Logged in as ${client.user.tag}!`);
@@ -36,10 +38,72 @@ client.once('ready', async () => {
             console.error('Error registering slash commands:', error);
         }
     }
+
+    // Restore reaction roles on startup
+    console.log('🔄 Checking for reaction role messages to restore...');
+    for (const guildId of ALLOWED_GUILD_IDS) {
+        try {
+            const guild = await client.guilds.fetch(guildId);
+            const trackedMessages = messageTracker.getAllMessages(guildId);
+            
+            // Check for reaction role messages
+            const reactionRoleTypes = ['reaction_roles_gender', 'reaction_roles_color'];
+            
+            for (const messageType of reactionRoleTypes) {
+                if (trackedMessages[messageType]) {
+                    const { channelId, messageId } = trackedMessages[messageType];
+                    
+                    try {
+                        const channel = await guild.channels.fetch(channelId);
+                        const message = await channel.messages.fetch(messageId);
+                        
+                        // Process all reactions on this message
+                        for (const [emoji, reaction] of message.reactions.cache) {
+                            const roleName = reactionRoleMap[emoji];
+                            if (!roleName) continue;
+                            
+                            const role = guild.roles.cache.find(r => r.name === roleName);
+                            if (!role) continue;
+                            
+                            // Fetch all users who reacted
+                            const users = await reaction.users.fetch();
+                            
+                            for (const [userId, user] of users) {
+                                if (user.bot) continue;
+                                
+                                try {
+                                    const member = await guild.members.fetch(userId);
+                                    
+                                    // Check if member already has the role
+                                    if (!member.roles.cache.has(role.id)) {
+                                        // If it's a color role, remove other color roles first
+                                        if (colorRoles.includes(roleName)) {
+                                            const memberColorRoles = member.roles.cache.filter(r => colorRoles.includes(r.name));
+                                            for (const [, colorRole] of memberColorRoles) {
+                                                await member.roles.remove(colorRole);
+                                            }
+                                        }
+                                        
+                                        await member.roles.add(role);
+                                        console.log(`✅ Restored ${roleName} role to ${user.tag}`);
+                                    }
+                                } catch (error) {
+                                    console.error(`Error restoring role for ${user.tag}:`, error);
+                                }
+                            }
+                        }
+                    } catch (error) {
+                        console.error(`Error fetching message ${messageType}:`, error);
+                    }
+                }
+            }
+        } catch (error) {
+            console.error(`Error processing guild ${guildId}:`, error);
+        }
+    }
+    console.log('✅ Reaction role restoration complete!');
 });
 
-const fs = require('fs');
-const path = require('path');
 const { sendAsFloofWebhook } = require('./utils/webhook-util');
 
 const commands = new Map();

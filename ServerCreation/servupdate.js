@@ -184,6 +184,15 @@ module.exports = {
                 { name: 'Developer', color: '#9b59b6', hoist: true, mentionable: false },
                 { name: 'Content Creator', color: '#e74c3c', hoist: true, mentionable: false },
                 { name: 'Yaoi Jesus', color: '#009eff', hoist: true, mentionable: false },
+                { name: 'Red', color: '#e74c3c', hoist: false, mentionable: false },
+                { name: 'Orange', color: '#e67e22', hoist: false, mentionable: false },
+                { name: 'Yellow', color: '#f1c40f', hoist: false, mentionable: false },
+                { name: 'Green', color: '#2ecc71', hoist: false, mentionable: false },
+                { name: 'Blue', color: '#3498db', hoist: false, mentionable: false },
+                { name: 'Purple', color: '#9b59b6', hoist: false, mentionable: false },
+                { name: 'Pink', color: '#e91e63', hoist: false, mentionable: false },
+                { name: 'White', color: '#ecf0f1', hoist: false, mentionable: false },
+                { name: 'Black', color: '#2c3e50', hoist: false, mentionable: false },
                 { name: 'Member', color: '#95a5a6', hoist: true, mentionable: false },
                 { name: 'Tester', color: '#3498db', hoist: true, mentionable: false },
                 { name: 'Revive', color: '#e67e22', mentionable: true },
@@ -199,16 +208,7 @@ module.exports = {
                 { name: 'Goated amazing huzzorus humble huge dih uwu sama machine Je-woah!', color: '#ffd4e3', hoist: false, mentionable: false },
                 { name: 'color', color: '#010203', hoist: false, mentionable: false },
                 { name: 'Male', color: '#3498db', hoist: false, mentionable: false },
-                { name: 'Female', color: '#e91e63', hoist: false, mentionable: false },
-                { name: 'Red', color: '#e74c3c', hoist: false, mentionable: false },
-                { name: 'Orange', color: '#e67e22', hoist: false, mentionable: false },
-                { name: 'Yellow', color: '#f1c40f', hoist: false, mentionable: false },
-                { name: 'Green', color: '#2ecc71', hoist: false, mentionable: false },
-                { name: 'Blue', color: '#3498db', hoist: false, mentionable: false },
-                { name: 'Purple', color: '#9b59b6', hoist: false, mentionable: false },
-                { name: 'Pink', color: '#e91e63', hoist: false, mentionable: false },
-                { name: 'White', color: '#ecf0f1', hoist: false, mentionable: false },
-                { name: 'Black', color: '#2c3e50', hoist: false, mentionable: false }
+                { name: 'Female', color: '#e91e63', hoist: false, mentionable: false }
             ];
 
             const gameRoles = [
