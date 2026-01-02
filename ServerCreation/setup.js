@@ -368,7 +368,11 @@ module.exports = {
                     {
                         id: message.guild.roles.everyone.id,
                         allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.AddReactions],
-                        deny: [PermissionsBitField.Flags.SendMessages]
+                        deny: [
+                            PermissionsBitField.Flags.SendMessages,
+                            PermissionsBitField.Flags.CreatePublicThreads,
+                            PermissionsBitField.Flags.CreatePrivateThreads
+                        ]
                     }
                 ],
                 reason: 'Server setup'
@@ -386,7 +390,11 @@ module.exports = {
                             PermissionsBitField.Flags.ViewChannel,
                             PermissionsBitField.Flags.ReadMessageHistory
                         ],
-                        deny: [PermissionsBitField.Flags.SendMessages]
+                        deny: [
+                            PermissionsBitField.Flags.SendMessages,
+                            PermissionsBitField.Flags.CreatePublicThreads,
+                            PermissionsBitField.Flags.CreatePrivateThreads
+                        ]
                     }
                 ],
                 reason: 'Server setup'
@@ -404,7 +412,11 @@ module.exports = {
                             PermissionsBitField.Flags.ViewChannel,
                             PermissionsBitField.Flags.ReadMessageHistory
                         ],
-                        deny: [PermissionsBitField.Flags.SendMessages]
+                        deny: [
+                            PermissionsBitField.Flags.SendMessages,
+                            PermissionsBitField.Flags.CreatePublicThreads,
+                            PermissionsBitField.Flags.CreatePrivateThreads
+                        ]
                     }
                 ],
                 reason: 'Server setup'
@@ -419,7 +431,11 @@ module.exports = {
                     {
                         id: message.guild.roles.everyone.id,
                         allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.AddReactions],
-                        deny: [PermissionsBitField.Flags.SendMessages]
+                        deny: [
+                            PermissionsBitField.Flags.SendMessages,
+                            PermissionsBitField.Flags.CreatePublicThreads,
+                            PermissionsBitField.Flags.CreatePrivateThreads
+                        ]
                     }
                 ],
                 reason: 'Server setup'
@@ -434,7 +450,11 @@ module.exports = {
                     {
                         id: message.guild.roles.everyone.id,
                         allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.AddReactions],
-                        deny: [PermissionsBitField.Flags.SendMessages]
+                        deny: [
+                            PermissionsBitField.Flags.SendMessages,
+                            PermissionsBitField.Flags.CreatePublicThreads,
+                            PermissionsBitField.Flags.CreatePrivateThreads
+                        ]
                     }
                 ],
                 reason: 'Server setup'
@@ -449,7 +469,11 @@ module.exports = {
                     {
                         id: message.guild.roles.everyone.id,
                         allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.AddReactions],
-                        deny: [PermissionsBitField.Flags.SendMessages]
+                        deny: [
+                            PermissionsBitField.Flags.SendMessages,
+                            PermissionsBitField.Flags.CreatePublicThreads,
+                            PermissionsBitField.Flags.CreatePrivateThreads
+                        ]
                     }
                 ],
                 reason: 'Server setup'
@@ -464,7 +488,11 @@ module.exports = {
                     {
                         id: message.guild.roles.everyone.id,
                         allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.AddReactions],
-                        deny: [PermissionsBitField.Flags.SendMessages]
+                        deny: [
+                            PermissionsBitField.Flags.SendMessages,
+                            PermissionsBitField.Flags.CreatePublicThreads,
+                            PermissionsBitField.Flags.CreatePrivateThreads
+                        ]
                     },
                     {
                         id: developerRole.id,
@@ -488,7 +516,11 @@ module.exports = {
                     {
                         id: message.guild.roles.everyone.id,
                         allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.AddReactions],
-                        deny: [PermissionsBitField.Flags.SendMessages]
+                        deny: [
+                            PermissionsBitField.Flags.SendMessages,
+                            PermissionsBitField.Flags.CreatePublicThreads,
+                            PermissionsBitField.Flags.CreatePrivateThreads
+                        ]
                     },
                     {
                         id: developerRole.id,
@@ -512,7 +544,11 @@ module.exports = {
                     {
                         id: message.guild.roles.everyone.id,
                         allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.AddReactions],
-                        deny: [PermissionsBitField.Flags.SendMessages]
+                        deny: [
+                            PermissionsBitField.Flags.SendMessages,
+                            PermissionsBitField.Flags.CreatePublicThreads,
+                            PermissionsBitField.Flags.CreatePrivateThreads
+                        ]
                     },
                     {
                         id: developerRole.id,
@@ -534,13 +570,21 @@ module.exports = {
                 permissionOverwrites: [
                     {
                         id: message.guild.roles.everyone.id,
-                        deny: [PermissionsBitField.Flags.ViewChannel]
+                        deny: [
+                            PermissionsBitField.Flags.ViewChannel,
+                            PermissionsBitField.Flags.CreatePublicThreads,
+                            PermissionsBitField.Flags.CreatePrivateThreads
+                        ]
                     },
                     {
                         id: contentCreatorRole.id,
                         allow: [
                             PermissionsBitField.Flags.ViewChannel,
                             PermissionsBitField.Flags.SendMessages
+                        ],
+                        deny: [
+                            PermissionsBitField.Flags.CreatePublicThreads,
+                            PermissionsBitField.Flags.CreatePrivateThreads
                         ]
                     },
                     {
@@ -548,6 +592,10 @@ module.exports = {
                         allow: [
                             PermissionsBitField.Flags.ViewChannel,
                             PermissionsBitField.Flags.SendMessages
+                        ],
+                        deny: [
+                            PermissionsBitField.Flags.CreatePublicThreads,
+                            PermissionsBitField.Flags.CreatePrivateThreads
                         ]
                     }
                 ],
@@ -567,7 +615,11 @@ module.exports = {
                             PermissionsBitField.Flags.SendMessages,
                             PermissionsBitField.Flags.AddReactions
                         ],
-                        deny: [PermissionsBitField.Flags.AttachFiles]
+                        deny: [
+                            PermissionsBitField.Flags.AttachFiles,
+                            PermissionsBitField.Flags.CreatePublicThreads,
+                            PermissionsBitField.Flags.CreatePrivateThreads
+                        ]
                     },
                     {
                         id: picPermsRole.id,
@@ -607,6 +659,10 @@ module.exports = {
                             PermissionsBitField.Flags.ViewChannel,
                             PermissionsBitField.Flags.SendMessages,
                             PermissionsBitField.Flags.AddReactions
+                        ],
+                        deny: [
+                            PermissionsBitField.Flags.CreatePublicThreads,
+                            PermissionsBitField.Flags.CreatePrivateThreads
                         ]
                     }
                 ],
@@ -622,7 +678,11 @@ module.exports = {
                     {
                         id: message.guild.roles.everyone.id,
                         allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.AddReactions],
-                        deny: [PermissionsBitField.Flags.SendMessages]
+                        deny: [
+                            PermissionsBitField.Flags.SendMessages,
+                            PermissionsBitField.Flags.CreatePublicThreads,
+                            PermissionsBitField.Flags.CreatePrivateThreads
+                        ]
                     }
                 ],
                 reason: 'Server setup'
@@ -637,7 +697,11 @@ module.exports = {
                     {
                         id: message.guild.roles.everyone.id,
                         allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.AddReactions],
-                        deny: [PermissionsBitField.Flags.SendMessages]
+                        deny: [
+                            PermissionsBitField.Flags.SendMessages,
+                            PermissionsBitField.Flags.CreatePublicThreads,
+                            PermissionsBitField.Flags.CreatePrivateThreads
+                        ]
                     }
                 ],
                 reason: 'Server setup'
@@ -652,7 +716,11 @@ module.exports = {
                     {
                         id: message.guild.roles.everyone.id,
                         allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.AddReactions],
-                        deny: [PermissionsBitField.Flags.SendMessages]
+                        deny: [
+                            PermissionsBitField.Flags.SendMessages,
+                            PermissionsBitField.Flags.CreatePublicThreads,
+                            PermissionsBitField.Flags.CreatePrivateThreads
+                        ]
                     }
                 ],
                 reason: 'Server setup'
@@ -667,7 +735,11 @@ module.exports = {
                     {
                         id: message.guild.roles.everyone.id,
                         allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.AddReactions],
-                        deny: [PermissionsBitField.Flags.SendMessages]
+                        deny: [
+                            PermissionsBitField.Flags.SendMessages,
+                            PermissionsBitField.Flags.CreatePublicThreads,
+                            PermissionsBitField.Flags.CreatePrivateThreads
+                        ]
                     }
                 ],
                 reason: 'Server setup'
@@ -682,7 +754,11 @@ module.exports = {
                     {
                         id: message.guild.roles.everyone.id,
                         allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.AddReactions],
-                        deny: [PermissionsBitField.Flags.SendMessages]
+                        deny: [
+                            PermissionsBitField.Flags.SendMessages,
+                            PermissionsBitField.Flags.CreatePublicThreads,
+                            PermissionsBitField.Flags.CreatePrivateThreads
+                        ]
                     }
                 ],
                 reason: 'Server setup'
@@ -787,7 +863,11 @@ module.exports = {
                     {
                         id: message.guild.roles.everyone.id,
                         allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.AddReactions],
-                        deny: [PermissionsBitField.Flags.SendMessages]
+                        deny: [
+                            PermissionsBitField.Flags.SendMessages,
+                            PermissionsBitField.Flags.CreatePublicThreads,
+                            PermissionsBitField.Flags.CreatePrivateThreads
+                        ]
                     },
                     {
                         id: contentCreatorRole.id,
@@ -811,7 +891,11 @@ module.exports = {
                 permissionOverwrites: [
                     {
                         id: message.guild.roles.everyone.id,
-                        deny: [PermissionsBitField.Flags.ViewChannel]
+                        deny: [
+                            PermissionsBitField.Flags.ViewChannel,
+                            PermissionsBitField.Flags.CreatePublicThreads,
+                            PermissionsBitField.Flags.CreatePrivateThreads
+                        ]
                     },
                     {
                         id: contentCreatorRole.id,
@@ -821,6 +905,10 @@ module.exports = {
                             PermissionsBitField.Flags.AddReactions,
                             PermissionsBitField.Flags.AttachFiles,
                             PermissionsBitField.Flags.EmbedLinks
+                        ],
+                        deny: [
+                            PermissionsBitField.Flags.CreatePublicThreads,
+                            PermissionsBitField.Flags.CreatePrivateThreads
                         ]
                     }
                 ],
@@ -835,7 +923,11 @@ module.exports = {
                 permissionOverwrites: [
                     {
                         id: message.guild.roles.everyone.id,
-                        deny: [PermissionsBitField.Flags.ViewChannel]
+                        deny: [
+                            PermissionsBitField.Flags.ViewChannel,
+                            PermissionsBitField.Flags.CreatePublicThreads,
+                            PermissionsBitField.Flags.CreatePrivateThreads
+                        ]
                     },
                     {
                         id: moderatorRole.id,
@@ -844,6 +936,10 @@ module.exports = {
                             PermissionsBitField.Flags.SendMessages,
                             PermissionsBitField.Flags.AddReactions,
                             PermissionsBitField.Flags.AttachFiles
+                        ],
+                        deny: [
+                            PermissionsBitField.Flags.CreatePublicThreads,
+                            PermissionsBitField.Flags.CreatePrivateThreads
                         ]
                     },
                     {
@@ -853,6 +949,10 @@ module.exports = {
                             PermissionsBitField.Flags.SendMessages,
                             PermissionsBitField.Flags.AddReactions,
                             PermissionsBitField.Flags.AttachFiles
+                        ],
+                        deny: [
+                            PermissionsBitField.Flags.CreatePublicThreads,
+                            PermissionsBitField.Flags.CreatePrivateThreads
                         ]
                     }
                 ],
@@ -867,13 +967,21 @@ module.exports = {
                 permissionOverwrites: [
                     {
                         id: message.guild.roles.everyone.id,
-                        deny: [PermissionsBitField.Flags.ViewChannel]
+                        deny: [
+                            PermissionsBitField.Flags.ViewChannel,
+                            PermissionsBitField.Flags.CreatePublicThreads,
+                            PermissionsBitField.Flags.CreatePrivateThreads
+                        ]
                     },
                     {
                         id: moderatorRole.id,
                         allow: [
                             PermissionsBitField.Flags.ViewChannel,
                             PermissionsBitField.Flags.SendMessages
+                        ],
+                        deny: [
+                            PermissionsBitField.Flags.CreatePublicThreads,
+                            PermissionsBitField.Flags.CreatePrivateThreads
                         ]
                     },
                     {
@@ -881,6 +989,10 @@ module.exports = {
                         allow: [
                             PermissionsBitField.Flags.ViewChannel,
                             PermissionsBitField.Flags.SendMessages
+                        ],
+                        deny: [
+                            PermissionsBitField.Flags.CreatePublicThreads,
+                            PermissionsBitField.Flags.CreatePrivateThreads
                         ]
                     }
                 ],
@@ -895,13 +1007,21 @@ module.exports = {
                 permissionOverwrites: [
                     {
                         id: message.guild.roles.everyone.id,
-                        deny: [PermissionsBitField.Flags.ViewChannel]
+                        deny: [
+                            PermissionsBitField.Flags.ViewChannel,
+                            PermissionsBitField.Flags.CreatePublicThreads,
+                            PermissionsBitField.Flags.CreatePrivateThreads
+                        ]
                     },
                     {
                         id: moderatorRole.id,
                         allow: [
                             PermissionsBitField.Flags.ViewChannel,
                             PermissionsBitField.Flags.AddReactions
+                        ],
+                        deny: [
+                            PermissionsBitField.Flags.CreatePublicThreads,
+                            PermissionsBitField.Flags.CreatePrivateThreads
                         ]
                     },
                     {
@@ -910,6 +1030,10 @@ module.exports = {
                             PermissionsBitField.Flags.ViewChannel,
                             PermissionsBitField.Flags.SendMessages,
                             PermissionsBitField.Flags.AddReactions
+                        ],
+                        deny: [
+                            PermissionsBitField.Flags.CreatePublicThreads,
+                            PermissionsBitField.Flags.CreatePrivateThreads
                         ]
                     }
                 ],
