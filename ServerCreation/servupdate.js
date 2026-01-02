@@ -266,6 +266,12 @@ module.exports = {
                 }
             }
 
+            // Pass logs to fullRefresh if available
+            if (updateMessage.logs) {
+                updateMessage.logs.addedRoles = addedRoles;
+                updateMessage.logs.updatedRoles = updatedRoles;
+            }
+
             const successEmbed = new EmbedBuilder()
                 .setColor('#27ae60')
                 .setTitle('✅ Roles Updated Successfully!')
@@ -551,6 +557,12 @@ module.exports = {
                 }
             }
 
+            // Pass logs to fullRefresh if available
+            if (updateMessage.logs) {
+                updateMessage.logs.addedChannels = addedChannels;
+                updateMessage.logs.addedCategories = addedCategories;
+            }
+
             const successEmbed = new EmbedBuilder()
                 .setColor('#27ae60')
                 .setTitle('✅ Channels Updated Successfully!')
@@ -678,6 +690,11 @@ module.exports = {
                 updatedChannels.push('role-info');
             }
 
+            // Pass logs to fullRefresh if available
+            if (updateMessage.logs) {
+                updateMessage.logs.updatedInfo = updatedChannels;
+            }
+
             const successEmbed = new EmbedBuilder()
                 .setColor('#27ae60')
                 .setTitle('✅ Info Messages Updated Successfully!')
@@ -736,23 +753,111 @@ module.exports = {
         await updateMessage.edit({ embeds: [progressEmbed], components: [] });
 
         try {
-            await this.updateRoles(message, { edit: () => {} }); // Dummy message object
-            await this.updateChannels(message, { edit: () => {} });
+            const changeLogs = {
+                addedRoles: [],
+                updatedRoles: [],
+                addedChannels: [],
+                addedCategories: [],
+                updatedPermissions: 0,
+                updatedInfo: []
+            };
+
+            // Capture role changes
+            const roleMessage = { 
+                edit: () => {},
+                logs: changeLogs
+            };
+            await this.updateRoles(message, roleMessage);
+
+            // Capture channel changes
+            const channelMessage = {
+                edit: () => {},
+                logs: changeLogs
+            };
+            await this.updateChannels(message, channelMessage);
+
+            // Update permissions
             await this.updatePermissions(message, { edit: () => {} });
-            await this.updateInfoMessages(message, { edit: () => {} });
+            changeLogs.updatedPermissions = 1;
+
+            // Capture info message changes
+            const infoMessage = {
+                edit: () => {},
+                logs: changeLogs
+            };
+            await this.updateInfoMessages(message, infoMessage);
+
+            // Update colors
             await this.updateColors(message, { edit: () => {} });
+
+            // Build detailed log embed
+            const logFields = [];
+
+            if (changeLogs.addedRoles.length > 0) {
+                logFields.push({
+                    name: '➕ Added Roles',
+                    value: changeLogs.addedRoles.join(', '),
+                    inline: false
+                });
+            }
+
+            if (changeLogs.updatedRoles.length > 0) {
+                logFields.push({
+                    name: '🔄 Updated Roles',
+                    value: changeLogs.updatedRoles.join(', '),
+                    inline: false
+                });
+            }
+
+            if (changeLogs.addedCategories.length > 0) {
+                logFields.push({
+                    name: '📁 Added Categories',
+                    value: changeLogs.addedCategories.join(', '),
+                    inline: false
+                });
+            }
+
+            if (changeLogs.addedChannels.length > 0) {
+                const channelList = changeLogs.addedChannels.length > 10 
+                    ? changeLogs.addedChannels.slice(0, 10).join(', ') + ` (+${changeLogs.addedChannels.length - 10} more)`
+                    : changeLogs.addedChannels.join(', ');
+                logFields.push({
+                    name: '📝 Added Channels',
+                    value: channelList,
+                    inline: false
+                });
+            }
+
+            if (changeLogs.updatedPermissions > 0) {
+                logFields.push({
+                    name: '🔧 Permissions',
+                    value: 'Channel permissions updated (threads blocked)',
+                    inline: false
+                });
+            }
+
+            if (changeLogs.updatedInfo.length > 0) {
+                logFields.push({
+                    name: '📜 Info Messages',
+                    value: `Updated: ${changeLogs.updatedInfo.join(', ')}`,
+                    inline: false
+                });
+            }
+
+            if (logFields.length === 0) {
+                logFields.push({
+                    name: '✅ Status',
+                    value: 'No changes needed - everything is up to date!',
+                    inline: false
+                });
+            }
 
             const successEmbed = new EmbedBuilder()
                 .setColor('#27ae60')
                 .setTitle('✅ Full Refresh Complete!')
-                .setDescription('All server components have been updated successfully.')
-                .addFields(
-                    {
-                        name: '✅ Completed Updates',
-                        value: '• Roles\n• Channels\n• Permissions\n• Info Messages\n• Colors',
-                        inline: false
-                    }
-                )
+                .setDescription('All server components have been checked and updated.')
+                .addFields(logFields)
+                .setFooter({ text: 'Full refresh completed' })
                 .setTimestamp();
 
             await updateMessage.edit({ embeds: [successEmbed] });
@@ -762,7 +867,7 @@ module.exports = {
             const errorEmbed = new EmbedBuilder()
                 .setColor('#ff0000')
                 .setTitle('❌ Full Refresh Failed')
-                .setDescription('An error occurred during the full refresh.')
+                .setDescription(`An error occurred during the full refresh.\n\`\`\`${error.message}\`\`\``)
                 .setTimestamp();
             await updateMessage.edit({ embeds: [errorEmbed] });
         }
