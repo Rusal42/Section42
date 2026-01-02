@@ -1,19 +1,18 @@
 const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
+const { OWNER_IDS } = require('../config/constants');
 
 module.exports = {
     name: 'announce',
-    description: 'Create an announcement embed',
+    description: 'Send an announcement embed',
     data: new SlashCommandBuilder()
         .setName('announce')
-        .setDescription('Create an announcement embed')
+        .setDescription('Send an announcement embed')
         .addStringOption(option =>
             option.setName('message')
                 .setDescription('The announcement message')
                 .setRequired(true)),
     async execute(message, args) {
-        const OWNER_ID = '746068840978448565';
-        
-        if (message.author.id !== OWNER_ID && !message.member.permissions.has('Administrator')) {
+        if (!OWNER_IDS.includes(message.author.id) && !message.member.permissions.has('Administrator')) {
             return message.reply('Only the bot owner or administrators can use this command.');
         }
 
@@ -45,9 +44,7 @@ module.exports = {
         }
     },
     async executeSlash(interaction) {
-        const OWNER_ID = '746068840978448565';
-        
-        if (interaction.user.id !== OWNER_ID && !interaction.member.permissions.has('Administrator')) {
+        if (!OWNER_IDS.includes(interaction.user.id) && !interaction.member.permissions.has('Administrator')) {
             return interaction.reply({ content: 'Only the bot owner or administrators can use this command.', ephemeral: true });
         }
 

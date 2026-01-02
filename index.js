@@ -13,11 +13,11 @@ const client = new Client({
 });
 
 const ALLOWED_GUILD_ID = '1421592736221626572'; // Section42 Discord server
-const OWNER_IDS = process.env.OWNER_IDS ? process.env.OWNER_IDS.split(',').map(id => id.trim()) : [];
+const { OWNER_IDS } = require('./config/constants');
 
 client.once('ready', async () => {
     console.log(`Logged in as ${client.user.tag}!`);
-    console.log(`Owner IDs: ${OWNER_IDS.join(', ') || 'NONE SET'}`);
+    console.log(`Owner IDs: ${OWNER_IDS.join(', ')}`);
     
     if (slashCommandsData.length > 0) {
         const rest = new REST().setToken(process.env.DISCORD_TOKEN);

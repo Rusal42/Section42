@@ -1,5 +1,6 @@
 const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
 const serverHelper = require('../utils/serverHelper');
+const { OWNER_IDS } = require('../config/constants');
 
 module.exports = {
     name: 'serverconfig',
@@ -11,9 +12,7 @@ module.exports = {
         .setDescription('Display current server configuration (channels and roles)'),
     
     async execute(message) {
-        const OWNER_ID = '746068840978448565';
-        
-        if (message.author.id !== OWNER_ID) {
+        if (!OWNER_IDS.includes(message.author.id)) {
             return;
         }
         
@@ -168,9 +167,7 @@ module.exports = {
     },
     
     async executeSlash(interaction) {
-        const OWNER_ID = '746068840978448565';
-        
-        if (interaction.user.id !== OWNER_ID) {
+        if (!OWNER_IDS.includes(interaction.user.id)) {
             return interaction.reply({ content: 'Only the bot owner can use this command.', ephemeral: true });
         }
         

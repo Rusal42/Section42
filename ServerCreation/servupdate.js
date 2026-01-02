@@ -1,13 +1,12 @@
-const { PermissionsBitField, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle, ChannelType } = require('discord.js');
+const { EmbedBuilder, PermissionsBitField, ChannelType, ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { OWNER_IDS } = require('../config/constants');
 
 module.exports = {
     name: 'servupdate',
     description: 'Updates specific parts of the server setup without clearing everything',
     
     async execute(message) {
-        const OWNER_ID = '746068840978448565';
-        
-        if (message.author.id !== OWNER_ID) {
+        if (!OWNER_IDS.includes(message.author.id)) {
             const errorEmbed = new EmbedBuilder()
                 .setColor('#ff0000')
                 .setTitle('Access Denied')

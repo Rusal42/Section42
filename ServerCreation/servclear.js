@@ -1,13 +1,12 @@
 const { PermissionsBitField, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType } = require('discord.js');
+const { OWNER_IDS } = require('../config/constants');
 
 module.exports = {
     name: 'servclear',
     description: 'Clears all channels and roles from the server (Admin only)',
     
     async execute(message) {
-        const OWNER_ID = '746068840978448565';
-        
-        if (message.author.id !== OWNER_ID) {
+        if (!OWNER_IDS.includes(message.author.id)) {
             const errorEmbed = new EmbedBuilder()
                 .setColor('#ff0000')
                 .setTitle('Access Denied')
