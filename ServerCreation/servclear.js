@@ -7,44 +7,41 @@ module.exports = {
     async execute(message) {
         const OWNER_ID = '746068840978448565';
         
-        // Check if user is the bot owner
         if (message.author.id !== OWNER_ID) {
             const errorEmbed = new EmbedBuilder()
                 .setColor('#ff0000')
-                .setTitle('❌ Access Denied')
+                .setTitle('Access Denied')
                 .setDescription('Only the bot owner can use this command.')
                 .setTimestamp();
             return message.channel.send({ embeds: [errorEmbed] });
         }
 
-        // Check if bot has permission
         if (!message.guild.members.me.permissions.has(PermissionsBitField.Flags.Administrator)) {
             const errorEmbed = new EmbedBuilder()
                 .setColor('#ff0000')
-                .setTitle('❌ Bot Permission Required')
+                .setTitle('Bot Permission Required')
                 .setDescription('I need Administrator permission to clear the server.')
                 .setTimestamp();
             return message.channel.send({ embeds: [errorEmbed] });
         }
 
-        // Confirmation message
         const confirmEmbed = new EmbedBuilder()
             .setColor('#276275')
-            .setTitle('⚠️ Server Clear Warning')
+            .setTitle('Server Clear Warning')
             .setDescription('This will delete **ALL** channels and roles in the server!')
             .addFields(
                 {
-                    name: '🔄 How to Proceed',
+                    name: 'How to Proceed',
                     value: 'Click **Confirm** to proceed or **Cancel** to abort',
                     inline: false
                 },
                 {
-                    name: '⏰ Time Limit',
+                    name: 'Time Limit',
                     value: 'You have 30 seconds to respond',
                     inline: true
                 },
                 {
-                    name: '⚠️ Warning',
+                    name: 'Warning',
                     value: 'This action **cannot** be undone!',
                     inline: true
                 }
@@ -71,7 +68,6 @@ module.exports = {
             components: [row] 
         });
 
-        // Wait for button interaction
         const filter = (interaction) => {
             return ['confirm_clear', 'cancel_clear'].includes(interaction.customId) && interaction.user.id === message.author.id;
         };
@@ -102,10 +98,8 @@ module.exports = {
                 const clearMessage = await message.channel.send({ embeds: [clearEmbed] });
 
                 try {
-                    // Store reference to current channel for deletion later
                     const currentChannel = message.channel;
                     
-                    // Delete all channels except the current one (so we can send completion message)
                     const channelsToDelete = message.guild.channels.cache.filter(channel => 
                         channel.id !== message.channel.id
                     );
@@ -120,7 +114,6 @@ module.exports = {
                     
                     await Promise.all(deleteChannelPromises);
 
-                    // Delete all roles except @everyone and bot roles
                     const rolesToDelete = message.guild.roles.cache.filter(role => 
                         !role.managed && // Don't delete bot roles
                         role.id !== message.guild.roles.everyone.id && // Don't delete @everyone
@@ -137,11 +130,9 @@ module.exports = {
 
                     await Promise.all(deleteRolePromises);
 
-                    // Reset server settings
                     await message.guild.setAFKChannel(null).catch(() => {});
                     await message.guild.setSystemChannel(null).catch(() => {});
 
-                    // Create a setup channel for running !setup
                     let setupChannel = null;
                     try {
                         setupChannel = await message.guild.channels.create({
@@ -178,11 +169,9 @@ module.exports = {
                         .setTimestamp()
                         .setFooter({ text: `Server cleared by ${message.author.username}`, iconURL: message.author.displayAvatarURL() });
 
-                    // Send success message to setup channel if created, otherwise current channel
                     const targetChannel = setupChannel || message.channel;
                     await targetChannel.send({ embeds: [successEmbed] });
                     
-                    // Now delete the original channel where the command was run
                     if (setupChannel && currentChannel.id !== setupChannel.id) {
                         try {
                             await currentChannel.delete();
@@ -199,7 +188,6 @@ module.exports = {
                         .setDescription('An error occurred while clearing the server. Some items may not have been deleted.')
                         .setTimestamp();
                     clearMessage.edit({ embeds: [errorEmbed] });
-                    // Remove buttons from original message
                     confirmMessage.edit({ components: [] }).catch(() => {});
                 }
             }

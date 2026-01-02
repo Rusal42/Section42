@@ -5,34 +5,30 @@ module.exports = {
     description: 'Timeout (mute) a member for a specified duration',
     async execute(message, args) {
         try {
-            // Check if user has timeout permissions
             if (!message.member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) {
                 const noPermEmbed = new EmbedBuilder()
                     .setColor('#ff0000')
-                    .setTitle('❌ Access Denied')
+                    .setTitle('Access Denied')
                     .setDescription('You need **Moderate Members** permission to use this command.')
                     .setTimestamp();
                 
                 return message.reply({ embeds: [noPermEmbed] });
             }
 
-            // Get target user (mention or ID)
             let targetUser = message.mentions.users.first();
             
-            // If no mention, try to parse as user ID
             if (!targetUser && args[0]) {
-                const userId = args[0].replace(/[<@!>]/g, ''); // Remove mention formatting if present
+                const userId = args[0].replace(/[<@!>]/g, '');
                 try {
                     targetUser = await message.client.users.fetch(userId);
                 } catch (error) {
-                    // Invalid user ID
                 }
             }
             
             if (!targetUser) {
                 const usageEmbed = new EmbedBuilder()
                     .setColor('#77bfba')
-                    .setTitle('📋 Command Usage')
+                    .setTitle('Command Usage')
                     .setDescription('**Usage:** `!timeout @user <duration> [reason]` or `!timeout <userID> <duration> [reason]`')
                     .addFields(
                         {
@@ -51,26 +47,24 @@ module.exports = {
                 return message.reply({ embeds: [usageEmbed] });
             }
 
-            // Get duration
             const duration = args[1];
             if (!duration) {
                 const noDurationEmbed = new EmbedBuilder()
                     .setColor('#ff0000')
-                    .setTitle('❌ Missing Duration')
+                    .setTitle('Missing Duration')
                     .setDescription('Please specify a duration (e.g., 30s, 5m, 1h, 1d)')
                     .setTimestamp();
                 
                 return message.reply({ embeds: [noDurationEmbed] });
             }
 
-            // Parse duration
             const timeRegex = /^(\d+)([smhdw])$/;
             const match = duration.match(timeRegex);
             
             if (!match) {
                 const invalidDurationEmbed = new EmbedBuilder()
                     .setColor('#ff0000')
-                    .setTitle('❌ Invalid Duration')
+                    .setTitle('Invalid Duration')
                     .setDescription('Duration format: `30s`, `5m`, `1h`, `1d`, `1w`')
                     .setTimestamp();
                 
@@ -106,7 +100,6 @@ module.exports = {
                     break;
             }
 
-            // Maximum timeout is 28 days (Discord limit)
             const maxTimeout = 28 * 24 * 60 * 60 * 1000;
             if (milliseconds > maxTimeout) {
                 const tooLongEmbed = new EmbedBuilder()
@@ -118,7 +111,6 @@ module.exports = {
                 return message.reply({ embeds: [tooLongEmbed] });
             }
 
-            // Get the member object
             const targetMember = message.guild.members.cache.get(targetUser.id);
             if (!targetMember) {
                 const notFoundEmbed = new EmbedBuilder()
@@ -130,7 +122,6 @@ module.exports = {
                 return message.reply({ embeds: [notFoundEmbed] });
             }
 
-            // Check if target is moderatable
             if (!targetMember.moderatable) {
                 const cantTimeoutEmbed = new EmbedBuilder()
                     .setColor('#ff0000')
@@ -141,16 +132,12 @@ module.exports = {
                 return message.reply({ embeds: [cantTimeoutEmbed] });
             }
 
-            // Get the reason
             const reason = args.slice(2).join(' ') || 'No reason provided';
 
-            // Timeout the user
             await targetMember.timeout(milliseconds, reason);
 
-            // Calculate end time
             const endTime = new Date(Date.now() + milliseconds);
 
-            // Send success message
             const successEmbed = new EmbedBuilder()
                 .setColor('#b6dbd9')
                 .setTitle('🔇 User Timed Out')
