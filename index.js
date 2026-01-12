@@ -16,6 +16,10 @@ const client = new Client({
     ] 
 });
 
+// Snipe system
+client.snipes = new Map();
+client.snipeList = new Map();
+
 const ALLOWED_GUILD_IDS = ['1421592736221626572', '1392710210862321694']; // Section42 Discord servers (main + test)
 
 client.once('ready', async () => {
@@ -285,6 +289,62 @@ client.on('messageReactionRemove', async (reaction, user) => {
         console.log(`Removed ${roleName} role from ${user.tag}`);
     } catch (error) {
         console.error(`Error removing role ${roleName} from ${user.tag}:`, error);
+    }
+});
+
+// Message delete event for snipe
+client.on('messageDelete', async (message) => {
+    if (!ALLOWED_GUILD_IDS.includes(message.guild.id)) return;
+    if (message.author.bot) return;
+
+    const snipeData = {
+        content: message.content,
+        author: message.author,
+        deletedAt: new Date(),
+        attachment: message.attachments.first()?.url || null
+    };
+
+    client.snipes.set(message.channel.id, snipeData);
+
+    if (!client.snipeList.has(message.channel.id)) {
+        client.snipeList.set(message.channel.id, []);
+    }
+
+    const channelSnipes = client.snipeList.get(message.channel.id);
+    channelSnipes.unshift(snipeData);
+
+    if (channelSnipes.length > 10) {
+        channelSnipes.pop();
+    }
+});
+
+// Welcome message event
+const { EmbedBuilder } = require('discord.js');
+
+client.on('guildMemberAdd', async (member) => {
+    if (!ALLOWED_GUILD_IDS.includes(member.guild.id)) return;
+
+    const welcomeChannel = member.guild.channels.cache.find(
+        channel => channel.name === 'welcome'
+    );
+
+    if (!welcomeChannel) {
+        console.log('Welcome channel not found');
+        return;
+    }
+
+    try {
+        const embed = new EmbedBuilder()
+            .setColor('#ff6b35')
+            .setTitle('Welcome to Section42!')
+            .setDescription(`${member} has joined the server! 🎉\n\nMake sure to check out <#${member.guild.channels.cache.find(c => c.name === 'rules')?.id || 'rules'}> and get your roles!`)
+            .setThumbnail(member.user.displayAvatarURL())
+            .setFooter({ text: `Member #${member.guild.memberCount}` })
+            .setTimestamp();
+
+        await welcomeChannel.send({ content: `${member}`, embeds: [embed] });
+    } catch (error) {
+        console.error('Error sending welcome message:', error);
     }
 });
 

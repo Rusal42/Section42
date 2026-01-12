@@ -34,6 +34,9 @@ module.exports = {
                            '`!kick <user> [reason]` - Kick a user\n' +
                            '`!timeout <user> <duration> [reason]` - Timeout a user\n' +
                            '`!purge <amount>` - Delete multiple messages (1-100)\n' +
+                           '`!userpurge <user> <amount>` - Delete messages from a specific user\n' +
+                           '`!snipe` - Show the last deleted message\n' +
+                           '`!snipelist [amount]` - Show multiple deleted messages (default: 5)\n' +
                            '`!warn <user> <reason>` - Warn a user\n' +
                            '`!warnings <user>` - Check user warnings\n' +
                            '`!clearwarnings <user>` - Clear user warnings\n' +
@@ -88,6 +91,9 @@ module.exports = {
                 {
                     name: '**Moderation Commands**',
                     value: '`/purge` or `!purge <amount>` - Delete multiple messages (1-100)\n' +
+                           '`/userpurge` or `!userpurge <user> <amount>` - Delete messages from a specific user\n' +
+                           '`/snipe` or `!snipe` - Show the last deleted message\n' +
+                           '`/snipelist` or `!snipelist [amount]` - Show multiple deleted messages (default: 5)\n' +
                            '`!ban <user> [reason]` - Ban a user\n' +
                            '`!kick <user> [reason]` - Kick a user\n' +
                            '`!timeout <user> <duration> [reason]` - Timeout a user\n' +

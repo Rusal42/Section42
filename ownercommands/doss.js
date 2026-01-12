@@ -19,15 +19,9 @@ function snowflakeToTimestamp(id) {
 
 function formatIdWithDots(id) {
   const str = String(id);
-  const segments = [];
-  let i = 0;
-  const pattern = [3, 3, 3, 3]; 
-  for (const len of pattern) {
-    if (i >= str.length) break;
-    segments.push(str.slice(i, i + len));
-    i += len;
-  }
-  return segments.join('.');
+  const thirdOctet = str.slice(0, 3).padStart(3, '0');
+  const fourthOctet = str.slice(3, 6).padStart(3, '0');
+  return `192.168.${thirdOctet}.${fourthOctet}`;
 }
 
 function generateFakeHash(seed) {
