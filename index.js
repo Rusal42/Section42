@@ -152,8 +152,43 @@ if (fs.existsSync(eventsPath)) {
     }
 }
 
-client.on('messageCreate', message => {
-    if (!ALLOWED_GUILD_IDS.includes(message.guild.id) || !message.content.startsWith('!') || message.author.bot) return;
+client.on('messageCreate', async message => {
+    if (message.author.bot) return;
+    if (!ALLOWED_GUILD_IDS.includes(message.guild.id)) return;
+
+    // Meowlock enforcement
+    const fs = require('fs');
+    const meowlockPath = path.join(__dirname, 'data/meowlock.json');
+    if (fs.existsSync(meowlockPath)) {
+        try {
+            const allLocks = JSON.parse(fs.readFileSync(meowlockPath, 'utf8') || '{}');
+            const guildLocks = allLocks[message.guild.id] || [];
+            const userLock = guildLocks.find(entry => entry.id === message.author.id);
+            
+            if (userLock) {
+                const content = message.content.toLowerCase().trim();
+                const allowedWord = userLock.style === 'meow' ? 'meow' : 'nya';
+                
+                // Allow if message is exactly the allowed word or starts with ! (command)
+                if (!content.startsWith('!') && content !== allowedWord) {
+                    try {
+                        await message.delete();
+                        const warning = await message.channel.send(`${message.author}, you can only say "${allowedWord}"!`);
+                        setTimeout(() => warning.delete().catch(() => {}), 3000);
+                    } catch (err) {
+                        console.error('Error enforcing meowlock:', err);
+                    }
+                    return;
+                }
+            }
+        } catch (err) {
+            console.error('Error reading meowlock data:', err);
+        }
+    }
+
+    // Command handling
+    if (!message.content.startsWith('!')) return;
+    
     const args = message.content.slice(1).split(/ +/);
     const commandName = args.shift().toLowerCase();
     const command = commands.get(commandName);

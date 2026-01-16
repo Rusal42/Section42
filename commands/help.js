@@ -25,6 +25,7 @@ module.exports = {
                     name: '**General Commands**',
                     value: '`!ping` - Check bot latency\n' +
                            '`!colors` - Get color roles\n' +
+                           '`!giveaway <duration> <winners> | <prize>` - Start a giveaway\n' +
                            '`!help` - Show this help message',
                     inline: false
                 },
@@ -54,6 +55,14 @@ module.exports = {
                            '`!sendserverinfo` - Send comprehensive server info with graphic design services\n' +
                            '`!sendcolors` - Send color role selection\n' +
                            '`!sendrules` - Send server rules',
+                    inline: false
+                },
+                {
+                    name: '**Meowlock Commands (Owner Only)**',
+                    value: '`!meowlock <user> <meow|nya>` - Lock user to only say meow/nya\n' +
+                           '`!meowunlock <user>` - Remove meowlock from user\n' +
+                           '`!meowlocked` - List all meowlocked users\n' +
+                           '`!meowlockclear` - Clear all meowlocks in server',
                     inline: false
                 }
             )
@@ -85,6 +94,7 @@ module.exports = {
                     name: '**General Commands**',
                     value: '`/ping` or `!ping` - Check bot latency\n' +
                            '`/colors` or `!colors` - Get color roles\n' +
+                           '`/giveaway` or `!giveaway <duration> <winners> | <prize>` - Start a giveaway\n' +
                            '`/help` or `!help` - Show this help message',
                     inline: false
                 },
@@ -114,6 +124,14 @@ module.exports = {
                            '`!sendserverinfo` - Send comprehensive server info with graphic design services\n' +
                            '`!sendcolors` - Send color role selection\n' +
                            '`!sendrules` - Send server rules',
+                    inline: false
+                },
+                {
+                    name: '**Meowlock Commands (Owner Only)**',
+                    value: '`!meowlock <user> <meow|nya>` - Lock user to only say meow/nya\n' +
+                           '`!meowunlock <user>` - Remove meowlock from user\n' +
+                           '`!meowlocked` - List all meowlocked users\n' +
+                           '`!meowlockclear` - Clear all meowlocks in server',
                     inline: false
                 }
             )
