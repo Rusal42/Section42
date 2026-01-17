@@ -166,20 +166,53 @@ client.on('messageCreate', async message => {
             const userLock = guildLocks.find(entry => entry.id === message.author.id);
             
             if (userLock) {
-                const content = message.content.toLowerCase().trim();
-                const allowedWord = userLock.style === 'meow' ? 'meow' : 'nya';
+                // Allow commands to pass through
+                if (message.content.startsWith('!')) return;
                 
-                // Allow if message is exactly the allowed word or starts with ! (command)
-                if (!content.startsWith('!') && content !== allowedWord) {
-                    try {
-                        await message.delete();
-                        const warning = await message.channel.send(`${message.author}, you can only say "${allowedWord}"!`);
-                        setTimeout(() => warning.delete().catch(() => {}), 3000);
-                    } catch (err) {
-                        console.error('Error enforcing meowlock:', err);
+                try {
+                    // Transform message into cat-speak
+                    let catMessage = message.content;
+                    
+                    if (userLock.style === 'nya') {
+                        // Nya style: subtle uwu transformations
+                        catMessage = catMessage
+                            .replace(/r|l/gi, match => match === match.toUpperCase() ? 'W' : 'w')
+                            .replace(/(?:th)/gi, 'd')
+                            .replace(/(?:ove)/gi, 'uv')
+                            .replace(/[.!?]+/g, match => match + ' nya~');
+                    } else {
+                        // Meow style: subtle uwu transformations
+                        catMessage = catMessage
+                            .replace(/r|l/gi, match => match === match.toUpperCase() ? 'W' : 'w')
+                            .replace(/(?:th)/gi, 'd')
+                            .replace(/(?:ove)/gi, 'uv')
+                            .replace(/[.!?]+/g, match => match + ' meow~');
                     }
-                    return;
+                    
+                    // Delete the original message
+                    await message.delete();
+                    
+                    // Create webhook to send message as the user
+                    const webhooks = await message.channel.fetchWebhooks();
+                    let webhook = webhooks.find(wh => wh.name === 'Meowlock');
+                    
+                    if (!webhook) {
+                        webhook = await message.channel.createWebhook({
+                            name: 'Meowlock',
+                            reason: 'Meowlock enforcement'
+                        });
+                    }
+                    
+                    // Send the transformed message as the user
+                    await webhook.send({
+                        content: catMessage,
+                        username: message.author.username,
+                        avatarURL: message.author.displayAvatarURL()
+                    });
+                } catch (err) {
+                    console.error('Error enforcing meowlock:', err);
                 }
+                return;
             }
         } catch (err) {
             console.error('Error reading meowlock data:', err);
