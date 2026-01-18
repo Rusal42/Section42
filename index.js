@@ -170,23 +170,62 @@ client.on('messageCreate', async message => {
                 if (message.content.startsWith('!')) return;
                 
                 try {
-                    // Transform message into cat-speak
+                    // Transform message into uwu/cat-speak
                     let catMessage = message.content;
-                    
-                    if (userLock.style === 'nya') {
-                        // Nya style: subtle uwu transformations
-                        catMessage = catMessage
-                            .replace(/r|l/gi, match => match === match.toUpperCase() ? 'W' : 'w')
-                            .replace(/(?:th)/gi, 'd')
-                            .replace(/(?:ove)/gi, 'uv')
-                            .replace(/[.!?]+/g, match => match + ' nya~');
-                    } else {
-                        // Meow style: subtle uwu transformations
-                        catMessage = catMessage
-                            .replace(/r|l/gi, match => match === match.toUpperCase() ? 'W' : 'w')
-                            .replace(/(?:th)/gi, 'd')
-                            .replace(/(?:ove)/gi, 'uv')
-                            .replace(/[.!?]+/g, match => match + ' meow~');
+                    const tagWord = userLock.style === 'nya' ? 'nya' : 'meow';
+
+                    // Common uwu vocabulary swaps (keep it cringe but still understandable)
+                    const vocab = [
+                        [/\bplease\b/gi, 'pwease'],
+                        [/\bpls\b/gi, 'pls'],
+                        [/\bsorry\b/gi, 'sowwy'],
+                        [/\bsmall\b/gi, 'smol'],
+                        [/\blittle\b/gi, 'wittle'],
+                        [/\bcute\b/gi, 'cutie'],
+                        [/\bfriend\b/gi, 'fwiendo'],
+                        [/\bthanks\b/gi, 'thx'],
+                        [/\bthank you\b/gi, 'thx'],
+                        [/\bdog\b/gi, 'doggo'],
+                        [/\bdogs\b/gi, 'doggos'],
+                        [/\bpuppy\b/gi, 'pupper'],
+                        [/\bpup\b/gi, 'pupper'],
+                        [/\bfood\b/gi, 'snacc'],
+                        [/\beat\b/gi, 'nom'],
+                        [/\beating\b/gi, 'nomming'],
+                        [/\bvery\b/gi, 'heckin'],
+                        [/\breally\b/gi, 'heckin'],
+                        [/\bokay\b/gi, 'oki doki'],
+                        [/\bok\b/gi, 'oki'],
+                    ];
+
+                    for (const [re, rep] of vocab) {
+                        catMessage = catMessage.replace(re, rep);
+                    }
+
+                    // Classic uwu phonetics
+                    catMessage = catMessage
+                        .replace(/r|l/g, 'w')
+                        .replace(/R|L/g, 'W')
+                        .replace(/\bth/gi, (m) => (m[0] === 'T' ? 'D' : 'd'))
+                        .replace(/ove/gi, (m) => (m[0] === 'O' ? 'Uv' : 'uv'));
+
+                    // Add hyphens between letters for a few words (so it's annoying but readable)
+                    // Hyphenate up to 2 words per message, only simple a-z words.
+                    let hyphenatedCount = 0;
+                    catMessage = catMessage.replace(/\b[A-Za-z]{3,8}\b/g, (word) => {
+                        if (hyphenatedCount >= 2) return word;
+                        // Pseudo-random-ish toggle based on word length so it isn't every single word
+                        const shouldHyphenate = (word.length % 2 === 0);
+                        if (!shouldHyphenate) return word;
+                        hyphenatedCount += 1;
+                        return word.split('').join('-');
+                    });
+
+                    // Ensure sentences end with UwU, plus a tag word
+                    // Convert .,!,? to include " UwU" and a cat tag.
+                    catMessage = catMessage.replace(/[.!?]+/g, (punc) => `${punc} ${tagWord}~ UwU`);
+                    if (!/[.!?]\s*$/.test(catMessage)) {
+                        catMessage = `${catMessage} ${tagWord}~ UwU`;
                     }
                     
                     // Delete the original message
