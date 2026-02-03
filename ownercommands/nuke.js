@@ -1,19 +1,20 @@
 const { EmbedBuilder, SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+const { OWNER_IDS } = require('../config/constants');
 
 module.exports = {
     name: 'nuke',
     description: 'Completely wipes this channel and recreates it',
+    ownerOnly: true,
     data: new SlashCommandBuilder()
         .setName('nuke')
-        .setDescription('Completely wipes this channel and recreates it')
-        .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels),
+        .setDescription('Completely wipes this channel and recreates it'),
 
     async execute(message) {
-        if (!message.member.permissions.has(PermissionFlagsBits.ManageChannels)) {
+        if (!OWNER_IDS.includes(message.author.id)) {
             const errorEmbed = new EmbedBuilder()
                 .setColor('#ff0000')
                 .setTitle('Access Denied')
-                .setDescription('You need the **Manage Channels** permission to use this command.')
+                .setDescription('Only the bot owner can use this command.')
                 .setTimestamp();
             return message.channel.send({ embeds: [errorEmbed] });
         }
@@ -111,11 +112,11 @@ module.exports = {
     },
 
     async executeSlash(interaction) {
-        if (!interaction.member.permissions.has(PermissionFlagsBits.ManageChannels)) {
+        if (!OWNER_IDS.includes(interaction.user.id)) {
             const errorEmbed = new EmbedBuilder()
                 .setColor('#ff0000')
                 .setTitle('Access Denied')
-                .setDescription('You need the **Manage Channels** permission to use this command.')
+                .setDescription('Only the bot owner can use this command.')
                 .setTimestamp();
             return interaction.reply({ embeds: [errorEmbed], ephemeral: true });
         }
