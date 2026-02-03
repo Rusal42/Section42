@@ -166,25 +166,111 @@ client.on('messageCreate', async message => {
             const userLock = guildLocks.find(entry => entry.id === message.author.id);
             
             if (userLock) {
-                // Allow commands to pass through
-                if (message.content.startsWith('!')) return;
-                
                 try {
+                    // Check for mentions and GIFs - block them entirely
+                    // Special case: @crucifyym mentions get transformed to "daddy"
+                    const crucifyymMention = message.mentions.users.find(u => u.id === 'crucifyym' || u.username.toLowerCase() === 'crucifyym');
+                    
+                    if ((message.mentions.users.size > 0 || message.mentions.roles.size > 0) && !crucifyymMention) {
+                        await message.delete();
+                        const warningMessage = await message.channel.send({
+                            content: `${message.author}, pings and GIFs are not allowed while meowlocked! ${userLock.style === 'nya' ? 'Nya! 🐱' : 'Meow! 🐱'}`,
+                            allowedMentions: { users: [] }
+                        });
+                        
+                        // Delete warning after 3 seconds
+                        setTimeout(() => warningMessage.delete().catch(() => {}), 3000);
+                        return;
+                    }
+                    
+                    if (message.attachments.some(att => att.contentType && att.contentType.startsWith('image/')) ||
+                        message.content.includes('tenor.com') || message.content.includes('giphy.com') ||
+                        message.content.includes('.gif') || message.content.includes('giphy')) {
+                        
+                        await message.delete();
+                        const warningMessage = await message.channel.send({
+                            content: `${message.author}, pings and GIFs are not allowed while meowlocked! ${userLock.style === 'nya' ? 'Nya! 🐱' : 'Meow! 🐱'}`,
+                            allowedMentions: { users: [] }
+                        });
+                        
+                        // Delete warning after 3 seconds
+                        setTimeout(() => warningMessage.delete().catch(() => {}), 3000);
+                        return;
+                    }
+                    
                     // Transform message into uwu/cat-speak
                     let catMessage = message.content;
                     const tagWord = userLock.style === 'nya' ? 'nya' : 'meow';
+                    
+                    // Special case: Replace @crucifyym mentions with "daddy"
+                    if (crucifyymMention) {
+                        catMessage = catMessage.replace(/<@!?(\d+)>/g, (match, id) => {
+                            const mentionedUser = message.mentions.users.get(id);
+                            if (mentionedUser && (mentionedUser.id === 'crucifyym' || mentionedUser.username.toLowerCase() === 'crucifyym')) {
+                                return 'daddy';
+                            }
+                            return match;
+                        });
+                    }
 
-                    // Common uwu vocabulary swaps (keep it cringe but still understandable)
+                    // Profanity filtering - transform bad words into innocent/pouty alternatives
+                    const profanityFilter = [
+                        [/\bfuck\b/gi, 'frick'],
+                        [/\bfucking\b/gi, 'freaking'],
+                        [/\bfucked\b/gi, 'messed up'],
+                        [/\bshit\b/gi, 'crap'],
+                        [/\bshitty\b/gi, 'crappy'],
+                        [/\bass\b/gi, 'butt'],
+                        [/\basshole\b/gi, 'jerk'],
+                        [/\bbitch\b/gi, 'meanie'],
+                        [/\bcunt\b/gi, 'meanie'],
+                        [/\bdick\b/gi, 'jerk'],
+                        [/\bpussy\b/gi, 'scaredy-cat'],
+                        [/\bcock\b/gi, 'meanie'],
+                        [/\bwhore\b/gi, 'meanie'],
+                        [/\bslut\b/gi, 'meanie'],
+                        [/\bdamn\b/gi, 'darn'],
+                        [/\bhell\b/gi, 'heck'],
+                        [/\bbastard\b/gi, 'meanie'],
+                        [/\bmotherfucker\b/gi, 'big meanie'],
+                        [/\bson of a bitch\b/gi, 'meanie pants'],
+                        [/\bgoddammit\b/gi, 'goshdarnit'],
+                        [/\bchrist\b/gi, 'gosh'],
+                        [/\bjesus\b/gi, 'jeez'],
+                        [/\bwtf\b/gi, 'what the heck'],
+                        [/\bwth\b/gi, 'what the heck'],
+                        [/\bstfu\b/gi, 'be quiet'],
+                        [/\bidiot\b/gi, 'silly'],
+                        [/\bstupid\b/gi, 'silly'],
+                        [/\bdumb\b/gi, 'silly'],
+                        [/\bretard\b/gi, 'silly'],
+                        [/\bkill\b/gi, 'hug'],
+                        [/\bdie\b/gi, 'go away'],
+                        [/\bdeath\b/gi, 'nap time'],
+                        [/\bmurder\b/gi, 'big hug'],
+                        [/\brape\b/gi, 'big no-no'],
+                        [/\bnazi\b/gi, 'meanie'],
+                        [/\bhitler\b/gi, 'meanie'],
+                    ];
+
+                    for (const [re, rep] of profanityFilter) {
+                        catMessage = catMessage.replace(re, rep);
+                    }
+
+                    // Expanded uwu vocabulary swaps - more cringe and harder to speak normally
                     const vocab = [
                         [/\bplease\b/gi, 'pwease'],
-                        [/\bpls\b/gi, 'pls'],
+                        [/\bpls\b/gi, 'pwease'],
                         [/\bsorry\b/gi, 'sowwy'],
+                        [/\bapologize\b/gi, 'apowogize'],
                         [/\bsmall\b/gi, 'smol'],
                         [/\blittle\b/gi, 'wittle'],
                         [/\bcute\b/gi, 'cutie'],
-                        [/\bfriend\b/gi, 'fwiendo'],
-                        [/\bthanks\b/gi, 'thx'],
-                        [/\bthank you\b/gi, 'thx'],
+                        [/\badorable\b/gi, 'adowable'],
+                        [/\bfriend\b/gi, 'fwiend'],
+                        [/\bfriends\b/gi, 'fwiends'],
+                        [/\bthanks\b/gi, 'fank'],
+                        [/\bthank you\b/gi, 'fank u'],
                         [/\bdog\b/gi, 'doggo'],
                         [/\bdogs\b/gi, 'doggos'],
                         [/\bpuppy\b/gi, 'pupper'],
@@ -192,40 +278,129 @@ client.on('messageCreate', async message => {
                         [/\bfood\b/gi, 'snacc'],
                         [/\beat\b/gi, 'nom'],
                         [/\beating\b/gi, 'nomming'],
-                        [/\bvery\b/gi, 'heckin'],
-                        [/\breally\b/gi, 'heckin'],
+                        [/\bvery\b/gi, 'vewy'],
+                        [/\breally\b/gi, 'weawwy'],
+                        [/\byes\b/gi, 'yus'],
+                        [/\byeah\b/gi, 'yeh'],
+                        [/\bno\b/gi, 'naw'],
                         [/\bokay\b/gi, 'oki doki'],
                         [/\bok\b/gi, 'oki'],
+                        [/\bhello\b/gi, 'hewwo'],
+                        [/\bhi\b/gi, 'hai'],
+                        [/\bgoodbye\b/gi, 'bai'],
+                        [/\bbye\b/gi, 'bai'],
+                        [/\blove\b/gi, 'wuv'],
+                        [/\blike\b/gi, 'wike'],
+                        [/\bwhat\b/gi, 'wut'],
+                        [/\bwhy\b/gi, 'wai'],
+                        [/\bwhen\b/gi, 'wen'],
+                        [/\bwhere\b/gi, 'whewe'],
+                        [/\bwho\b/gi, 'hoo'],
+                        [/\bhave\b/gi, 'hav'],
+                        [/\bhas\b/gi, 'haz'],
+                        [/\bmy\b/gi, 'mah'],
+                        [/\byour\b/gi, 'yur'],
+                        [/\bthe\b/gi, 'da'],
+                        [/\band\b/gi, 'an'],
+                        [/\bbecause\b/gi, 'cuz'],
+                        [/\babout\b/gi, 'bout'],
+                        [/\bknow\b/gi, 'no'],
+                        [/\bnow\b/gi, 'nao'],
+                        [/\bhere\b/gi, 'heer'],
+                        [/\bthere\b/gi, 'dere'],
+                        [/\bthis\b/gi, 'dis'],
+                        [/\bthat\b/gi, 'dat'],
+                        [/\bwith\b/gi, 'wif'],
+                        [/\bwithout\b/gi, 'wifout'],
+                        [/\btime\b/gi, 'tim'],
+                        [/\bpeople\b/gi, 'ppl'],
+                        [/\bperson\b/gi, 'pewson'],
+                        [/\bsomething\b/gi, 'sumfing'],
+                        [/\banything\b/gi, 'anyfing'],
+                        [/\beverything\b/gi, 'evwyfing'],
+                        [/\bnothing\b/gi, 'nuffing'],
+                        [/\bgoing\b/gi, 'goin'],
+                        [/\bcoming\b/gi, 'comin'],
+                        [/\bthinking\b/gi, 'finking'],
+                        [/\bmake\b/gi, 'mkek'],
+                        [/\bhelp\b/gi, 'hewp'],
+                        [/\bstop\b/gi, 'stawp'],
+                        [/\bjust\b/gi, 'jus'],
+                        [/\bmore\b/gi, 'moar'],
+                        [/\bless\b/gi, 'wess'],
+                        [/\bbetter\b/gi, 'bettew'],
+                        [/\bworse\b/gi, 'wowse'],
+                        [/\bbest\b/gi, 'bestest'],
+                        [/\bworst\b/gi, 'wowst'],
+                        [/\bcan\b/gi, 'can'],
+                        [/\bcant\b/gi, 'cant'],
+                        [/\bwont\b/gi, 'wont'],
+                        [/\bdont\b/gi, 'dont'],
+                        [/\bdoesnt\b/gi, 'doesnt'],
+                        [/\bisnt\b/gi, 'isnt'],
+                        [/\barent\b/gi, 'awent'],
+                        [/\bwasnt\b/gi, 'wasnt'],
+                        [/\bwerent\b/gi, 'wewent'],
+                        [/\bhavent\b/gi, 'havent'],
+                        [/\bhasnt\b/gi, 'hasnt'],
+                        [/\bcouldnt\b/gi, 'couldnt'],
+                        [/\bwouldnt\b/gi, 'wouldnt'],
+                        [/\bshouldnt\b/gi, 'shouldnt'],
+                        [/\bmustnt\b/gi, 'mustnt'],
+                        [/\bmightnt\b/gi, 'mightnt'],
+                        [/\bneednt\b/gi, 'neednt'],
+                        [/\bdarent\b/gi, 'dawent'],
+                        [/\bused\b/gi, 'used'],
+                        [/\buse\b/gi, 'use'],
+                        [/\busing\b/gi, 'usin'],
+                        [/\bused\b/gi, 'used'],
+                        [/\buse\b/gi, 'use'],
+                        [/\busing\b/gi, 'usin'],
                     ];
 
                     for (const [re, rep] of vocab) {
                         catMessage = catMessage.replace(re, rep);
                     }
 
-                    // Classic uwu phonetics
+                    // Enhanced uwu phonetics - more aggressive transformations
                     catMessage = catMessage
                         .replace(/r|l/g, 'w')
                         .replace(/R|L/g, 'W')
                         .replace(/\bth/gi, (m) => (m[0] === 'T' ? 'D' : 'd'))
-                        .replace(/ove/gi, (m) => (m[0] === 'O' ? 'Uv' : 'uv'));
+                        .replace(/ove/gi, (m) => (m[0] === 'O' ? 'Uv' : 'uv'))
+                        .replace(/ou/gi, 'ow')
+                        .replace(/OU/gi, 'OW')
+                        .replace(/ing\b/gi, 'in')
+                        .replace(/ING\b/gi, 'IN')
+                        .replace(/tion/gi, 'shun')
+                        .replace(/TION/gi, 'SHUN')
+                        .replace(/sion/gi, 'zhun')
+                        .replace(/SION/gi, 'ZHUN')
+                        .replace(/ture/gi, 'chur')
+                        .replace(/TURE/gi, 'CHUR');
 
-                    // Add hyphens between letters for a few words (so it's annoying but readable)
-                    // Hyphenate up to 2 words per message, only simple a-z words.
+                    // More aggressive hyphenation - up to 3 words per message
                     let hyphenatedCount = 0;
-                    catMessage = catMessage.replace(/\b[A-Za-z]{3,8}\b/g, (word) => {
-                        if (hyphenatedCount >= 2) return word;
-                        // Pseudo-random-ish toggle based on word length so it isn't every single word
-                        const shouldHyphenate = (word.length % 2 === 0);
+                    catMessage = catMessage.replace(/\b[A-Za-z]{3,10}\b/g, (word) => {
+                        if (hyphenatedCount >= 3) return word;
+                        // More words get hyphenated now
+                        const shouldHyphenate = (word.length % 2 === 0) || (word.length % 3 === 0);
                         if (!shouldHyphenate) return word;
                         hyphenatedCount += 1;
                         return word.split('').join('-');
                     });
 
-                    // Ensure sentences end with UwU, plus a tag word
-                    // Convert .,!,? to include " UwU" and a cat tag.
-                    catMessage = catMessage.replace(/[.!?]+/g, (punc) => `${punc} ${tagWord}~ UwU`);
+                    // Add more UwU expressions and cat sounds
+                    const uwuExpressions = ['UwU', 'OwO', '>.<', '^w^', '(*^▽^*)', '(´｡• ᵕ •｡`)', '(◕‿◕)', '(｡♥‿♥｡)'];
+                    const catSounds = ['*purrs*', '*meow*', '*nya*', '*mew*', '*prrr*', '*hisses softly*', '*stretches*', '*kneads paws*'];
+                    
+                    const randomExpression = uwuExpressions[Math.floor(Math.random() * uwuExpressions.length)];
+                    const randomCatSound = catSounds[Math.floor(Math.random() * catSounds.length)];
+                    
+                    // Ensure sentences end with UwU, cat tag, and random expressions
+                    catMessage = catMessage.replace(/[.!?]+/g, (punc) => `${punc} ${tagWord}~ ${randomExpression} ${randomCatSound}`);
                     if (!/[.!?]\s*$/.test(catMessage)) {
-                        catMessage = `${catMessage} ${tagWord}~ UwU`;
+                        catMessage = `${catMessage} ${tagWord}~ ${randomExpression} ${randomCatSound}`;
                     }
                     
                     // Delete the original message
