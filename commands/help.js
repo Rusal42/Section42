@@ -1,146 +1,151 @@
 const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
+const { OWNER_IDS } = require('../config/constants');
 
 module.exports = {
     name: 'help',
-    description: 'Shows all available commands',
+    description: 'Shows available commands based on permissions',
     data: new SlashCommandBuilder()
         .setName('help')
-        .setDescription('Shows all available commands'),
+        .setDescription('Shows available commands based on permissions'),
     async execute(message, args) {
-        const embed = new EmbedBuilder()
-            .setTitle('Section42 Bot Commands')
-            .setDescription('Here are all the available commands for the Section42 bot!')
-            .setColor('#ff6b35')
-            .addFields(
-                {
-                    name: '**Embed Commands**',
-                    value: '`!embed <title> | <description> | [color] | [footer]` - Create custom embed\n' +
-                           '`!announce <message>` - Create announcement embed (Admin only)\n' +
-                           '`!info <title> | <description>` - Create info embed\n' +
-                           '`!say <message>` - Make the bot say something\n' +
-                           '`!poll <question> | <option1> | <option2> | [option3] | [option4]` - Create a poll',
+        const isOwner = OWNER_IDS.includes(message.author.id);
+        const isMod = message.member.permissions.has('ManageMessages') || 
+                     message.member.permissions.has('KickMembers') || 
+                     message.member.permissions.has('BanMembers');
+        
+        let embed;
+        
+        if (isOwner) {
+            // Owners get directed to use !crucify
+            embed = new EmbedBuilder()
+                .setTitle('🔑 Owner Access')
+                .setDescription('As the bot owner, please use `!crucify` to view your owner commands.')
+                .setColor('#ff6b35')
+                .addFields({
+                    name: '**Quick Access**',
+                    value: '`!crucify` - View all owner commands\n`!modhelp` - View moderator commands\n`!help` - View fun commands (shown below)',
                     inline: false
-                },
-                {
-                    name: '**General Commands**',
-                    value: '`!ping` - Check bot latency\n' +
-                           '`!colors` - Get color roles\n' +
-                           '`!giveaway <duration> <winners> | <prize>` - Start a giveaway\n' +
-                           '`!help` - Show this help message',
+                });
+        } else if (isMod) {
+            // Moderators get choice between mod and fun
+            embed = new EmbedBuilder()
+                .setTitle('🛡️ Moderator Access')
+                .setDescription('You have access to both moderation and fun commands!')
+                .setColor('#ff6b35')
+                .addFields({
+                    name: '**Choose Your Help**',
+                    value: '`!modhelp` - View all moderation commands\n`!help` - View fun commands (shown below)',
                     inline: false
-                },
-                {
-                    name: '**Moderation Commands**',
-                    value: '`!ban <user> [reason]` - Ban a user\n' +
-                           '`!kick <user> [reason]` - Kick a user\n' +
-                           '`!timeout <user> <duration> [reason]` - Timeout a user\n' +
-                           '`!purge <amount>` - Delete multiple messages (1-100)\n' +
-                           '`!userpurge <user> <amount>` - Delete messages from a specific user\n' +
-                           '`!snipe` - Show the last deleted message\n' +
-                           '`!snipelist [amount]` - Show multiple deleted messages (default: 5)\n' +
-                           '`!warn <user> <reason>` - Warn a user\n' +
-                           '`!warnings <user>` - Check user warnings\n' +
-                           '`!clearwarnings <user>` - Clear user warnings\n' +
-                           '`!whois <user>` - Get user information\n' +
-                           '`!av <user>` - Get user avatar\n' +
-                           '`!userid <user>` - Get user ID\n' +
-                           '`!modhelp` - Moderation help',
-                    inline: false
-                },
-                {
-                    name: '**Server Setup Commands**',
-                    value: '`!setup` - Set up Section42 community server (Owner only)\n' +
-                           '`!servupdate` - Update specific parts of server setup (Owner only)\n' +
-                           '`!servclear` - Clear server channels (Owner only)\n' +
-                           '`!sendserverinfo` - Send comprehensive server info with graphic design services\n' +
-                           '`!sendcolors` - Send color role selection\n' +
-                           '`!sendrules` - Send server rules',
-                    inline: false
-                },
-                {
-                    name: '**Meowlock Commands (Owner Only)**',
-                    value: '`!meowlock <user> <meow|nya>` - Lock user to only say meow/nya\n' +
-                           '`!meowunlock <user>` - Remove meowlock from user\n' +
-                           '`!meowlocked` - List all meowlocked users\n' +
-                           '`!meowlockclear` - Clear all meowlocks in server',
-                    inline: false
-                }
-            )
-            .setTimestamp()
-            .setFooter({ 
-                text: 'Section42 Bot by crucifyym', 
-                iconURL: message.guild.iconURL() 
-            })
-            .setThumbnail(message.client.user.displayAvatarURL());
+                });
+        } else {
+            // Regular users only see fun commands
+            embed = new EmbedBuilder()
+                .setTitle('🎮 Section42 Bot - Fun Commands')
+                .setDescription('Welcome! Here are the fun commands you can use:')
+                .setColor('#ff6b35');
+        }
+        
+        // Add fun commands for everyone
+        embed.addFields(
+            {
+                name: '**Fun Commands**',
+                value: '`!pick` - Ping a random person in the server',
+                inline: false
+            },
+            {
+                name: '**Embed Commands**',
+                value: '`!embed <title> | <description> | [color] | [footer]` - Create custom embed\n' +
+                       '`!info <title> | <description>` - Create info embed\n' +
+                       '`!say <message>` - Make the bot say something\n' +
+                       '`!poll <question> | <option1> | <option2> | [option3] | [option4]` - Create a poll',
+                inline: false
+            },
+            {
+                name: '**General Commands**',
+                value: '`!ping` - Check bot latency\n' +
+                       '`!colors` - Get color roles\n' +
+                       '`!giveaway <duration> <winners> | <prize>` - Start a giveaway\n' +
+                       '`!help` - Show this help message',
+                inline: false
+            }
+        )
+        .setTimestamp()
+        .setFooter({ 
+            text: 'Section42 Bot by crucifyym', 
+            iconURL: message.guild.iconURL() 
+        })
+        .setThumbnail(message.client.user.displayAvatarURL());
 
         await message.channel.send({ embeds: [embed] });
     },
     async executeSlash(interaction) {
-        const embed = new EmbedBuilder()
-            .setTitle('Section42 Bot Commands')
-            .setDescription('Here are all the available commands for the Section42 bot!')
-            .setColor('#ff6b35')
-            .addFields(
-                {
-                    name: '**Embed Commands**',
-                    value: '`/embed` or `!embed <title> | <description> | [color] | [footer]` - Create custom embed\n' +
-                           '`/announce` or `!announce <message>` - Create announcement embed (Admin only)\n' +
-                           '`/info` or `!info <title> | <description>` - Create info embed\n' +
-                           '`/say` or `!say <message>` - Make the bot say something\n' +
-                           '`/poll` or `!poll <question> | <option1> | <option2> | [option3] | [option4]` - Create a poll',
+        const isOwner = OWNER_IDS.includes(interaction.user.id);
+        const isMod = interaction.member.permissions.has('ManageMessages') || 
+                     interaction.member.permissions.has('KickMembers') || 
+                     interaction.member.permissions.has('BanMembers');
+        
+        let embed;
+        
+        if (isOwner) {
+            // Owners get directed to use !crucify
+            embed = new EmbedBuilder()
+                .setTitle('🔑 Owner Access')
+                .setDescription('As the bot owner, please use `/crucify` to view your owner commands.')
+                .setColor('#ff6b35')
+                .addFields({
+                    name: '**Quick Access**',
+                    value: '`/crucify` - View all owner commands\n`/modhelp` - View moderator commands\n`/help` - View fun commands (shown below)',
                     inline: false
-                },
-                {
-                    name: '**General Commands**',
-                    value: '`/ping` or `!ping` - Check bot latency\n' +
-                           '`/colors` or `!colors` - Get color roles\n' +
-                           '`/giveaway` or `!giveaway <duration> <winners> | <prize>` - Start a giveaway\n' +
-                           '`/help` or `!help` - Show this help message',
+                });
+        } else if (isMod) {
+            // Moderators get choice between mod and fun
+            embed = new EmbedBuilder()
+                .setTitle('🛡️ Moderator Access')
+                .setDescription('You have access to both moderation and fun commands!')
+                .setColor('#ff6b35')
+                .addFields({
+                    name: '**Choose Your Help**',
+                    value: '`/modhelp` - View all moderation commands\n`/help` - View fun commands (shown below)',
                     inline: false
-                },
-                {
-                    name: '**Moderation Commands**',
-                    value: '`/purge` or `!purge <amount>` - Delete multiple messages (1-100)\n' +
-                           '`/userpurge` or `!userpurge <user> <amount>` - Delete messages from a specific user\n' +
-                           '`/snipe` or `!snipe` - Show the last deleted message\n' +
-                           '`/snipelist` or `!snipelist [amount]` - Show multiple deleted messages (default: 5)\n' +
-                           '`!ban <user> [reason]` - Ban a user\n' +
-                           '`!kick <user> [reason]` - Kick a user\n' +
-                           '`!timeout <user> <duration> [reason]` - Timeout a user\n' +
-                           '`!warn <user> <reason>` - Warn a user\n' +
-                           '`!warnings <user>` - Check user warnings\n' +
-                           '`!clearwarnings <user>` - Clear user warnings\n' +
-                           '`!whois <user>` - Get user information\n' +
-                           '`!av <user>` - Get user avatar\n' +
-                           '`!userid <user>` - Get user ID\n' +
-                           '`!modhelp` - Moderation help',
-                    inline: false
-                },
-                {
-                    name: '**Server Setup Commands**',
-                    value: '`!setup` - Set up Section42 community server (Owner only)\n' +
-                           '`!servupdate` - Update specific parts of server setup (Owner only)\n' +
-                           '`!servclear` - Clear server channels (Owner only)\n' +
-                           '`!sendserverinfo` - Send comprehensive server info with graphic design services\n' +
-                           '`!sendcolors` - Send color role selection\n' +
-                           '`!sendrules` - Send server rules',
-                    inline: false
-                },
-                {
-                    name: '**Meowlock Commands (Owner Only)**',
-                    value: '`!meowlock <user> <meow|nya>` - Lock user to only say meow/nya\n' +
-                           '`!meowunlock <user>` - Remove meowlock from user\n' +
-                           '`!meowlocked` - List all meowlocked users\n' +
-                           '`!meowlockclear` - Clear all meowlocks in server',
-                    inline: false
-                }
-            )
-            .setTimestamp()
-            .setFooter({ 
-                text: 'Section42 Bot by crucifyym', 
-                iconURL: interaction.guild.iconURL() 
-            })
-            .setThumbnail(interaction.client.user.displayAvatarURL());
+                });
+        } else {
+            // Regular users only see fun commands
+            embed = new EmbedBuilder()
+                .setTitle('🎮 Section42 Bot - Fun Commands')
+                .setDescription('Welcome! Here are the fun commands you can use:')
+                .setColor('#ff6b35');
+        }
+        
+        // Add fun commands for everyone
+        embed.addFields(
+            {
+                name: '**Fun Commands**',
+                value: '`/pick` - Ping a random person in the server',
+                inline: false
+            },
+            {
+                name: '**Embed Commands**',
+                value: '`/embed <title> | <description> | [color] | [footer]` - Create custom embed\n' +
+                       '`/info <title> | <description>` - Create info embed\n' +
+                       '`/say <message>` - Make the bot say something\n' +
+                       '`/poll <question> | <option1> | <option2> | [option3] | [option4]` - Create a poll',
+                inline: false
+            },
+            {
+                name: '**General Commands**',
+                value: '`/ping` - Check bot latency\n' +
+                       '`/colors` - Get color roles\n' +
+                       '`/giveaway <duration> <winners> | <prize>` - Start a giveaway\n' +
+                       '`/help` - Show this help message',
+                inline: false
+            }
+        )
+        .setTimestamp()
+        .setFooter({ 
+            text: 'Section42 Bot by crucifyym', 
+            iconURL: interaction.guild.iconURL() 
+        })
+        .setThumbnail(interaction.client.user.displayAvatarURL());
 
         await interaction.reply({ embeds: [embed], ephemeral: true });
     }

@@ -114,7 +114,7 @@ const commands = new Map();
 const slashCommands = new Collection();
 const slashCommandsData = [];
 
-const commandDirectories = ['commands', 'ServerCreation', 'ownercommands', 'moderationcommands'];
+const commandDirectories = ['commands', 'commands/fun-commands', 'ServerCreation', 'ownercommands', 'moderationcommands'];
 
 commandDirectories.forEach(dirName => {
     const dirPath = path.join(__dirname, dirName);
