@@ -26,7 +26,7 @@ module.exports = {
                     value: '`!crucify` - View all owner commands\n`!modhelp` - View moderator commands\n`!help` - View fun commands (shown below)',
                     inline: false
                 })
-                .addField('🔧 Meowlock Commands (Owner Only)', '`!arrise` - Sequentially ping random users\n`!fall` - Stop the arrise sequence\n`!dm` - Send Discord-compliant DMs\n`!crucify` - Show owner commands\n`!shutup` - Toggle bot monitoring')
+                .addField('🔧 Meowlock Commands (Owner Only)', '`!arrise` - Sequentially ping random users\n`!fall` - Stop the arrise sequence\n`!dm` - Send Discord-compliant DMs\n`!crucify` - Show owner commands\n`!shutup` - Toggle bot monitoring\n`!wake` - Enable bot monitoring')
                 .addFields({
                     name: '**Fun Commands**',
                     value: '`!pick` - Ping a random person in the server',
