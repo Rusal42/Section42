@@ -62,7 +62,7 @@ module.exports = {
             // Convert to array for easier manipulation
             const memberArray = Array.from(validMembers.values());
             
-            await message.reply(`🌅 Arrise sequence started! Pinging ${memberArray.length} members randomly. Use !fall to stop.`);
+            await message.reply(` Arrise sequence started! Pinging ${memberArray.length} members randomly. Use !fall to stop.`);
             
             // Start the interval
             state.interval = setInterval(async () => {
@@ -100,7 +100,7 @@ module.exports = {
                     // Send ping
                     const channel = message.client.channels.cache.get(state.channelId);
                     if (channel) {
-                        const pingMessage = await channel.send(`🌅 ${randomMember.user.toString()} has arisen!`);
+                        const pingMessage = await channel.send(` ${randomMember.user.toString()} has arisen!`);
                         
                         // Add to pinged set
                         state.pingedUsers.add(randomMember.id);
@@ -189,7 +189,7 @@ module.exports = {
             // Convert to array for easier manipulation
             const memberArray = Array.from(validMembers.values());
             
-            await interaction.reply(`🌅 Arrise sequence started! Pinging ${memberArray.length} members randomly. Use /fall to stop.`);
+            await interaction.reply(` Arrise sequence started! Pinging ${memberArray.length} members randomly. Use /fall to stop.`);
             
             // Start the interval
             state.interval = setInterval(async () => {
@@ -204,7 +204,7 @@ module.exports = {
                         
                         const channel = interaction.client.channels.cache.get(state.channelId);
                         if (channel) {
-                            await channel.send('✅ Arrise sequence complete! Everyone has been pinged.');
+                            await channel.send(' Arrise sequence complete! Everyone has been pinged.');
                         }
                         return;
                     }
@@ -227,7 +227,7 @@ module.exports = {
                     // Send ping
                     const channel = interaction.client.channels.cache.get(state.channelId);
                     if (channel) {
-                        const pingMessage = await channel.send(`🌅 ${randomMember.user.toString()} has arisen!`);
+                        const pingMessage = await channel.send(` ${randomMember.user.toString()} has arisen!`);
                         
                         // Add to pinged set
                         state.pingedUsers.add(randomMember.id);

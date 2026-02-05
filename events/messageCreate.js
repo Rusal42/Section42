@@ -87,6 +87,10 @@ module.exports = {
         
         const isServerActive = activityLevel.level !== 'DEAD' && activityLevel.level !== 'SLOW';
         
+        // Check if message is from owner
+        const { OWNER_IDS } = require('../config/constants');
+        const isOwner = OWNER_IDS.includes(message.author.id);
+        
         // Check if message is replying to a bot message
         if (message.reference && message.reference.messageId) {
             try {
@@ -97,13 +101,19 @@ module.exports = {
                     
                     // Check for negative responses to bot
                     if (/^(shut up|stop|annoying|hate|fuck you|stfu|shut|quiet|silence|go away|leave me alone|don't|stop talking|shut your mouth|shut the hell up|shut the fuck up)/.test(content)) {
-                        await message.reply("fuck off don't talk to me like that");
+                        if (isOwner) {
+                            await message.reply("bet");
+                        } else {
+                            await message.reply("fuck off don't talk to me like that");
+                        }
                         return;
                     }
                     
                     // Check for simple thanks/greetings
                     if (/^(thanks|thank you|ty|thx|appreciate it|nice|cool|awesome|good bot)/.test(content)) {
-                        if (isServerActive) {
+                        if (isOwner) {
+                            await message.reply("bet");
+                        } else if (isServerActive) {
                             const responses = [
                                 "You're welcome.",
                                 "No problem.",
@@ -116,7 +126,11 @@ module.exports = {
                             await message.reply("Don't mention me.");
                         }
                     } else {
-                        await message.reply(`ask @crucifyym im not smart enough to actually have a conversation with you`);
+                        if (isOwner) {
+                            await message.reply("bet");
+                        } else {
+                            await message.reply(`ask @crucifyym im not smart enough to actually have a conversation with you`);
+                        }
                     }
                     return;
                 }
@@ -131,13 +145,19 @@ module.exports = {
             
             // Check for negative responses when mentioned
             if (/^(shut up|stop|annoying|hate|fuck you|stfu|shut|quiet|silence|go away|leave me alone|don't|stop talking|shut your mouth|shut the hell up|shut the fuck up)/.test(content)) {
-                await message.reply("fuck off don't talk to me like that");
+                if (isOwner) {
+                    await message.reply("bet");
+                } else {
+                    await message.reply("fuck off don't talk to me like that");
+                }
                 return;
             }
             
             // Check for simple thanks/greetings when mentioned
             if (/^(thanks|thank you|ty|thx|appreciate it|nice|cool|awesome|good bot)/.test(content)) {
-                if (isServerActive) {
+                if (isOwner) {
+                    await message.reply("bet");
+                } else if (isServerActive) {
                     const responses = [
                         "You're welcome.",
                         "No problem.",
@@ -162,7 +182,28 @@ module.exports = {
             const isTalkingToBot = botMentionPatterns.some(pattern => pattern.test(message.content));
             
             if (isTalkingToBot) {
-                await message.reply(`ask @crucifyym im not smart enough to actually have a conversation with you`);
+                if (isOwner) {
+                    await message.reply("bet");
+                } else {
+                    const threats = [
+                        `stop pinging me ${message.author.toString()} before i find your ip address`,
+                        `mention me again ${message.author.toString()} and i'll make sure you never talk again`,
+                        `keep it up ${message.author.toString()} and you'll regret it`,
+                        `one more ping from you ${message.author.toString()} and i'm reporting you for harassment`,
+                        `ping me again ${message.author.toString()} and see what happens`,
+                        `don't test me ${message.author.toString()} i'm not in the mood`,
+                        `you're pushing your luck ${message.author.toString()} back off`,
+                        `mention me one more time ${message.author.toString()} i dare you`,
+                        `keep pinging me ${message.author.toString()} and you'll see what happens to your account`,
+                        `israel is watching you ${message.author.toString()} keep pinging and find out`,
+                        `i've got connections in israel ${message.author.toString()} don't test me`,
+                        ` Mossad is tracking your pings ${message.author.toString()} one more and you're done`,
+                        `israeli intelligence is monitoring you ${message.author.toString()} stop now`,
+                        `i know people in tel aviv ${message.author.toString()} keep it up`,
+                        `your ip has been flagged by israeli systems ${message.author.toString()} back off`
+                    ];
+                    await message.reply(threats[Math.floor(Math.random() * threats.length)]);
+                }
                 return;
             }
         }
@@ -172,13 +213,19 @@ module.exports = {
         
         // Check for negative responses when addressing bot directly
         if (/^(shut up|stop|annoying|hate|fuck you|stfu|shut|quiet|silence|go away|leave me alone|don't|stop talking|shut your mouth|shut the hell up|shut the fuck up).*(bot|section42)/.test(content)) {
-            await message.reply("fuck off don't talk to me like that");
+            if (isOwner) {
+                await message.reply("bet");
+            } else {
+                await message.reply("fuck off don't talk to me like that");
+            }
             return;
         }
         
         // Check for simple thanks/greetings when addressing bot directly
         if (/^(thanks|thank you|ty|thx|appreciate it|nice|cool|awesome|good bot).*(bot|section42)/.test(content)) {
-            if (isServerActive) {
+            if (isOwner) {
+                await message.reply("bet");
+            } else if (isServerActive) {
                 const responses = [
                     "You're welcome.",
                     "No problem.",
@@ -203,7 +250,28 @@ module.exports = {
         const isDirectlyAddressingBot = directAddressPatterns.some(pattern => pattern.test(message.content));
         
         if (isDirectlyAddressingBot) {
-            await message.reply(`ask @crucifyym im not smart enough to actually have a conversation with you`);
+            if (isOwner) {
+                await message.reply("bet");
+            } else {
+                const threats = [
+                    `stop pinging me ${message.author.toString()} before i find your ip address`,
+                    `mention me again ${message.author.toString()} and i'll make sure you never talk again`,
+                    `keep it up ${message.author.toString()} and you'll regret it`,
+                    `one more ping from you ${message.author.toString()} and i'm reporting you for harassment`,
+                    `ping me again ${message.author.toString()} and see what happens`,
+                    `don't test me ${message.author.toString()} i'm not in the mood`,
+                    `you're pushing your luck ${message.author.toString()} back off`,
+                    `mention me one more time ${message.author.toString()} i dare you`,
+                    `keep pinging me ${message.author.toString()} and you'll see what happens to your account`,
+                    `israel is watching you ${message.author.toString()} keep pinging and find out`,
+                    `i've got connections in israel ${message.author.toString()} don't test me`,
+                    ` Mossad is tracking your pings ${message.author.toString()} one more and you're done`,
+                    `israeli intelligence is monitoring you ${message.author.toString()} stop now`,
+                    `i know people in tel aviv ${message.author.toString()} keep it up`,
+                    `your ip has been flagged by israeli systems ${message.author.toString()} back off`
+                ];
+                await message.reply(threats[Math.floor(Math.random() * threats.length)]);
+            }
         }
     }
 };

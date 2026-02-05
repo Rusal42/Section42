@@ -1,6 +1,8 @@
 const { SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
+    name: 'pick',
+    description: 'Ping a random person in the server',
     data: new SlashCommandBuilder()
         .setName('pick')
         .setDescription('Ping a random person in the server'),
@@ -26,7 +28,7 @@ module.exports = {
             
             // Create embed
             const embed = {
-                title: '🎯 Random Pick!',
+                title: 'Random Pick!',
                 description: `I choose... ${randomMember.user.toString()}!`,
                 color: 0xff6b35,
                 timestamp: new Date().toISOString(),
@@ -74,7 +76,7 @@ module.exports = {
             
             // Create embed
             const embed = {
-                title: '🎯 Random Pick!',
+                title: 'Random Pick!',
                 description: `I choose... ${randomMember.user.toString()}!`,
                 color: 0xff6b35,
                 timestamp: new Date().toISOString(),
