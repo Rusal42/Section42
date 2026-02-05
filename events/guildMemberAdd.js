@@ -28,30 +28,12 @@ module.exports = {
             
             // Create welcome embed
             const welcomeEmbed = new EmbedBuilder()
-                .setTitle('🌟 Welcome to Section42!')
-                .setDescription(`Hey ${member.user.toString()}! Welcome to crucifyym's community! 🎉\n\nWe're excited to have you here! Feel free to introduce yourself and check out our channels.`)
+                .setTitle('Welcome to Section42!')
+                .setDescription(`${member.user.toString()} has joined the server! 🎉\n\nMake sure to check out ⁠rules and get your roles!`)
                 .setColor('#ff6b35')
-                .addFields(
-                    {
-                        name: '🚀 Getting Started',
-                        value: '• Introduce yourself in general-chat\n• Check out #rules and #server-info\n• Grab some color roles with !colors\n• Join our voice channels to hang out',
-                        inline: false
-                    },
-                    {
-                        name: '🎮 What We Do',
-                        value: '• Game development discussions\n• Content creator support\n• Community events & giveaways\n• Fun bots and activities',
-                        inline: false
-                    },
-                    {
-                        name: '💬 Quick Tips',
-                        value: '• Use !help to see available commands\n• Be respectful and follow the rules\n• Have fun and make some friends!',
-                        inline: false
-                    }
-                )
-                .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
                 .setImage('https://media.discordapp.net/attachments/1421592736221626572/1421592800008552498/section42-banner.png')
                 .setFooter({ 
-                    text: `Member #${member.guild.memberCount} • Joined ${new Date().toLocaleDateString()}`, 
+                    text: `Member #${member.guild.memberCount} • ${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`, 
                     iconURL: member.guild.iconURL() 
                 })
                 .setTimestamp();
@@ -61,15 +43,6 @@ module.exports = {
             
             // Track this welcome for greeting detection
             member.client.welcomeTracker.recentWelcomes.set(member.id, Date.now());
-            
-            // Send a simple hi message a few seconds later
-            setTimeout(async () => {
-                try {
-                    await welcomeChannel.send(`👋 Everyone say hi to ${member.user.toString()}! Welcome to the community! 😊`);
-                } catch (error) {
-                    console.error('Error sending follow-up hi message:', error);
-                }
-            }, 3000); // 3 seconds later
             
             // Try to give a default role if it exists
             try {
