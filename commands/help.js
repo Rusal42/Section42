@@ -25,6 +25,31 @@ module.exports = {
                     name: '**Quick Access**',
                     value: '`!crucify` - View all owner commands\n`!modhelp` - View moderator commands\n`!help` - View fun commands (shown below)',
                     inline: false
+                })
+                .addField('🔧 Meowlock Commands (Owner Only)', '`!arrise` - Sequentially ping random users\n`!fall` - Stop the arrise sequence\n`!dm` - Send Discord-compliant DMs\n`!crucify` - Show owner commands\n`!shutup` - Toggle bot monitoring')
+                .addFields({
+                    name: '**Fun Commands**',
+                    value: '`!pick` - Ping a random person in the server',
+                    inline: false
+                },
+                {
+                    name: '**Embed Commands**',
+                    value: '`!embed <title> | <description> | [color] | [footer]` - Create custom embed\n' +
+                           '`!info <title> | <description>` - Create info embed\n' +
+                           '`!say <message>` - Make the bot say something\n' +
+                           '`!poll <question> | <option1> | <option2> | [option3] | [option4]` - Create a poll',
+                    inline: false
+                },
+                {
+                    name: '**General Commands**',
+                    value: '`!ping` - Check bot latency\n' +
+                           '`!colors` - Get color roles\n' +
+                           '`!giveaway <duration> <winners> | <prize>` - Start a giveaway\n' +
+                           '`!help` - Show this help message\n' +
+                           '`!welcome <user>` - Manually welcome someone (Mod+)\n' +
+                           '`!greeter` - Show top community greeters\n' +
+                           '`!activity [type]` - Show server activity stats/leaderboard',
+                    inline: false
                 });
         } else if (isMod) {
             // Moderators get choice between mod and fun
@@ -65,7 +90,10 @@ module.exports = {
                 value: '`!ping` - Check bot latency\n' +
                        '`!colors` - Get color roles\n' +
                        '`!giveaway <duration> <winners> | <prize>` - Start a giveaway\n' +
-                       '`!help` - Show this help message',
+                       '`!help` - Show this help message\n' +
+                       '`!welcome <user>` - Manually welcome someone (Mod+)\n' +
+                       '`!greeter` - Show top community greeters\n' +
+                       '`!activity [type]` - Show server activity stats/leaderboard',
                 inline: false
             }
         )
