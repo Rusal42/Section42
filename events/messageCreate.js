@@ -6,8 +6,29 @@ module.exports = {
         // Ignore bot messages
         if (message.author.bot) return;
         
+        // Check if user has a cooldown for conversation responses
+        const cooldownKey = `conversation_${message.author.id}`;
+        const now = Date.now();
+        
+        if (message.client.conversationCooldowns && message.client.conversationCooldowns.has(cooldownKey)) {
+            const lastTime = message.client.conversationCooldowns.get(cooldownKey);
+            if (now - lastTime < 30 * 60 * 1000) { // 30 minutes
+                return; // Still on cooldown
+            }
+        }
+        
+        // Initialize cooldowns map if not exists
+        if (!message.client.conversationCooldowns) {
+            message.client.conversationCooldowns = new Map();
+        }
+        
         // Check if someone is trying to talk to the bot
         await this.checkBotReply(message);
+        
+        // Set cooldown for conversation responses
+        if (message.client.conversationCooldowns) {
+            message.client.conversationCooldowns.set(cooldownKey, now);
+        }
         
         // Initialize activity tracker if not exists
         if (!message.client.activityTracker) {
