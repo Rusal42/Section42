@@ -68,13 +68,8 @@ module.exports = {
                     
                     console.log(`👋 ${message.author.tag} greeted new member! (${tracker.greetingResponses.get(message.author.id)} total greetings)`);
                     
-                    // Add fun reactions
-                    try {
-                        await message.react('👋');
-                        await message.react('😊');
-                    } catch (error) {
-                        // Ignore reaction errors
-                    }
+                    // Remove fun reactions
+                    // No reactions added
                     
                     // Occasionally give encouragement
                     const responseCount = tracker.greetingResponses.get(message.author.id);
