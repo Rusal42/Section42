@@ -1,3 +1,8 @@
+const fs = require('fs');
+const path = require('path');
+
+const activityDataPath = path.join(__dirname, '../data/activityData.json');
+
 class ActivityTracker {
     constructor() {
         this.userStats = new Map(); // userId -> { messages: number, lastSeen: timestamp, streak: number }
@@ -11,6 +16,57 @@ class ActivityTracker {
             { messages: 500, role: '🌳 Legend', color: '#8e44ad' },
             { messages: 1000, role: '👑 Mythic', color: '#f39c12' }
         ];
+        
+        // Load existing data
+        this.loadData();
+    }
+    
+    loadData() {
+        try {
+            if (fs.existsSync(activityDataPath)) {
+                const data = JSON.parse(fs.readFileSync(activityDataPath, 'utf8'));
+                
+                // Restore user stats
+                if (data.userStats) {
+                    this.userStats = new Map(Object.entries(data.userStats));
+                }
+                
+                // Restore daily stats
+                if (data.dailyStats) {
+                    this.dailyStats = new Map(Object.entries(data.dailyStats));
+                }
+                
+                console.log(`📊 Loaded activity data: ${this.userStats.size} users, ${this.dailyStats.size} days`);
+            }
+        } catch (error) {
+            console.error('Error loading activity data:', error);
+        }
+    }
+    
+    saveData() {
+        try {
+            // Clean up old daily stats (older than 30 days)
+            const cutoffDate = new Date();
+            cutoffDate.setDate(cutoffDate.getDate() - 30);
+            const cutoffString = cutoffDate.toDateString();
+            
+            for (const [date] of this.dailyStats) {
+                if (date < cutoffString) {
+                    this.dailyStats.delete(date);
+                }
+            }
+            
+            const data = {
+                userStats: Object.fromEntries(this.userStats),
+                dailyStats: Object.fromEntries(this.dailyStats),
+                lastSaved: new Date().toISOString()
+            };
+            
+            fs.mkdirSync(path.dirname(activityDataPath), { recursive: true });
+            fs.writeFileSync(activityDataPath, JSON.stringify(data, null, 2));
+        } catch (error) {
+            console.error('Error saving activity data:', error);
+        }
     }
     
     async trackMessage(userId, guild) {
@@ -56,6 +112,9 @@ class ActivityTracker {
         // Check for role updates
         await this.checkRoleUpdate(userId, guild);
         
+        // Save data after tracking message
+        this.saveData();
+        
         return stats;
     }
     
@@ -80,14 +139,38 @@ class ActivityTracker {
         let role = guild.roles.cache.find(r => r.name === targetRole.role);
         if (!role) {
             try {
-                role = await guild.roles.create({
+                const roleData = {
                     name: targetRole.role,
                     color: targetRole.color,
                     reason: 'Activity rank role'
-                });
+                };
+                
+                // Add image permissions for Mythic role
+                if (targetRole.role === '👑 Mythic') {
+                    roleData.permissions = [
+                        'AttachFiles',
+                        'EmbedLinks',
+                        'ReadMessageHistory'
+                    ];
+                    roleData.hoist = false; // Don't display separately from online
+                }
+                
+                role = await guild.roles.create(roleData);
             } catch (error) {
                 console.error(`Failed to create role ${targetRole.role}:`, error);
                 return;
+            }
+        } else if (targetRole.role === '👑 Mythic') {
+            // Update existing Mythic role to have image permissions
+            try {
+                await role.setPermissions([
+                    'AttachFiles',
+                    'EmbedLinks',
+                    'ReadMessageHistory'
+                ]);
+                await role.setHoist(false); // Don't display separately from online
+            } catch (error) {
+                console.error(`Failed to update permissions for Mythic role:`, error);
             }
         }
         

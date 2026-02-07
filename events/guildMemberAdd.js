@@ -29,7 +29,7 @@ module.exports = {
             // Create welcome embed
             const welcomeEmbed = new EmbedBuilder()
                 .setTitle('Welcome to Section42!')
-                .setDescription(`${member.user.toString()} has joined the server! 🎉\n\nMake sure to check out ⁠rules and get your roles!`)
+                .setDescription(`${member.user.toString()} has joined the server! 🎉\n\nMake sure to check out <#${member.guild.channels.cache.find(c => c.name === 'rules')?.id || 'rules'}> and get your roles!`)
                 .setColor('#ff6b35')
                 .setImage('https://media.discordapp.net/attachments/1421592736221626572/1421592800008552498/section42-banner.png')
                 .setFooter({ 
