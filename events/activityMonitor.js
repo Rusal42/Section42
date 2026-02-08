@@ -12,20 +12,20 @@ module.exports = {
             client.activityTracker = new ActivityTracker();
         }
         
-        // Check activity every 5 minutes
-        setInterval(async () => {
-            await this.checkActivity(client);
-        }, 300000); // 5 minutes
+        // Check activity every 5 minutes - DISABLED
+        // setInterval(async () => {
+        //     await this.checkActivity(client);
+        // }, 300000); // 5 minutes
         
-        // Send conversation starters every 30 minutes if server is quiet
-        setInterval(async () => {
-            await this.sendConversationStarter(client);
-        }, 1800000); // 30 minutes
+        // Send conversation starters every 30 minutes if server is quiet - DISABLED
+        // setInterval(async () => {
+        //     await this.sendConversationStarter(client);
+        // }, 1800000); // 30 minutes
         
-        // Ping inactive members every 2 hours
-        setInterval(async () => {
-            await this.pingInactiveMembers(client);
-        }, 7200000); // 2 hours
+        // Ping inactive members every 2 hours - DISABLED
+        // setInterval(async () => {
+        //     await this.pingInactiveMembers(client);
+        // }, 7200000); // 2 hours
         
         console.log('✅ Activity monitoring system started!');
     },
@@ -95,73 +95,46 @@ module.exports = {
                 
                 if (!generalChannel) return;
                 
-                const conversationStarters = [
-                    "Server needs activity. Someone start a conversation.",
-                    "Time to talk. The server is quiet.",
-                    "General chat is dead. Someone say something.",
-                    "Where is everyone? Server needs voices.",
-                    "Silence ended. Time to engage.",
-                    "Activity required. Start talking.",
-                    "Server is quiet. Break the silence.",
-                    "Someone respond. The server needs life.",
-                    "Time to be active. Server is waiting.",
-                    "General chat needs messages. Start typing.",
-                    "Server needs engagement. Someone participate.",
-                    "The silence is deafening. Someone speak.",
-                    "Activity needed. Server is empty.",
-                    "Time to talk. Server is inactive."
-                ];
-                
-                // Pick random conversation starter
-                const starter = conversationStarters[Math.floor(Math.random() * conversationStarters.length)];
-                
-                // Randomly decide whether to ping someone or just send a starter
-                const shouldPing = Math.random() < 0.4; // 40% chance to ping someone
-                
-                if (shouldPing) {
-                    // Get active members for pinging
-                    const leaderboard = client.activityTracker.getLeaderboard(10);
-                    if (leaderboard.length > 0) {
-                        // Filter out members who were recently pinged
-                        const recentPings = client.recentPings || new Set();
-                        const availableMembers = leaderboard.filter(member => 
-                            !recentPings.has(member.userId)
-                        );
+                // Always ping someone (100% chance now)
+                // Get active members for pinging
+                const leaderboard = client.activityTracker.getLeaderboard(10);
+                if (leaderboard.length > 0) {
+                    // Filter out members who were recently pinged
+                    const recentPings = client.recentPings || new Set();
+                    const availableMembers = leaderboard.filter(member => 
+                        !recentPings.has(member.userId)
+                    );
+                    
+                    if (availableMembers.length > 0) {
+                        const randomMember = availableMembers[Math.floor(Math.random() * Math.min(5, availableMembers.length))];
+                        const member = guild.members.cache.get(randomMember.userId);
                         
-                        if (availableMembers.length > 0) {
-                            const randomMember = availableMembers[Math.floor(Math.random() * Math.min(5, availableMembers.length))];
-                            const member = guild.members.cache.get(randomMember.userId);
-                            
-                            if (member) {
-                                // Track this ping
-                                if (!client.recentPings) {
-                                    client.recentPings = new Set();
-                                }
-                                client.recentPings.add(randomMember.userId);
-                                
-                                // Clean up old pings (older than 1 hour)
-                                setTimeout(() => {
-                                    client.recentPings.delete(randomMember.userId);
-                                }, 3600000); // 1 hour
-                                
-                                const pingMessages = [
-                                    `${starter}\n\nHey ${member.user.toString()}, respond to this.`,
-                                    `${starter}\n\n${member.user.toString()}, your input needed.`,
-                                    `${starter}\n\nPing: ${member.user.toString()}. Respond.`,
-                                    `${starter}\n\n${member.user.toString()}, server needs activity.`,
-                                    `${starter}\n\n${member.user.toString()}, time to engage.`
-                                ];
-                                
-                                const randomPingMessage = pingMessages[Math.floor(Math.random() * pingMessages.length)];
-                                await generalChannel.send(randomPingMessage);
-                                return;
+                        if (member) {
+                            // Track this ping
+                            if (!client.recentPings) {
+                                client.recentPings = new Set();
                             }
+                            client.recentPings.add(randomMember.userId);
+                            
+                            // Clean up old pings (older than 1 hour)
+                            setTimeout(() => {
+                                client.recentPings.delete(randomMember.userId);
+                            }, 3600000); // 1 hour
+                            
+                            const pingMessages = [
+                                `Hey ${member.user.toString()}, respond to this.`,
+                                `${member.user.toString()}, your input needed.`,
+                                `Ping: ${member.user.toString()}. Respond.`,
+                                `${member.user.toString()}, server needs activity.`,
+                                `${member.user.toString()}, time to engage.`
+                            ];
+                            
+                            const randomPingMessage = pingMessages[Math.floor(Math.random() * pingMessages.length)];
+                            await generalChannel.send(randomPingMessage);
+                            return;
                         }
                     }
                 }
-                
-                // If not pinging or ping failed, send regular starter
-                await generalChannel.send(starter);
             }
             
         } catch (error) {

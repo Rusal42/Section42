@@ -1,10 +1,11 @@
 require('dotenv').config();
 
-const { Client, GatewayIntentBits, REST, Routes, Collection } = require('discord.js');
+const { Client, GatewayIntentBits } = require('discord.js');
 const { OWNER_IDS } = require('./config/constants');
-const messageTracker = require('./utils/messageTracker');
-const fs = require('fs');
-const path = require('path');
+const { sendAsFloofWebhook } = require('./utils/webhook-util');
+const { loadCommands, loadEvents } = require('./utils/commandLoader');
+const { handleReactionAdd, handleReactionRemove } = require('./events/reactionRoles');
+const { handleMessageDelete } = require('./events/messageDelete');
 
 const client = new Client({ 
     intents: [
@@ -22,135 +23,10 @@ client.snipeList = new Map();
 
 const ALLOWED_GUILD_IDS = ['1421592736221626572', '1392710210862321694']; // Section42 Discord servers (main + test)
 
-client.once('ready', async () => {
-    console.log(`Logged in as ${client.user.tag}!`);
-    console.log(`Owner IDs: ${OWNER_IDS.join(', ')}`);
-    
-    if (slashCommandsData.length > 0) {
-        const rest = new REST().setToken(process.env.DISCORD_TOKEN);
-        
-        try {
-            console.log(`Started refreshing ${slashCommandsData.length} application (/) commands.`);
-            
-            const data = await rest.put(
-                Routes.applicationCommands(client.user.id),
-                { body: slashCommandsData },
-            );
-            
-            console.log(`Successfully reloaded ${data.length} application (/) commands.`);
-        } catch (error) {
-            console.error('Error registering slash commands:', error);
-        }
-    }
+// Load commands and events
+const { commands, slashCommands, slashCommandsData } = loadCommands();
+loadEvents(client);
 
-    // Restore reaction roles on startup
-    console.log('🔄 Checking for reaction role messages to restore...');
-    for (const guildId of ALLOWED_GUILD_IDS) {
-        try {
-            const guild = await client.guilds.fetch(guildId);
-            const trackedMessages = messageTracker.getAllMessages(guildId);
-            
-            // Check for reaction role messages
-            const reactionRoleTypes = ['reaction_roles_gender', 'reaction_roles_color'];
-            
-            for (const messageType of reactionRoleTypes) {
-                if (trackedMessages[messageType]) {
-                    const { channelId, messageId } = trackedMessages[messageType];
-                    
-                    try {
-                        const channel = await guild.channels.fetch(channelId);
-                        const message = await channel.messages.fetch(messageId);
-                        
-                        // Process all reactions on this message
-                        for (const [emoji, reaction] of message.reactions.cache) {
-                            const roleName = reactionRoleMap[emoji];
-                            if (!roleName) continue;
-                            
-                            const role = guild.roles.cache.find(r => r.name === roleName);
-                            if (!role) continue;
-                            
-                            // Fetch all users who reacted
-                            const users = await reaction.users.fetch();
-                            
-                            for (const [userId, user] of users) {
-                                if (user.bot) continue;
-                                
-                                try {
-                                    const member = await guild.members.fetch(userId);
-                                    
-                                    // Check if member already has the role
-                                    if (!member.roles.cache.has(role.id)) {
-                                        // If it's a color role, remove other color roles first
-                                        if (colorRoles.includes(roleName)) {
-                                            const memberColorRoles = member.roles.cache.filter(r => colorRoles.includes(r.name));
-                                            for (const [, colorRole] of memberColorRoles) {
-                                                await member.roles.remove(colorRole);
-                                            }
-                                        }
-                                        
-                                        await member.roles.add(role);
-                                        console.log(`✅ Restored ${roleName} role to ${user.tag}`);
-                                    }
-                                } catch (error) {
-                                    console.error(`Error restoring role for ${user.tag}:`, error);
-                                }
-                            }
-                        }
-                    } catch (error) {
-                        console.error(`Error fetching message ${messageType}:`, error);
-                    }
-                }
-            }
-        } catch (error) {
-            console.error(`Error processing guild ${guildId}:`, error);
-        }
-    }
-    console.log('✅ Reaction role restoration complete!');
-});
-
-const { sendAsFloofWebhook } = require('./utils/webhook-util');
-
-const commands = new Map();
-const slashCommands = new Collection();
-const slashCommandsData = [];
-
-const commandDirectories = ['commands', 'commands/fun-commands', 'ServerCreation', 'ownercommands', 'moderationcommands'];
-
-commandDirectories.forEach(dirName => {
-    const dirPath = path.join(__dirname, dirName);
-    if (fs.existsSync(dirPath)) {
-        fs.readdirSync(dirPath).forEach(file => {
-            if (file.endsWith('.js')) {
-                const command = require(path.join(dirPath, file));
-                commands.set(command.name, command);
-                console.log(`Loaded command: ${command.name} (ownerOnly: ${command.ownerOnly || false})`);
-                
-                if (command.data) {
-                    slashCommands.set(command.data.name, command);
-                    slashCommandsData.push(command.data.toJSON());
-                }
-            }
-        });
-    }
-});
-
-const eventsPath = path.join(__dirname, 'events');
-if (fs.existsSync(eventsPath)) {
-    const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
-    
-    for (const file of eventFiles) {
-        const filePath = path.join(eventsPath, file);
-        const event = require(filePath);
-        
-        if (event.once) {
-            client.once(event.name, (...args) => event.execute(...args));
-        } else {
-            client.on(event.name, (...args) => event.execute(...args));
-        }
-        
-        console.log(`Loaded event: ${event.name}`);
-    }
-}
 
 client.on('messageCreate', async message => {
     if (message.author.bot) return;
@@ -160,6 +36,11 @@ client.on('messageCreate', async message => {
     const { handleMeowlock } = require('./utils/meowlockHandler');
     const meowlockHandled = await handleMeowlock(message);
     if (meowlockHandled) return;
+
+    // Owner command handling
+    const { handleOwnerCommands } = require('./utils/ownerCommandHandler');
+    const ownerCommandHandled = await handleOwnerCommands(message, client);
+    if (ownerCommandHandled) return;
 
     // Command handling
     if (!message.content.startsWith('!')) return;
@@ -209,123 +90,19 @@ client.on('interactionCreate', async interaction => {
     }
 });
 
-// Reaction role mappings
-const reactionRoleMap = {
-    // Gender roles (using different emojis to avoid conflicts)
-    '♂️': 'Male',
-    '♀️': 'Female',
-    // Color roles
-    '🔴': 'Red',
-    '🟠': 'Orange',
-    '🟡': 'Yellow',
-    '🟢': 'Green',
-    '🔵': 'Blue',
-    '🟣': 'Purple',
-    '🩷': 'Pink',
-    '⚪': 'White',
-    '⚫': 'Black'
-};
-
-const colorRoles = ['Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Purple', 'Pink', 'White', 'Black'];
-
 // Handle reaction add
 client.on('messageReactionAdd', async (reaction, user) => {
-    if (user.bot) return;
-    if (!ALLOWED_GUILD_IDS.includes(reaction.message.guild.id)) return;
-
-    // Fetch partial reactions
-    if (reaction.partial) {
-        try {
-            await reaction.fetch();
-        } catch (error) {
-            console.error('Error fetching reaction:', error);
-            return;
-        }
-    }
-
-    const emoji = reaction.emoji.name;
-    const roleName = reactionRoleMap[emoji];
-
-    if (!roleName) return;
-
-    const role = reaction.message.guild.roles.cache.find(r => r.name === roleName);
-    if (!role) return;
-
-    const member = await reaction.message.guild.members.fetch(user.id);
-
-    try {
-        // If it's a color role, remove all other color roles first
-        if (colorRoles.includes(roleName)) {
-            const memberColorRoles = member.roles.cache.filter(r => colorRoles.includes(r.name));
-            for (const [, colorRole] of memberColorRoles) {
-                await member.roles.remove(colorRole);
-            }
-        }
-
-        await member.roles.add(role);
-        console.log(`Added ${roleName} role to ${user.tag}`);
-    } catch (error) {
-        console.error(`Error adding role ${roleName} to ${user.tag}:`, error);
-    }
+    await handleReactionAdd(reaction, user, ALLOWED_GUILD_IDS);
 });
 
 // Handle reaction remove
 client.on('messageReactionRemove', async (reaction, user) => {
-    if (user.bot) return;
-    if (!ALLOWED_GUILD_IDS.includes(reaction.message.guild.id)) return;
-
-    // Fetch partial reactions
-    if (reaction.partial) {
-        try {
-            await reaction.fetch();
-        } catch (error) {
-            console.error('Error fetching reaction:', error);
-            return;
-        }
-    }
-
-    const emoji = reaction.emoji.name;
-    const roleName = reactionRoleMap[emoji];
-
-    if (!roleName) return;
-
-    const role = reaction.message.guild.roles.cache.find(r => r.name === roleName);
-    if (!role) return;
-
-    const member = await reaction.message.guild.members.fetch(user.id);
-
-    try {
-        await member.roles.remove(role);
-        console.log(`Removed ${roleName} role from ${user.tag}`);
-    } catch (error) {
-        console.error(`Error removing role ${roleName} from ${user.tag}:`, error);
-    }
+    await handleReactionRemove(reaction, user, ALLOWED_GUILD_IDS);
 });
 
 // Message delete event for snipe
 client.on('messageDelete', async (message) => {
-    if (!ALLOWED_GUILD_IDS.includes(message.guild.id)) return;
-    if (message.author.bot) return;
-
-    const snipeData = {
-        content: message.content,
-        author: message.author,
-        deletedAt: new Date(),
-        attachment: message.attachments.first()?.url || null
-    };
-
-    client.snipes.set(message.channel.id, snipeData);
-
-    if (!client.snipeList.has(message.channel.id)) {
-        client.snipeList.set(message.channel.id, []);
-    }
-
-    const channelSnipes = client.snipeList.get(message.channel.id);
-    channelSnipes.unshift(snipeData);
-
-    if (channelSnipes.length > 10) {
-        channelSnipes.pop();
-    }
+    handleMessageDelete(message, client, ALLOWED_GUILD_IDS);
 });
 
 client.login(process.env.DISCORD_TOKEN);
