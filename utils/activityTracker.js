@@ -19,6 +19,11 @@ class ActivityTracker {
         
         // Load existing data
         this.loadData();
+        
+        // Save data every 5 minutes
+        setInterval(() => {
+            this.saveData();
+        }, 300000); // 5 minutes
     }
     
     loadData() {
@@ -111,9 +116,6 @@ class ActivityTracker {
         
         // Check for role updates
         await this.checkRoleUpdate(userId, guild);
-        
-        // Save data after tracking message
-        this.saveData();
         
         return stats;
     }
