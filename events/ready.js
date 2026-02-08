@@ -7,15 +7,18 @@ module.exports = {
     async execute(client, ALLOWED_GUILD_IDS, slashCommandsData) {
         console.log(`Logged in as ${client.user.tag}!`);
         
-        if (slashCommandsData.length > 0) {
+        // Handle case where slashCommandsData might not be passed
+        const commandsData = slashCommandsData || [];
+        
+        if (commandsData.length > 0) {
             const rest = new REST().setToken(process.env.DISCORD_TOKEN);
             
             try {
-                console.log(`Started refreshing ${slashCommandsData.length} application (/) commands.`);
+                console.log(`Started refreshing ${commandsData.length} application (/) commands.`);
                 
                 const data = await rest.put(
                     Routes.applicationCommands(client.user.id),
-                    { body: slashCommandsData },
+                    { body: commandsData },
                 );
                 
                 console.log(`Successfully reloaded ${data.length} application (/) commands.`);
