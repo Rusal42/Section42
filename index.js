@@ -27,6 +27,9 @@ const ALLOWED_GUILD_IDS = ['1421592736221626572', '1392710210862321694']; // Sec
 const { commands, slashCommands, slashCommandsData } = loadCommands();
 loadEvents(client);
 
+// Store slashCommandsData on client for ready event
+client.slashCommandsData = slashCommandsData;
+
 
 client.on('messageCreate', async message => {
     if (message.author.bot) return;

@@ -4,11 +4,14 @@ const { restoreReactionRoles } = require('./reactionRoles');
 module.exports = {
     name: 'ready',
     once: true,
-    async execute(client, ALLOWED_GUILD_IDS, slashCommandsData) {
+    async execute(client) {
         console.log(`Logged in as ${client.user.tag}!`);
         
+        // Get ALLOWED_GUILD_IDS from client or use default
+        const ALLOWED_GUILD_IDS = ['1421592736221626572', '1392710210862321694'];
+        
         // Handle case where slashCommandsData might not be passed
-        const commandsData = slashCommandsData || [];
+        const commandsData = client.slashCommandsData || [];
         
         if (commandsData.length > 0) {
             const rest = new REST().setToken(process.env.DISCORD_TOKEN);
