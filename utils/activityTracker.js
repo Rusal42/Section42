@@ -19,11 +19,6 @@ class ActivityTracker {
         
         // Load existing data
         this.loadData();
-        
-        // Save data every 5 minutes
-        setInterval(() => {
-            this.saveData();
-        }, 300000); // 5 minutes
     }
     
     loadData() {
