@@ -48,13 +48,23 @@ async function handleMeowlock(message) {
             
             const pingedNames = pingedTargets.slice(0, 3).join(', '); // Limit to first 3 to avoid too long messages
             
-            const pingMessage = await message.channel.send({
+            // Create webhook to send ping message as the user
+            const webhooks = await message.channel.fetchWebhooks();
+            let webhook = webhooks.find(wh => wh.name === 'Meowlock');
+            
+            if (!webhook) {
+                webhook = await message.channel.createWebhook({
+                    name: 'Meowlock',
+                    reason: 'Meowlock enforcement'
+                });
+            }
+            
+            await webhook.send({
                 content: `please king angel i want to talk to ${pingedNames}${pingedTargets.length > 3 ? ' and others' : ''} ${userLock.style === 'nya' ? 'nya~' : 'meow~'}`,
-                allowedMentions: { users: [] }
+                username: message.author.username,
+                avatarURL: message.author.displayAvatarURL()
             });
             
-            // Delete message after 3 seconds
-            setTimeout(() => pingMessage.delete().catch(() => {}), 3000);
             return true;
         }
         
@@ -120,23 +130,14 @@ async function handleMeowlock(message) {
             [/\bfuck\b/gi, 'frick'],
             [/\bfucking\b/gi, 'freaking'],
             [/\bfucked\b/gi, 'messed up'],
-            [/\bshit\b/gi, 'crap'],
-            [/\bshitty\b/gi, 'crappy'],
             [/\bass\b/gi, 'butt'],
-            [/\basshole\b/gi, 'jerk'],
             [/\bbitch\b/gi, 'meanie'],
             [/\bcunt\b/gi, 'meanie'],
-            [/\bdick\b/gi, 'jerk'],
-            [/\bpussy\b/gi, 'scaredy-cat'],
-            [/\bcock\b/gi, 'meanie'],
-            [/\bwhore\b/gi, 'meanie'],
-            [/\bslut\b/gi, 'meanie'],
-            [/\bdamn\b/gi, 'darn'],
+            [/\bdick\b/gi, 'peepee'],
+            [/\bpussy\b/gi, 'peepee'],
+            [/\bcock\b/gi, 'peepee'],
             [/\bhell\b/gi, 'heck'],
-            [/\bbastard\b/gi, 'meanie'],
-            [/\bmotherfucker\b/gi, 'big meanie'],
-            [/\bson of a bitch\b/gi, 'meanie pants'],
-            [/\bgoddammit\b/gi, 'goshdarnit'],
+            [/\bdamn\b/gi, 'darn'],
             [/\bchrist\b/gi, 'gosh'],
             [/\bjesus\b/gi, 'jeez'],
             [/\bwtf\b/gi, 'what the heck'],
@@ -153,6 +154,25 @@ async function handleMeowlock(message) {
             [/\brape\b/gi, 'big no-no'],
             [/\bnazi\b/gi, 'meanie'],
             [/\bhitler\b/gi, 'meanie'],
+            // KYS and harmful phrases - meowified versions
+            [/\bkys\b/gi, 'meow kys'],
+            [/\bkill your self\b/gi, 'meow kill your self'],
+            [/\bkillyourself\b/gi, 'nya kill your self'],
+            [/\bkill yourself\b/gi, 'meow kill your self'],
+            [/\bkms\b/gi, 'purr kys'],
+            [/\bkill my self\b/gi, 'meow kill my self'],
+            [/\bend your life\b/gi, 'nya end your life'],
+            [/\bend it all\b/gi, 'meow end it all'],
+            [/\bgive up\b/gi, 'purr give up'],
+            [/\brope\b/gi, 'meow rope'],
+            [/\bneck\b/gi, 'nya neck'],
+            [/\bharm\b/gi, 'meow harm'],
+            [/\bhurt\b/gi, 'purr hurt'],
+            [/\bsuicide\b/gi, 'meow suicide'],
+            [/\bdie alone\b/gi, 'nya die alone'],
+            [/\bgo die\b/gi, 'meow go die'],
+            [/\brope in hell\b/gi, 'meow rope in heck'],
+            [/\burn in hell\b/gi, 'meow burn in heck']
         ];
 
         for (const [re, rep] of profanityFilter) {
@@ -258,6 +278,14 @@ async function handleMeowlock(message) {
             [/\bused\b/gi, 'used'],
             [/\buse\b/gi, 'use'],
             [/\busing\b/gi, 'usin'],
+            // Random additions for crucifyym, mesmerizing, king angel
+            [/\bowner\b/gi, () => Math.random() < 0.3 ? 'crucifyym' : 'king angel'],
+            [/\bboss\b/gi, () => Math.random() < 0.3 ? 'mesmerizing' : 'king angel'],
+            [/\badmin\b/gi, () => Math.random() < 0.3 ? 'crucifyym' : 'king angel'],
+            [/\bmoderator\b/gi, () => Math.random() < 0.3 ? 'mesmerizing' : 'king angel'],
+            [/\bgod\b/gi, 'king angel'],
+            [/\blord\b/gi, 'crucifyym'],
+            [/\bmaster\b/gi, 'mesmerizing']
         ];
 
         for (const [re, rep] of vocab) {
@@ -301,6 +329,24 @@ async function handleMeowlock(message) {
         // Add more UwU expressions and cat sounds
         const uwuExpressions = ['UwU', 'OwO', '>.<', '^w^', '(*^▽^*)', '(´｡• ᵕ •｡`)', '(◕‿◕)', '(｡♥‿♥｡)'];
         const catSounds = ['*purrs*', '*meow*', '*nya*', '*mew*', '*prrr*', '*hisses softly*', '*stretches*', '*kneads paws*'];
+        
+        // Make single word messages weird
+        const words = catMessage.trim().split(/\s+/);
+        if (words.length === 1) {
+            const weirdWords = [
+                words[0] + '...?',
+                words[0] + '!!!',
+                words[0] + ' >.<',
+                words[0] + ' ^w^',
+                words[0] + ' UwU',
+                words[0] + ' *meow*',
+                words[0] + ' nya~',
+                words[0] + ' mew...',
+                words[0] + ' >w<',
+                words[0] + ' *purrs*'
+            ];
+            catMessage = weirdWords[Math.floor(Math.random() * weirdWords.length)];
+        }
         
         const randomExpression = uwuExpressions[Math.floor(Math.random() * uwuExpressions.length)];
         const randomCatSound = catSounds[Math.floor(Math.random() * catSounds.length)];
