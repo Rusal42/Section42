@@ -1,8 +1,11 @@
 const { OWNER_IDS } = require('../config/constants');
 
 async function handleOwnerCommands(message, client) {
-    // Only handle if owner mentions the bot
-    if (!message.mentions.has(client.user) || !OWNER_IDS.includes(message.author.id)) {
+    // Only handle if owner directly mentions the bot (not @everyone or @here)
+    if (!message.mentions.has(client.user) || 
+        message.mentions.everyone || 
+        message.mentions.here ||
+        !OWNER_IDS.includes(message.author.id)) {
         return false;
     }
 
