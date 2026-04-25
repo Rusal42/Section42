@@ -75,25 +75,25 @@ module.exports = {
 
         const giveawayEmbed = new EmbedBuilder()
             .setColor('#ff6b35')
-            .setTitle('🎉 GIVEAWAY 🎉')
-            .setDescription(`**Prize:** ${prize}\n\n**Winners:** ${winners}\n**Ends:** <t:${endTimestamp}:R> (<t:${endTimestamp}:F>)\n\nReact with 🎉 to enter!`)
+            .setTitle('GIVEAWAY')
+            .setDescription(`**Prize:** ${prize}\n\n**Winners:** ${winners}\n**Ends:** <t:${endTimestamp}:R> (<t:${endTimestamp}:F>)\n\nReact with [YES] to enter!`)
             .setFooter({ text: `Hosted by ${interaction.user.tag}`, iconURL: interaction.user.displayAvatarURL() })
             .setTimestamp(endTime);
 
         await interaction.reply({ embeds: [giveawayEmbed] });
         const giveawayMessage = await interaction.fetchReply();
-        await giveawayMessage.react('🎉');
+        await giveawayMessage.react('1️⃣');
 
         setTimeout(async () => {
             try {
                 const fetchedMessage = await interaction.channel.messages.fetch(giveawayMessage.id);
-                const reaction = fetchedMessage.reactions.cache.get('🎉');
+                const reaction = fetchedMessage.reactions.cache.get('1️⃣');
                 
                 if (!reaction) {
                     const noReactionEmbed = new EmbedBuilder()
                         .setColor('#ff0000')
                         .setTitle('Giveaway Ended')
-                        .setDescription(`**Prize:** ${prize}\n\n❌ No valid entries!`)
+                        .setDescription(`**Prize:** ${prize}\n\nNo valid entries!`)
                         .setTimestamp();
                     return fetchedMessage.reply({ embeds: [noReactionEmbed] });
                 }
@@ -105,7 +105,7 @@ module.exports = {
                     const noEntriesEmbed = new EmbedBuilder()
                         .setColor('#ff0000')
                         .setTitle('Giveaway Ended')
-                        .setDescription(`**Prize:** ${prize}\n\n❌ No valid entries!`)
+                        .setDescription(`**Prize:** ${prize}\n\nNo valid entries!`)
                         .setTimestamp();
                     return fetchedMessage.reply({ embeds: [noEntriesEmbed] });
                 }
@@ -113,17 +113,17 @@ module.exports = {
                 // Check minimum participants requirement
                 if (minParticipants > 0 && entries.size < minParticipants) {
                     const tauntMessages = [
-                        `Y'all really let me down... only ${entries.size} out of ${minParticipants} needed entries. Do better next time! 😤`,
-                        `Pathetic! Only ${entries.size} entries when we needed ${minParticipants}. Your community is sleeping... WAKE THEM UP! 🔥`,
-                        `Giveaway CANCELLED! ${entries.size} entries? Really? You need ${minParticipants} minimum. Tell your friends, tag them, be more active! 💀`,
-                        `Embarrassing... ${entries.size} of ${minParticipants} required. Y'all need to grind harder or find some more active members! 💪`,
-                        `No winners today! Only ${entries.size} showed up when we needed ${minParticipants}. Go recruit some active people or start pinging! 📢`
+                        `Y'all really let me down... only ${entries.size} out of ${minParticipants} needed entries. Do better next time!`,
+                        `Pathetic! Only ${entries.size} entries when we needed ${minParticipants}. Your community is sleeping... WAKE THEM UP!`,
+                        `Giveaway CANCELLED! ${entries.size} entries? Really? You need ${minParticipants} minimum. Tell your friends, tag them, be more active!`,
+                        `Embarrassing... ${entries.size} of ${minParticipants} required. Y'all need to grind harder or find some more active members!`,
+                        `No winners today! Only ${entries.size} showed up when we needed ${minParticipants}. Go recruit some active people or start pinging!`
                     ];
                     const randomTaunt = tauntMessages[Math.floor(Math.random() * tauntMessages.length)];
 
                     const failedEmbed = new EmbedBuilder()
                         .setColor('#ff0000')
-                        .setTitle('🚫 GIVEAWAY FAILED 🚫')
+                        .setTitle('GIVEAWAY FAILED')
                         .setDescription(`**Prize:** ${prize}\n\n${randomTaunt}\n\n**Entries:** ${entries.size} / ${minParticipants} required`)
                         .setFooter({ text: 'Be more active next time!', iconURL: interaction.guild.iconURL() })
                         .setTimestamp();
@@ -132,8 +132,8 @@ module.exports = {
 
                     const endedEmbed = new EmbedBuilder()
                         .setColor('#ff0000')
-                        .setTitle('🚫 GIVEAWAY CANCELLED 🚫')
-                        .setDescription(`**Prize:** ${prize}\n\n**Status:** FAILED - Minimum not reached (${entries.size}/${minParticipants})\n\n~~React with 🎉 to enter!~~`)
+                        .setTitle('GIVEAWAY CANCELLED')
+                        .setDescription(`**Prize:** ${prize}\n\n**Status:** FAILED - Minimum not reached (${entries.size}/${minParticipants})\n\n~~Click to enter!~~`)
                         .setFooter({ text: `Hosted by ${interaction.user.tag} | ${entries.size} entries`, iconURL: interaction.user.displayAvatarURL() })
                         .setTimestamp();
 
@@ -154,8 +154,8 @@ module.exports = {
 
                 const winnerEmbed = new EmbedBuilder()
                     .setColor('#00ff00')
-                    .setTitle('🎉 Giveaway Ended! 🎉')
-                    .setDescription(`**Prize:** ${prize}\n\n**Winner${winnerCount > 1 ? 's' : ''}:** ${winnerMentions}\n\nCongratulations! 🎊`)
+                    .setTitle('Giveaway Ended!')
+                    .setDescription(`**Prize:** ${prize}\n\n**Winner${winnerCount > 1 ? 's' : ''}:** ${winnerMentions}\n\nCongratulations!`)
                     .setFooter({ text: `${entries.size} total entries`, iconURL: interaction.guild.iconURL() })
                     .setTimestamp();
 
@@ -163,8 +163,8 @@ module.exports = {
 
                 const endedEmbed = new EmbedBuilder()
                     .setColor('#808080')
-                    .setTitle('🎉 GIVEAWAY ENDED 🎉')
-                    .setDescription(`**Prize:** ${prize}\n\n**Winner${winnerCount > 1 ? 's' : ''}:** ${winnerMentions}\n\n~~React with 🎉 to enter!~~`)
+                    .setTitle('GIVEAWAY ENDED')
+                    .setDescription(`**Prize:** ${prize}\n\n**Winner${winnerCount > 1 ? 's' : ''}:** ${winnerMentions}\n\n~~Click to enter!~~`)
                     .setFooter({ text: `Hosted by ${interaction.user.tag} | ${entries.size} entries`, iconURL: interaction.user.displayAvatarURL() })
                     .setTimestamp();
 
