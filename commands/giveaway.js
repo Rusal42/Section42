@@ -46,7 +46,7 @@ module.exports = {
                 .setMaxValue(1000))
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
 
-    async execute(interaction) {
+    async executeSlash(interaction) {
         if (!interaction.member.permissions.has(PermissionFlagsBits.ManageMessages)) {
             const errorEmbed = new EmbedBuilder()
                 .setColor('#ff0000')
