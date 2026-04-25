@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { OWNER_IDS } = require('../config/constants');
 
 const activityDataPath = path.join(__dirname, '../data/activityData.json');
 
@@ -116,6 +117,9 @@ class ActivityTracker {
     }
     
     async checkRoleUpdate(userId, guild) {
+        // Skip activity roles for bot owners
+        if (OWNER_IDS.includes(userId)) return;
+        
         const stats = this.userStats.get(userId);
         if (!stats) return;
         
