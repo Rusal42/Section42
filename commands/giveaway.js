@@ -1,5 +1,23 @@
 const { EmbedBuilder, SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 
+function parseDuration(input) {
+    const match = input.match(/^(\d+)([smhd])$/i);
+    if (!match) {
+        // Try parsing as just a number (assume minutes)
+        const num = parseInt(input);
+        return isNaN(num) ? null : num;
+    }
+    const value = parseInt(match[1]);
+    const unit = match[2].toLowerCase();
+    switch (unit) {
+        case 's': return Math.ceil(value / 60); // seconds to minutes
+        case 'm': return value; // minutes
+        case 'h': return value * 60; // hours to minutes
+        case 'd': return value * 1440; // days to minutes
+        default: return null;
+    }
+}
+
 module.exports = {
     name: 'giveaway',
     description: 'Start a giveaway',
@@ -10,18 +28,22 @@ module.exports = {
             option.setName('prize')
                 .setDescription('What are you giving away?')
                 .setRequired(true))
-        .addIntegerOption(option =>
+        .addStringOption(option =>
             option.setName('duration')
-                .setDescription('Duration in minutes')
-                .setRequired(true)
-                .setMinValue(1)
-                .setMaxValue(10080))
+                .setDescription('Duration (e.g., 30s, 5m, 2h, 1d)')
+                .setRequired(true))
         .addIntegerOption(option =>
             option.setName('winners')
                 .setDescription('Number of winners (default: 1)')
                 .setRequired(false)
                 .setMinValue(1)
                 .setMaxValue(20))
+        .addIntegerOption(option =>
+            option.setName('min_participants')
+                .setDescription('Minimum participants required (giveaway fails if not met)')
+                .setRequired(false)
+                .setMinValue(1)
+                .setMaxValue(1000))
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
     
     async execute(message, args) {
@@ -154,8 +176,18 @@ module.exports = {
         }
 
         const prize = interaction.options.getString('prize');
-        const duration = interaction.options.getInteger('duration');
+        const durationInput = interaction.options.getString('duration');
+        const duration = parseDuration(durationInput);
+        
+        if (!duration || duration < 1 || duration > 10080) {
+            return interaction.reply({ 
+                content: 'Invalid duration format. Use: `30s`, `5m`, `2h`, `1d` (or minutes as number, max 1 week)', 
+                ephemeral: true 
+            });
+        }
+        
         const winners = interaction.options.getInteger('winners') || 1;
+        const minParticipants = interaction.options.getInteger('min_participants') || 0;
 
         const endTime = Date.now() + (duration * 60 * 1000);
         const endTimestamp = Math.floor(endTime / 1000);
@@ -195,6 +227,36 @@ module.exports = {
                         .setDescription(`**Prize:** ${prize}\n\n❌ No valid entries!`)
                         .setTimestamp();
                     return fetchedMessage.reply({ embeds: [noEntriesEmbed] });
+                }
+
+                // Check minimum participants requirement
+                if (minParticipants > 0 && entries.size < minParticipants) {
+                    const tauntMessages = [
+                        `Y'all really let me down... only ${entries.size} out of ${minParticipants} needed entries. Do better next time! 😤`,
+                        `Pathetic! Only ${entries.size} entries when we needed ${minParticipants}. Your community is sleeping... WAKE THEM UP! 🔥`,
+                        `Giveaway CANCELLED! ${entries.size} entries? Really? You need ${minParticipants} minimum. Tell your friends, tag them, be more active! 💀`,
+                        `Embarrassing... ${entries.size} of ${minParticipants} required. Y'all need to grind harder or find some more active members! 💪`,
+                        `No winners today! Only ${entries.size} showed up when we needed ${minParticipants}. Go recruit some active people or start pinging! 📢`
+                    ];
+                    const randomTaunt = tauntMessages[Math.floor(Math.random() * tauntMessages.length)];
+
+                    const failedEmbed = new EmbedBuilder()
+                        .setColor('#ff0000')
+                        .setTitle('🚫 GIVEAWAY FAILED 🚫')
+                        .setDescription(`**Prize:** ${prize}\n\n${randomTaunt}\n\n**Entries:** ${entries.size} / ${minParticipants} required`)
+                        .setFooter({ text: 'Be more active next time!', iconURL: interaction.guild.iconURL() })
+                        .setTimestamp();
+
+                    await fetchedMessage.reply({ embeds: [failedEmbed] });
+
+                    const endedEmbed = new EmbedBuilder()
+                        .setColor('#ff0000')
+                        .setTitle('🚫 GIVEAWAY CANCELLED 🚫')
+                        .setDescription(`**Prize:** ${prize}\n\n**Status:** FAILED - Minimum not reached (${entries.size}/${minParticipants})\n\n~~React with 🎉 to enter!~~`)
+                        .setFooter({ text: `Hosted by ${interaction.user.tag} | ${entries.size} entries`, iconURL: interaction.user.displayAvatarURL() })
+                        .setTimestamp();
+
+                    return await fetchedMessage.edit({ embeds: [endedEmbed] });
                 }
 
                 const winnerCount = Math.min(winners, entries.size);
