@@ -113,6 +113,9 @@ class ActivityTracker {
         // Check for role updates
         await this.checkRoleUpdate(userId, guild);
         
+        // Save data to persist across restarts
+        this.saveData();
+        
         return stats;
     }
     

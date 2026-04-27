@@ -225,34 +225,37 @@ module.exports = {
         return [...new Set(roles)]; // Remove duplicates
     },
 
+    async updateProgress(interactionOrMessage, statusMessage, embed) {
+        if (statusMessage) {
+            await statusMessage.edit({ embeds: [embed] });
+        } else {
+            // For slash commands
+            await interactionOrMessage.editReply({ embeds: [embed] });
+        }
+    },
+
     async processAdd(interactionOrMessage, roles, requireRole, excludeBots, statusMessage = null) {
         const guild = interactionOrMessage.guild;
         
         // Update status to show we're fetching members
-        if (statusMessage) {
-            await statusMessage.edit({
-                embeds: [new EmbedBuilder()
-                    .setColor('#ff6b35')
-                    .setTitle('Fetching Members...')
-                    .setDescription('This may take a moment for large servers.')
-                    .setTimestamp()]
-            });
-        }
+        await this.updateProgress(interactionOrMessage, statusMessage, new EmbedBuilder()
+            .setColor('#ff6b35')
+            .setTitle('Fetching Members...')
+            .setDescription('This may take a moment for large servers.')
+            .setTimestamp()
+        );
         
         // Use fetch with cache to get all members (necessary for accurate results)
         const members = await guild.members.fetch();
         const totalMembers = members.size;
         
         // Update status to show processing
-        if (statusMessage) {
-            await statusMessage.edit({
-                embeds: [new EmbedBuilder()
-                    .setColor('#ff6b35')
-                    .setTitle('Processing Members...')
-                    .setDescription(`Checking ${totalMembers} members...`)
-                    .setTimestamp()]
-            });
-        }
+        await this.updateProgress(interactionOrMessage, statusMessage, new EmbedBuilder()
+            .setColor('#ff6b35')
+            .setTitle('Processing Members...')
+            .setDescription(`Checking ${totalMembers} members...`)
+            .setTimestamp()
+        );
         
         let affected = 0;
         let skipped = 0;
@@ -302,28 +305,22 @@ module.exports = {
     async processRemove(interactionOrMessage, roles, requireRole, excludeBots, statusMessage = null) {
         const guild = interactionOrMessage.guild;
         
-        if (statusMessage) {
-            await statusMessage.edit({
-                embeds: [new EmbedBuilder()
-                    .setColor('#ff6b35')
-                    .setTitle('Fetching Members...')
-                    .setDescription('This may take a moment for large servers.')
-                    .setTimestamp()]
-            });
-        }
+        await this.updateProgress(interactionOrMessage, statusMessage, new EmbedBuilder()
+            .setColor('#ff6b35')
+            .setTitle('Fetching Members...')
+            .setDescription('This may take a moment for large servers.')
+            .setTimestamp()
+        );
         
         const members = await guild.members.fetch();
         const totalMembers = members.size;
         
-        if (statusMessage) {
-            await statusMessage.edit({
-                embeds: [new EmbedBuilder()
-                    .setColor('#ff6b35')
-                    .setTitle('Processing Members...')
-                    .setDescription(`Checking ${totalMembers} members...`)
-                    .setTimestamp()]
-            });
-        }
+        await this.updateProgress(interactionOrMessage, statusMessage, new EmbedBuilder()
+            .setColor('#ff6b35')
+            .setTitle('Processing Members...')
+            .setDescription(`Checking ${totalMembers} members...`)
+            .setTimestamp()
+        );
         
         let affected = 0;
         let skipped = 0;
@@ -371,28 +368,22 @@ module.exports = {
         const guild = interactionOrMessage.guild;
         const oldRole = oldRoles[0];
         
-        if (statusMessage) {
-            await statusMessage.edit({
-                embeds: [new EmbedBuilder()
-                    .setColor('#ff6b35')
-                    .setTitle('Fetching Members...')
-                    .setDescription('This may take a moment for large servers.')
-                    .setTimestamp()]
-            });
-        }
+        await this.updateProgress(interactionOrMessage, statusMessage, new EmbedBuilder()
+            .setColor('#ff6b35')
+            .setTitle('Fetching Members...')
+            .setDescription('This may take a moment for large servers.')
+            .setTimestamp()
+        );
         
         const members = await guild.members.fetch();
         const totalMembers = members.size;
         
-        if (statusMessage) {
-            await statusMessage.edit({
-                embeds: [new EmbedBuilder()
-                    .setColor('#ff6b35')
-                    .setTitle('Processing Members...')
-                    .setDescription(`Checking ${totalMembers} members...`)
-                    .setTimestamp()]
-            });
-        }
+        await this.updateProgress(interactionOrMessage, statusMessage, new EmbedBuilder()
+            .setColor('#ff6b35')
+            .setTitle('Processing Members...')
+            .setDescription(`Checking ${totalMembers} members...`)
+            .setTimestamp()
+        );
         
         let affected = 0;
         let skipped = 0;
