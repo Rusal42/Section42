@@ -71,10 +71,11 @@ module.exports = {
                 .setColor('#ff6b35')
                 .setTitle('Massrole Usage')
                 .setDescription(
-                    '`!massrole add <roles>` - Add roles to users without them\n' +
-                    '`!massrole remove <roles>` - Remove roles from users\n' +
-                    '`!massrole replace <old_role> <new_role>` - Swap roles\n\n' +
-                    'Roles can be names, IDs, or mentions (comma-separated for multiple)'
+                    '`!massrole add @Role` - Add role to users without it\n' +
+                    '`!massrole add @Role1 @Role2` - Add multiple roles\n' +
+                    '`!massrole remove @Role` - Remove role from users\n' +
+                    '`!massrole replace @OldRole @NewRole` - Swap roles\n\n' +
+                    'Roles can be mentions (@Role), names, or IDs. Multiple roles can be space or comma-separated.'
                 )
                 .setTimestamp();
             return message.channel.send({ embeds: [usageEmbed] });
@@ -192,10 +193,12 @@ module.exports = {
 
     async parseRoles(guild, input) {
         const roles = [];
-        const parts = input.split(/,\s*/);
+        // Split by comma OR space (for prefix command flexibility)
+        const parts = input.split(/[,\s]+/).filter(p => p.trim());
         
         for (const part of parts) {
             const cleanPart = part.trim().replace(/[<@&>]/g, '');
+            if (!cleanPart) continue;
             
             // Try to find by ID first
             let role = guild.roles.cache.get(cleanPart);
@@ -224,13 +227,41 @@ module.exports = {
 
     async processAdd(interactionOrMessage, roles, requireRole, excludeBots, statusMessage = null) {
         const guild = interactionOrMessage.guild;
+        
+        // Update status to show we're fetching members
+        if (statusMessage) {
+            await statusMessage.edit({
+                embeds: [new EmbedBuilder()
+                    .setColor('#ff6b35')
+                    .setTitle('Fetching Members...')
+                    .setDescription('This may take a moment for large servers.')
+                    .setTimestamp()]
+            });
+        }
+        
+        // Use fetch with cache to get all members (necessary for accurate results)
         const members = await guild.members.fetch();
+        const totalMembers = members.size;
+        
+        // Update status to show processing
+        if (statusMessage) {
+            await statusMessage.edit({
+                embeds: [new EmbedBuilder()
+                    .setColor('#ff6b35')
+                    .setTitle('Processing Members...')
+                    .setDescription(`Checking ${totalMembers} members...`)
+                    .setTimestamp()]
+            });
+        }
         
         let affected = 0;
         let skipped = 0;
         let failed = 0;
+        let processed = 0;
 
         for (const [, member] of members) {
+            processed++;
+            
             if (excludeBots && member.user.bot) continue;
             if (requireRole && !member.roles.cache.has(requireRole.id)) continue;
 
@@ -254,9 +285,10 @@ module.exports = {
             .setTitle('Massrole Add Complete')
             .setDescription(
                 `**Roles added:** ${roles.map(r => r.name).join(', ')}\n\n` +
+                `Total members checked: **${processed}**\n` +
                 `Members affected: **${affected}**\n` +
                 `Already had roles: **${skipped}**\n` +
-                `Failed: **${failed}**`
+                `Failed (no permissions): **${failed}**`
             )
             .setTimestamp();
 
@@ -269,7 +301,29 @@ module.exports = {
 
     async processRemove(interactionOrMessage, roles, requireRole, excludeBots, statusMessage = null) {
         const guild = interactionOrMessage.guild;
+        
+        if (statusMessage) {
+            await statusMessage.edit({
+                embeds: [new EmbedBuilder()
+                    .setColor('#ff6b35')
+                    .setTitle('Fetching Members...')
+                    .setDescription('This may take a moment for large servers.')
+                    .setTimestamp()]
+            });
+        }
+        
         const members = await guild.members.fetch();
+        const totalMembers = members.size;
+        
+        if (statusMessage) {
+            await statusMessage.edit({
+                embeds: [new EmbedBuilder()
+                    .setColor('#ff6b35')
+                    .setTitle('Processing Members...')
+                    .setDescription(`Checking ${totalMembers} members...`)
+                    .setTimestamp()]
+            });
+        }
         
         let affected = 0;
         let skipped = 0;
@@ -299,9 +353,10 @@ module.exports = {
             .setTitle('Massrole Remove Complete')
             .setDescription(
                 `**Roles removed:** ${roles.map(r => r.name).join(', ')}\n\n` +
+                `Total members checked: **${totalMembers}**\n` +
                 `Members affected: **${affected}**\n` +
                 `Did not have roles: **${skipped}**\n` +
-                `Failed: **${failed}**`
+                `Failed (no permissions): **${failed}**`
             )
             .setTimestamp();
 
@@ -314,8 +369,30 @@ module.exports = {
 
     async processReplace(interactionOrMessage, oldRoles, newRole, excludeBots, statusMessage = null) {
         const guild = interactionOrMessage.guild;
-        const members = await guild.members.fetch();
         const oldRole = oldRoles[0];
+        
+        if (statusMessage) {
+            await statusMessage.edit({
+                embeds: [new EmbedBuilder()
+                    .setColor('#ff6b35')
+                    .setTitle('Fetching Members...')
+                    .setDescription('This may take a moment for large servers.')
+                    .setTimestamp()]
+            });
+        }
+        
+        const members = await guild.members.fetch();
+        const totalMembers = members.size;
+        
+        if (statusMessage) {
+            await statusMessage.edit({
+                embeds: [new EmbedBuilder()
+                    .setColor('#ff6b35')
+                    .setTitle('Processing Members...')
+                    .setDescription(`Checking ${totalMembers} members...`)
+                    .setTimestamp()]
+            });
+        }
         
         let affected = 0;
         let skipped = 0;
@@ -342,9 +419,10 @@ module.exports = {
             .setTitle('Role Replacement Complete')
             .setDescription(
                 `**Replaced:** ${oldRole.name} → ${newRole.name}\n\n` +
+                `Total members checked: **${totalMembers}**\n` +
                 `Members affected: **${affected}**\n` +
                 `Did not have old role: **${skipped}**\n` +
-                `Failed: **${failed}**`
+                `Failed (no permissions): **${failed}**`
             )
             .setTimestamp();
 

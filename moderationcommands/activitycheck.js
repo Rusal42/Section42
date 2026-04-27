@@ -43,8 +43,16 @@ module.exports = {
                         .setRequired(false)))
         .addSubcommand(subcommand =>
             subcommand
+                .setName('end')
+                .setDescription('End an activity check early and process results immediately')
+                .addStringOption(option =>
+                    option.setName('check_id')
+                        .setDescription('The check ID (found in the original message)')
+                        .setRequired(true)))
+        .addSubcommand(subcommand =>
+            subcommand
                 .setName('cancel')
-                .setDescription('Cancel an active activity check')
+                .setDescription('Cancel an activity check without processing (no roles removed)')
                 .addStringOption(option =>
                     option.setName('check_id')
                         .setDescription('The check ID (found in the original message)')
@@ -71,7 +79,8 @@ module.exports = {
                 .setTitle('Activity Check Usage')
                 .setDescription(
                     '`!activitycheck start <duration> <role> <title|description>`\n' +
-                    '`!activitycheck cancel <check_id>`\n' +
+                    '`!activitycheck end <check_id>` - End early, process results\n' +
+                    '`!activitycheck cancel <check_id>` - Cancel without processing\n' +
                     '`!activitycheck list`\n\n' +
                     'Duration: 30m, 1h, 2h, 1d, etc.'
                 )
@@ -85,9 +94,16 @@ module.exports = {
             return this.handleList(message);
         }
 
+        if (subcommand === 'end') {
+            if (!args[1]) {
+                return message.channel.send('Usage: `!activitycheck end <check_id>` - Ends check early and removes roles from non-reactors');
+            }
+            return this.handleEndEarly(message, args[1]);
+        }
+
         if (subcommand === 'cancel') {
             if (!args[1]) {
-                return message.channel.send('Usage: `!activitycheck cancel <check_id>`');
+                return message.channel.send('Usage: `!activitycheck cancel <check_id>` - Cancels without removing roles');
             }
             return this.handleCancel(message, args[1]);
         }
@@ -116,7 +132,7 @@ module.exports = {
             });
         }
 
-        return message.channel.send('Invalid subcommand. Use `start`, `cancel`, or `list`.');
+        return message.channel.send('Invalid subcommand. Use `start`, `end`, `cancel`, or `list`.');
     },
 
     async executeSlash(interaction) {
@@ -125,6 +141,9 @@ module.exports = {
         try {
             if (subcommand === 'list') {
                 await this.handleList(interaction);
+            } else if (subcommand === 'end') {
+                const checkId = interaction.options.getString('check_id');
+                await this.handleEndEarly(interaction, checkId);
             } else if (subcommand === 'cancel') {
                 const checkId = interaction.options.getString('check_id');
                 await this.handleCancel(interaction, checkId);
@@ -235,7 +254,7 @@ module.exports = {
             .setDescription(
                 `${options.description}\n\n` +
                 `React with ${options.emoji} within <t:${endTimestamp}:R> to keep your roles!\n\n` +
-                `**Affected Role:** ${checkRole.name}\n` +
+                `**Affected Role:** <@&${checkRole.id}>\n` +
                 `**Time Limit:** ${options.duration}\n` +
                 `**Check ID:** \`${checkId}\``
             )
@@ -363,6 +382,54 @@ module.exports = {
 
         if (interactionOrMessage.isCommand?.() || interactionOrMessage.isChatInputCommand?.()) {
             await interactionOrMessage.reply({ embeds: [successEmbed], ephemeral: true });
+        } else {
+            await interactionOrMessage.channel.send({ embeds: [successEmbed] });
+        }
+    },
+
+    async handleEndEarly(interactionOrMessage, checkId) {
+        const checkData = activeChecks.get(checkId);
+        
+        if (!checkData) {
+            const errorMsg = `No active check found with ID: \`${checkId}\``;
+            if (interactionOrMessage.isCommand?.() || interactionOrMessage.isChatInputCommand?.()) {
+                return interactionOrMessage.reply({ content: errorMsg, ephemeral: true });
+            }
+            return interactionOrMessage.channel.send(errorMsg);
+        }
+
+        if (checkData.ended) {
+            const errorMsg = `Check \`${checkId}\` has already ended.`;
+            if (interactionOrMessage.isCommand?.() || interactionOrMessage.isChatInputCommand?.()) {
+                return interactionOrMessage.reply({ content: errorMsg, ephemeral: true });
+            }
+            return interactionOrMessage.channel.send(errorMsg);
+        }
+
+        // Update status
+        const processingEmbed = new EmbedBuilder()
+            .setColor('#ff6b35')
+            .setTitle('Ending Check Early...')
+            .setDescription(`Processing results for check \`${checkId}\`...`)
+            .setTimestamp();
+
+        if (interactionOrMessage.isCommand?.() || interactionOrMessage.isChatInputCommand?.()) {
+            await interactionOrMessage.reply({ embeds: [processingEmbed], ephemeral: true });
+        } else {
+            await interactionOrMessage.channel.send({ embeds: [processingEmbed] });
+        }
+
+        // End the check immediately (this will process results)
+        await this.endCheck(checkId);
+
+        const successEmbed = new EmbedBuilder()
+            .setColor('#2ecc71')
+            .setTitle('Activity Check Ended Early')
+            .setDescription(`Check \`${checkId}\` has been ended early and results have been processed. Non-reactors have had their roles removed.`)
+            .setTimestamp();
+
+        if (interactionOrMessage.isCommand?.() || interactionOrMessage.isChatInputCommand?.()) {
+            await interactionOrMessage.followUp({ embeds: [successEmbed], ephemeral: true });
         } else {
             await interactionOrMessage.channel.send({ embeds: [successEmbed] });
         }
