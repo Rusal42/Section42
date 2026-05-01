@@ -1,9 +1,24 @@
 const { EmbedBuilder } = require('discord.js');
+const inviteTracker = require('../utils/inviteTracker');
 
 module.exports = {
     name: 'guildMemberAdd',
     async execute(member) {
         console.log(`👋 New member joined: ${member.user.tag}`);
+        
+        // Track invite
+        let inviterInfo = null;
+        try {
+            const usedInvite = await inviteTracker.findUsedInvite(member.guild);
+            if (usedInvite && usedInvite.inviterId) {
+                inviteTracker.trackInvite(usedInvite.inviterId, member.id);
+                const inviter = await member.guild.members.fetch(usedInvite.inviterId).catch(() => null);
+                inviterInfo = inviter ? inviter.user.tag : 'Unknown';
+                console.log(`📨 ${member.user.tag} was invited by ${inviterInfo}`);
+            }
+        } catch (error) {
+            console.error('Error tracking invite:', error);
+        }
         
         try {
             // Find the welcome channel

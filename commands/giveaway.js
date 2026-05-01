@@ -1,4 +1,5 @@
 const { EmbedBuilder, SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+const inviteTracker = require('../utils/inviteTracker');
 
 // Store active giveaways (shared across subcommands)
 const activeGiveaways = new Map();
@@ -50,6 +51,12 @@ module.exports = {
                         .setDescription('Minimum participants required (giveaway fails if not met)')
                         .setRequired(false)
                         .setMinValue(1)
+                        .setMaxValue(1000))
+                .addIntegerOption(option =>
+                    option.setName('required_invites')
+                        .setDescription('Minimum invites required to enter/win (default: 0)')
+                        .setRequired(false)
+                        .setMinValue(0)
                         .setMaxValue(1000)))
         .addSubcommand(subcommand =>
             subcommand
@@ -105,14 +112,24 @@ async function handleStart(interaction) {
 
     const winners = interaction.options.getInteger('winners') || 1;
     const minParticipants = interaction.options.getInteger('min_participants') || 0;
+    const requiredInvites = interaction.options.getInteger('required_invites') || 0;
 
     const endTime = Date.now() + (duration * 60 * 1000);
     const endTimestamp = Math.floor(endTime / 1000);
 
+    let description = `**Prize:** ${prize}\n\n**Winners:** ${winners}\n**Ends:** <t:${endTimestamp}:R> (<t:${endTimestamp}:F>)`;
+    if (requiredInvites > 0) {
+        description += `\n**Required Invites:** ${requiredInvites}`;
+    }
+    description += `\n\nReact with 1 to enter!`;
+    if (requiredInvites > 0) {
+        description += `\n*Only users with ${requiredInvites}+ invites can win*`;
+    }
+
     const giveawayEmbed = new EmbedBuilder()
         .setColor('#ff6b35')
         .setTitle('GIVEAWAY')
-        .setDescription(`**Prize:** ${prize}\n\n**Winners:** ${winners}\n**Ends:** <t:${endTimestamp}:R> (<t:${endTimestamp}:F>)\n\nReact with 1 to enter!`)
+        .setDescription(description)
         .setFooter({ text: `Hosted by ${interaction.user.tag}`, iconURL: interaction.user.displayAvatarURL() })
         .setTimestamp(endTime);
 
@@ -137,6 +154,7 @@ async function handleStart(interaction) {
         prize,
         winners,
         minParticipants,
+        requiredInvites,
         hostId: interaction.user.id,
         timeoutId,
         ended: false
@@ -264,13 +282,25 @@ async function endGiveaway(client, giveawayId, channelId) {
         }
 
         const users = await reaction.users.fetch();
-        const entries = users.filter(user => !user.bot);
+        let entries = users.filter(user => !user.bot);
+
+        // Filter by required invites if set
+        if (giveaway.requiredInvites > 0) {
+            const validEntries = [];
+            for (const [, user] of entries) {
+                const stats = inviteTracker.getStats(user.id);
+                if (stats.count >= giveaway.requiredInvites) {
+                    validEntries.push(user);
+                }
+            }
+            entries = new Map(validEntries.map(u => [u.id, u]));
+        }
 
         if (entries.size === 0) {
             const noEntriesEmbed = new EmbedBuilder()
                 .setColor('#ff0000')
                 .setTitle('Giveaway Ended')
-                .setDescription(`**Prize:** ${giveaway.prize}\n\nNo valid entries!`)
+                .setDescription(`**Prize:** ${giveaway.prize}\n\n${giveaway.requiredInvites > 0 ? `No valid entries with ${giveaway.requiredInvites}+ invites!` : 'No valid entries!'}`)
                 .setTimestamp();
             await fetchedMessage.reply({ embeds: [noEntriesEmbed] });
             activeGiveaways.delete(giveawayId);
@@ -318,21 +348,31 @@ async function endGiveaway(client, giveawayId, channelId) {
             entriesArray.splice(randomIndex, 1);
         }
 
-        const winnerMentions = winnerArray.map(user => `<@${user.id}>`).join(', ');
+        // Build winner list with invite counts
+        let winnerList;
+        if (giveaway.requiredInvites > 0) {
+            winnerList = winnerArray.map(user => {
+                const stats = inviteTracker.getStats(user.id);
+                return `<@${user.id}> (${stats.count} invites)`;
+            }).join(', ');
+        } else {
+            winnerList = winnerArray.map(user => `<@${user.id}>`).join(', ');
+        }
 
         const winnerEmbed = new EmbedBuilder()
             .setColor('#00ff00')
             .setTitle('Giveaway Ended!')
-            .setDescription(`**Prize:** ${giveaway.prize}\n\n**Winner${winnerCount > 1 ? 's' : ''}:** ${winnerMentions}\n\nCongratulations!`)
-            .setFooter({ text: `${entries.size} total entries`, iconURL: fetchedMessage.guild.iconURL() })
+            .setDescription(`**Prize:** ${giveaway.prize}\n\n**Winner${winnerCount > 1 ? 's' : ''}:** ${winnerList}\n\nCongratulations!`)
+            .setFooter({ text: `${entries.size} valid entries`, iconURL: fetchedMessage.guild.iconURL() })
             .setTimestamp();
 
+        const winnerMentions = winnerArray.map(user => `<@${user.id}>`).join(', ');
         await fetchedMessage.reply({ content: winnerMentions, embeds: [winnerEmbed] });
 
         const endedEmbed = new EmbedBuilder()
             .setColor('#808080')
             .setTitle('GIVEAWAY ENDED')
-            .setDescription(`**Prize:** ${giveaway.prize}\n\n**Winner${winnerCount > 1 ? 's' : ''}:** ${winnerMentions}\n\n~~Click to enter!~~`)
+            .setDescription(`**Prize:** ${giveaway.prize}\n\n**Winner${winnerCount > 1 ? 's' : ''}:** ${winnerList}\n\n~~Click to enter!~~`)
             .setFooter({ text: `Hosted by ${giveaway.hostId} | ${entries.size} entries` })
             .setTimestamp();
 

@@ -1,5 +1,6 @@
 const { REST, Routes } = require('discord.js');
 const { restoreReactionRoles } = require('./reactionRoles');
+const inviteTracker = require('../utils/inviteTracker');
 
 module.exports = {
     name: 'ready',
@@ -9,6 +10,14 @@ module.exports = {
         
         // Get ALLOWED_GUILD_IDS from client or use default
         const ALLOWED_GUILD_IDS = ['1421592736221626572', '1392710210862321694'];
+        
+        // Cache invites for all guilds
+        for (const guildId of ALLOWED_GUILD_IDS) {
+            const guild = client.guilds.cache.get(guildId);
+            if (guild) {
+                await inviteTracker.cacheGuildInvites(guild);
+            }
+        }
         
         // Handle case where slashCommandsData might not be passed
         const commandsData = client.slashCommandsData || [];
