@@ -1,11 +1,17 @@
 const { OWNER_IDS } = require('../config/constants');
 
 async function handleOwnerCommands(message, client) {
-    // Only handle if owner directly mentions the bot (not @everyone or @here)
+    // Only handle if owner directly mentions the bot (not @everyone, @here, or roles)
     if (!message.mentions.has(client.user) || 
         message.mentions.everyone || 
         message.mentions.here ||
+        message.mentions.roles.size > 0 ||  // Block if any role is mentioned
         !OWNER_IDS.includes(message.author.id)) {
+        return false;
+    }
+    
+    // Double-check: make sure the bot is the ONLY mention (no users, no roles)
+    if (message.mentions.users.size !== 1 || message.mentions.roles.size > 0) {
         return false;
     }
 

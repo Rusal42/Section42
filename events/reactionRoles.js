@@ -140,7 +140,12 @@ async function restoreReactionRoles(client, ALLOWED_GUILD_IDS) {
                                         console.log(`✅ Restored ${roleName} role to ${user.tag}`);
                                     }
                                 } catch (error) {
-                                    console.error(`Error restoring role for ${user.tag}:`, error);
+                                    // Skip logging for users who left the server
+                                    if (error.code === 10007) {
+                                        // User left server, skip silently
+                                        continue;
+                                    }
+                                    console.error(`Error restoring role for ${user.tag}:`, error.message);
                                 }
                             }
                         }
