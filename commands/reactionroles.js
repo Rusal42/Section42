@@ -70,6 +70,66 @@ module.exports = {
                 .addStringOption(option =>
                     option.setName('duration')
                         .setDescription('Time limit for claiming roles (e.g., 1h, 2h, 1d). Leave empty for permanent.')
+                        .setRequired(false))
+                .addRoleOption(option =>
+                    option.setName('role1')
+                        .setDescription('First role to add')
+                        .setRequired(false))
+                .addStringOption(option =>
+                    option.setName('label1')
+                        .setDescription('Button label for role 1')
+                        .setRequired(false))
+                .addStringOption(option =>
+                    option.setName('emoji1')
+                        .setDescription('Emoji for role 1 button')
+                        .setRequired(false))
+                .addRoleOption(option =>
+                    option.setName('role2')
+                        .setDescription('Second role to add')
+                        .setRequired(false))
+                .addStringOption(option =>
+                    option.setName('label2')
+                        .setDescription('Button label for role 2')
+                        .setRequired(false))
+                .addStringOption(option =>
+                    option.setName('emoji2')
+                        .setDescription('Emoji for role 2 button')
+                        .setRequired(false))
+                .addRoleOption(option =>
+                    option.setName('role3')
+                        .setDescription('Third role to add')
+                        .setRequired(false))
+                .addStringOption(option =>
+                    option.setName('label3')
+                        .setDescription('Button label for role 3')
+                        .setRequired(false))
+                .addStringOption(option =>
+                    option.setName('emoji3')
+                        .setDescription('Emoji for role 3 button')
+                        .setRequired(false))
+                .addRoleOption(option =>
+                    option.setName('role4')
+                        .setDescription('Fourth role to add')
+                        .setRequired(false))
+                .addStringOption(option =>
+                    option.setName('label4')
+                        .setDescription('Button label for role 4')
+                        .setRequired(false))
+                .addStringOption(option =>
+                    option.setName('emoji4')
+                        .setDescription('Emoji for role 4 button')
+                        .setRequired(false))
+                .addRoleOption(option =>
+                    option.setName('role5')
+                        .setDescription('Fifth role to add')
+                        .setRequired(false))
+                .addStringOption(option =>
+                    option.setName('label5')
+                        .setDescription('Button label for role 5')
+                        .setRequired(false))
+                .addStringOption(option =>
+                    option.setName('emoji5')
+                        .setDescription('Emoji for role 5 button')
                         .setRequired(false)))
         .addSubcommand(subcommand =>
             subcommand
@@ -184,6 +244,39 @@ module.exports = {
             endTime = Date.now() + duration;
         }
 
+        // Collect roles from options
+        const roles = [];
+        const styles = ['Primary', 'Secondary', 'Success', 'Danger'];
+        for (let i = 1; i <= 5; i++) {
+            const role = interaction.options.getRole(`role${i}`);
+            if (role) {
+                const label = interaction.options.getString(`label${i}`) || role.name;
+                const emoji = interaction.options.getString(`emoji${i}`) || undefined;
+                roles.push({
+                    roleId: role.id,
+                    label,
+                    emoji,
+                    style: styles[(i - 1) % styles.length]
+                });
+            }
+        }
+
+        // Create buttons
+        const buttons = roles.map((roleData, index) => {
+            const btn = new ButtonBuilder()
+                .setCustomId(`reactionrole_${roleData.roleId}`)
+                .setLabel(roleData.label)
+                .setStyle(ButtonStyle[roleData.style]);
+            if (roleData.emoji) btn.setEmoji(roleData.emoji);
+            return btn;
+        });
+
+        // Split into rows of 5
+        const rows = [];
+        for (let i = 0; i < buttons.length; i += 5) {
+            rows.push(new ActionRowBuilder().addComponents(buttons.slice(i, i + 5)));
+        }
+
         // Create initial embed
         let descText = description + '\n\nClick a button below to get a role!';
         if (endTime) {
@@ -198,10 +291,10 @@ module.exports = {
             .setFooter({ text: endTime ? 'Time-limited Reaction Roles' : 'Reaction Roles' })
             .setTimestamp();
 
-        // Send message with empty row (buttons added later)
+        // Send message with buttons
         const message = await channel.send({ 
             embeds: [embed],
-            components: []
+            components: rows
         });
 
         // Store in database
@@ -214,7 +307,7 @@ module.exports = {
             description,
             endTime,
             ended: false,
-            roles: [] // Will be populated with add command
+            roles: roles
         };
         saveReactionRoles(reactionRoles);
         
@@ -232,7 +325,8 @@ module.exports = {
                 `Message sent to <#${channel.id}>\n` +
                 `Message ID: \`${message.id}\`\n` +
                 (endTime ? `**Time limit:** Ends <t:${Math.floor(endTime / 1000)}:R>\n` : '**Duration:** Permanent\n') +
-                `\nUse \`/reactionroles add\` to add role buttons to this message.`
+                `**Roles added:** ${roles.length}\n` +
+                (roles.length < 5 ? '\nUse `/reactionroles add` to add more roles.' : '')
             )
             .setTimestamp();
 

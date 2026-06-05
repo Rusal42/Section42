@@ -73,6 +73,9 @@ client.on('interactionCreate', async interaction => {
     if (interaction.isButton()) {
         if (interaction.customId.startsWith('reactionrole_')) {
             await handleReactionRoleButton(interaction);
+        } else if (interaction.customId.startsWith('tournament_')) {
+            const { handleTournamentButton } = require('./commands/tournament');
+            await handleTournamentButton(interaction);
         }
         return;
     }
