@@ -67,7 +67,7 @@ client.on('messageCreate', async message => {
 });
 
 client.on('interactionCreate', async interaction => {
-    if (!ALLOWED_GUILD_IDS.includes(interaction.guild.id)) return;
+    if (!interaction.guild || !ALLOWED_GUILD_IDS.includes(interaction.guild.id)) return;
 
     // Handle button interactions for reaction roles
     if (interaction.isButton()) {
