@@ -1,0 +1,2422 @@
+{
+  "savedAt": "2026-01-02T22:55:18.555Z",
+  "guildId": "1421592736221626572",
+  "guildName": "Crucifyym Community",
+  "roles": [
+    {
+      "name": "temp announce",
+      "color": "#000000",
+      "hoist": false,
+      "mentionable": false,
+      "position": 46,
+      "permissions": []
+    },
+    {
+      "name": "bb333",
+      "color": "#000000",
+      "hoist": false,
+      "mentionable": false,
+      "position": 45,
+      "permissions": []
+    },
+    {
+      "name": "Cuck",
+      "color": "#000000",
+      "hoist": false,
+      "mentionable": false,
+      "position": 40,
+      "permissions": [
+        "CreateInstantInvite",
+        "ManageChannels",
+        "ManageGuild",
+        "AddReactions",
+        "ViewAuditLog",
+        "PrioritySpeaker",
+        "Stream",
+        "ViewChannel",
+        "SendMessages",
+        "SendTTSMessages",
+        "ManageMessages",
+        "EmbedLinks",
+        "AttachFiles",
+        "ReadMessageHistory",
+        "MentionEveryone",
+        "UseExternalEmojis",
+        "ViewGuildInsights",
+        "Connect",
+        "Speak",
+        "MuteMembers",
+        "DeafenMembers",
+        "MoveMembers",
+        "UseVAD",
+        "ChangeNickname",
+        "ManageNicknames",
+        "ManageRoles",
+        "ManageWebhooks",
+        "ManageEmojisAndStickers",
+        "ManageGuildExpressions",
+        "UseApplicationCommands",
+        "ManageThreads",
+        "CreatePublicThreads",
+        "CreatePrivateThreads",
+        "UseExternalStickers",
+        "SendMessagesInThreads",
+        "UseEmbeddedActivities",
+        "ModerateMembers",
+        "UseSoundboard",
+        "CreateGuildExpressions",
+        "UseExternalSounds",
+        "SendVoiceMessages",
+        "SendPolls"
+      ]
+    },
+    {
+      "name": "Crucifyym",
+      "color": "#9b59b6",
+      "hoist": true,
+      "mentionable": false,
+      "position": 39,
+      "permissions": [
+        "CreateInstantInvite",
+        "AddReactions",
+        "Stream",
+        "ViewChannel",
+        "SendMessages",
+        "EmbedLinks",
+        "AttachFiles",
+        "ReadMessageHistory",
+        "UseExternalEmojis",
+        "Connect",
+        "Speak",
+        "UseVAD",
+        "ChangeNickname",
+        "UseApplicationCommands",
+        "RequestToSpeak",
+        "CreatePublicThreads",
+        "CreatePrivateThreads",
+        "UseExternalStickers",
+        "SendMessagesInThreads",
+        "UseEmbeddedActivities",
+        "UseSoundboard",
+        "UseExternalSounds",
+        "SendVoiceMessages",
+        "SendPolls",
+        "UseExternalApps"
+      ]
+    },
+    {
+      "name": "Admin",
+      "color": "#27ae60",
+      "hoist": true,
+      "mentionable": false,
+      "position": 38,
+      "permissions": [
+        "CreateInstantInvite",
+        "Administrator",
+        "AddReactions",
+        "Stream",
+        "ViewChannel",
+        "SendMessages",
+        "EmbedLinks",
+        "AttachFiles",
+        "ReadMessageHistory",
+        "MentionEveryone",
+        "UseExternalEmojis",
+        "Connect",
+        "Speak",
+        "UseVAD",
+        "ChangeNickname",
+        "UseApplicationCommands",
+        "RequestToSpeak",
+        "CreatePublicThreads",
+        "CreatePrivateThreads",
+        "UseExternalStickers",
+        "SendMessagesInThreads",
+        "UseEmbeddedActivities",
+        "UseSoundboard",
+        "UseExternalSounds",
+        "SendVoiceMessages",
+        "SendPolls",
+        "UseExternalApps"
+      ]
+    },
+    {
+      "name": "Amazing Je-Woah!!!",
+      "color": "#f4b5d0",
+      "hoist": true,
+      "mentionable": false,
+      "position": 37,
+      "permissions": [
+        "ManageRoles"
+      ]
+    },
+    {
+      "name": "Moderator",
+      "color": "#ae48bd",
+      "hoist": true,
+      "mentionable": false,
+      "position": 36,
+      "permissions": [
+        "KickMembers",
+        "ViewAuditLog",
+        "ManageMessages",
+        "ModerateMembers"
+      ]
+    },
+    {
+      "name": "Developer",
+      "color": "#9b59b6",
+      "hoist": true,
+      "mentionable": false,
+      "position": 35,
+      "permissions": [
+        "CreateInstantInvite",
+        "AddReactions",
+        "Stream",
+        "ViewChannel",
+        "SendMessages",
+        "EmbedLinks",
+        "AttachFiles",
+        "ReadMessageHistory",
+        "UseExternalEmojis",
+        "Connect",
+        "Speak",
+        "UseVAD",
+        "ChangeNickname",
+        "UseApplicationCommands",
+        "RequestToSpeak",
+        "CreatePublicThreads",
+        "CreatePrivateThreads",
+        "UseExternalStickers",
+        "SendMessagesInThreads",
+        "UseEmbeddedActivities",
+        "UseSoundboard",
+        "UseExternalSounds",
+        "SendVoiceMessages",
+        "SendPolls",
+        "UseExternalApps"
+      ]
+    },
+    {
+      "name": "Content Creator",
+      "color": "#e74c3c",
+      "hoist": true,
+      "mentionable": false,
+      "position": 34,
+      "permissions": [
+        "CreateInstantInvite",
+        "AddReactions",
+        "Stream",
+        "ViewChannel",
+        "SendMessages",
+        "EmbedLinks",
+        "AttachFiles",
+        "ReadMessageHistory",
+        "UseExternalEmojis",
+        "Connect",
+        "Speak",
+        "UseVAD",
+        "ChangeNickname",
+        "UseApplicationCommands",
+        "RequestToSpeak",
+        "CreatePublicThreads",
+        "CreatePrivateThreads",
+        "UseExternalStickers",
+        "SendMessagesInThreads",
+        "UseEmbeddedActivities",
+        "UseSoundboard",
+        "UseExternalSounds",
+        "SendVoiceMessages",
+        "SendPolls",
+        "UseExternalApps"
+      ]
+    },
+    {
+      "name": "Yaoi Jesus",
+      "color": "#009eff",
+      "hoist": true,
+      "mentionable": false,
+      "position": 33,
+      "permissions": []
+    },
+    {
+      "name": "Member",
+      "color": "#95a5a6",
+      "hoist": true,
+      "mentionable": false,
+      "position": 32,
+      "permissions": [
+        "CreateInstantInvite",
+        "AddReactions",
+        "Stream",
+        "ViewChannel",
+        "ReadMessageHistory",
+        "Connect",
+        "Speak",
+        "UseVAD",
+        "ChangeNickname",
+        "UseSoundboard",
+        "UseExternalSounds",
+        "SendVoiceMessages",
+        "SendPolls"
+      ]
+    },
+    {
+      "name": "Revive",
+      "color": "#e67e22",
+      "hoist": false,
+      "mentionable": false,
+      "position": 31,
+      "permissions": [
+        "CreateInstantInvite",
+        "Stream",
+        "ViewChannel",
+        "ReadMessageHistory",
+        "Connect",
+        "Speak",
+        "UseVAD",
+        "ChangeNickname",
+        "UseApplicationCommands",
+        "RequestToSpeak",
+        "UseEmbeddedActivities",
+        "UseSoundboard",
+        "UseExternalSounds",
+        "SendVoiceMessages",
+        "SendPolls",
+        "UseExternalApps"
+      ]
+    },
+    {
+      "name": "Announcements",
+      "color": "#3498db",
+      "hoist": false,
+      "mentionable": false,
+      "position": 30,
+      "permissions": [
+        "CreateInstantInvite",
+        "Stream",
+        "ViewChannel",
+        "ReadMessageHistory",
+        "Connect",
+        "Speak",
+        "UseVAD",
+        "ChangeNickname",
+        "UseApplicationCommands",
+        "RequestToSpeak",
+        "UseEmbeddedActivities",
+        "UseSoundboard",
+        "UseExternalSounds",
+        "SendVoiceMessages",
+        "SendPolls",
+        "UseExternalApps"
+      ]
+    },
+    {
+      "name": "Pic Perms",
+      "color": "#2ecc71",
+      "hoist": false,
+      "mentionable": false,
+      "position": 29,
+      "permissions": [
+        "CreateInstantInvite",
+        "AddReactions",
+        "Stream",
+        "ViewChannel",
+        "SendMessages",
+        "EmbedLinks",
+        "AttachFiles",
+        "ReadMessageHistory",
+        "UseExternalEmojis",
+        "Connect",
+        "Speak",
+        "UseVAD",
+        "ChangeNickname",
+        "UseApplicationCommands",
+        "RequestToSpeak",
+        "CreatePublicThreads",
+        "CreatePrivateThreads",
+        "UseExternalStickers",
+        "SendMessagesInThreads",
+        "UseEmbeddedActivities",
+        "UseSoundboard",
+        "UseExternalSounds",
+        "SendVoiceMessages",
+        "SendPolls",
+        "UseExternalApps"
+      ]
+    },
+    {
+      "name": "Pic Muted",
+      "color": "#e74c3c",
+      "hoist": false,
+      "mentionable": false,
+      "position": 28,
+      "permissions": [
+        "CreateInstantInvite",
+        "AddReactions",
+        "Stream",
+        "ViewChannel",
+        "SendMessages",
+        "EmbedLinks",
+        "AttachFiles",
+        "ReadMessageHistory",
+        "UseExternalEmojis",
+        "Connect",
+        "Speak",
+        "UseVAD",
+        "ChangeNickname",
+        "UseApplicationCommands",
+        "RequestToSpeak",
+        "CreatePublicThreads",
+        "CreatePrivateThreads",
+        "UseExternalStickers",
+        "SendMessagesInThreads",
+        "UseEmbeddedActivities",
+        "UseSoundboard",
+        "UseExternalSounds",
+        "SendVoiceMessages",
+        "SendPolls",
+        "UseExternalApps"
+      ]
+    },
+    {
+      "name": "Bots",
+      "color": "#7289da",
+      "hoist": true,
+      "mentionable": false,
+      "position": 27,
+      "permissions": [
+        "CreateInstantInvite",
+        "AddReactions",
+        "Stream",
+        "ViewChannel",
+        "SendMessages",
+        "EmbedLinks",
+        "AttachFiles",
+        "ReadMessageHistory",
+        "UseExternalEmojis",
+        "Connect",
+        "Speak",
+        "UseVAD",
+        "ChangeNickname",
+        "UseApplicationCommands",
+        "RequestToSpeak",
+        "CreatePublicThreads",
+        "CreatePrivateThreads",
+        "UseExternalStickers",
+        "SendMessagesInThreads",
+        "UseEmbeddedActivities",
+        "UseSoundboard",
+        "UseExternalSounds",
+        "SendVoiceMessages",
+        "SendPolls",
+        "UseExternalApps"
+      ]
+    },
+    {
+      "name": "TYPE://SOUL",
+      "color": "#8e44ad",
+      "hoist": false,
+      "mentionable": false,
+      "position": 26,
+      "permissions": [
+        "CreateInstantInvite",
+        "AddReactions",
+        "Stream",
+        "ViewChannel",
+        "SendMessages",
+        "EmbedLinks",
+        "AttachFiles",
+        "ReadMessageHistory",
+        "UseExternalEmojis",
+        "Connect",
+        "Speak",
+        "UseVAD",
+        "ChangeNickname",
+        "UseApplicationCommands",
+        "RequestToSpeak",
+        "CreatePublicThreads",
+        "CreatePrivateThreads",
+        "UseExternalStickers",
+        "SendMessagesInThreads",
+        "UseEmbeddedActivities",
+        "UseSoundboard",
+        "UseExternalSounds",
+        "SendVoiceMessages",
+        "SendPolls",
+        "UseExternalApps"
+      ]
+    },
+    {
+      "name": "Deepwoken",
+      "color": "#2c3e50",
+      "hoist": false,
+      "mentionable": false,
+      "position": 25,
+      "permissions": [
+        "CreateInstantInvite",
+        "AddReactions",
+        "Stream",
+        "ViewChannel",
+        "SendMessages",
+        "EmbedLinks",
+        "ReadMessageHistory",
+        "UseExternalEmojis",
+        "Connect",
+        "Speak",
+        "UseVAD",
+        "ChangeNickname",
+        "UseApplicationCommands",
+        "RequestToSpeak",
+        "CreatePublicThreads",
+        "CreatePrivateThreads",
+        "UseExternalStickers",
+        "SendMessagesInThreads",
+        "UseEmbeddedActivities",
+        "UseSoundboard",
+        "UseExternalSounds",
+        "SendVoiceMessages",
+        "SendPolls",
+        "UseExternalApps"
+      ]
+    },
+    {
+      "name": "ABA",
+      "color": "#e74c3c",
+      "hoist": false,
+      "mentionable": false,
+      "position": 24,
+      "permissions": [
+        "CreateInstantInvite",
+        "AddReactions",
+        "Stream",
+        "ViewChannel",
+        "SendMessages",
+        "EmbedLinks",
+        "AttachFiles",
+        "ReadMessageHistory",
+        "UseExternalEmojis",
+        "Connect",
+        "Speak",
+        "UseVAD",
+        "ChangeNickname",
+        "UseApplicationCommands",
+        "RequestToSpeak",
+        "CreatePublicThreads",
+        "CreatePrivateThreads",
+        "UseExternalStickers",
+        "SendMessagesInThreads",
+        "UseEmbeddedActivities",
+        "UseSoundboard",
+        "UseExternalSounds",
+        "SendVoiceMessages",
+        "SendPolls",
+        "UseExternalApps"
+      ]
+    },
+    {
+      "name": "Balthazar",
+      "color": "#f39c12",
+      "hoist": false,
+      "mentionable": false,
+      "position": 23,
+      "permissions": [
+        "CreateInstantInvite",
+        "AddReactions",
+        "Stream",
+        "ViewChannel",
+        "SendMessages",
+        "EmbedLinks",
+        "AttachFiles",
+        "ReadMessageHistory",
+        "UseExternalEmojis",
+        "Connect",
+        "Speak",
+        "UseVAD",
+        "ChangeNickname",
+        "UseApplicationCommands",
+        "RequestToSpeak",
+        "CreatePublicThreads",
+        "CreatePrivateThreads",
+        "UseExternalStickers",
+        "SendMessagesInThreads",
+        "UseEmbeddedActivities",
+        "UseSoundboard",
+        "UseExternalSounds",
+        "SendVoiceMessages",
+        "SendPolls",
+        "UseExternalApps"
+      ]
+    },
+    {
+      "name": "ZO",
+      "color": "#27ae60",
+      "hoist": false,
+      "mentionable": false,
+      "position": 22,
+      "permissions": [
+        "CreateInstantInvite",
+        "AddReactions",
+        "Stream",
+        "ViewChannel",
+        "SendMessages",
+        "EmbedLinks",
+        "AttachFiles",
+        "ReadMessageHistory",
+        "UseExternalEmojis",
+        "Connect",
+        "Speak",
+        "UseVAD",
+        "ChangeNickname",
+        "UseApplicationCommands",
+        "RequestToSpeak",
+        "CreatePublicThreads",
+        "CreatePrivateThreads",
+        "UseExternalStickers",
+        "SendMessagesInThreads",
+        "UseEmbeddedActivities",
+        "UseSoundboard",
+        "UseExternalSounds",
+        "SendVoiceMessages",
+        "SendPolls",
+        "UseExternalApps"
+      ]
+    },
+    {
+      "name": "SoulShatterers",
+      "color": "#9b59b6",
+      "hoist": false,
+      "mentionable": false,
+      "position": 21,
+      "permissions": [
+        "CreateInstantInvite",
+        "AddReactions",
+        "Stream",
+        "ViewChannel",
+        "SendMessages",
+        "EmbedLinks",
+        "AttachFiles",
+        "ReadMessageHistory",
+        "UseExternalEmojis",
+        "Connect",
+        "Speak",
+        "UseVAD",
+        "ChangeNickname",
+        "UseApplicationCommands",
+        "RequestToSpeak",
+        "CreatePublicThreads",
+        "CreatePrivateThreads",
+        "UseExternalStickers",
+        "SendMessagesInThreads",
+        "UseEmbeddedActivities",
+        "UseSoundboard",
+        "UseExternalSounds",
+        "SendVoiceMessages",
+        "SendPolls",
+        "UseExternalApps"
+      ]
+    },
+    {
+      "name": "Mortem Metallum",
+      "color": "#34495e",
+      "hoist": false,
+      "mentionable": false,
+      "position": 20,
+      "permissions": [
+        "CreateInstantInvite",
+        "AddReactions",
+        "Stream",
+        "ViewChannel",
+        "SendMessages",
+        "EmbedLinks",
+        "AttachFiles",
+        "ReadMessageHistory",
+        "UseExternalEmojis",
+        "Connect",
+        "Speak",
+        "UseVAD",
+        "ChangeNickname",
+        "UseApplicationCommands",
+        "RequestToSpeak",
+        "CreatePublicThreads",
+        "CreatePrivateThreads",
+        "UseExternalStickers",
+        "SendMessagesInThreads",
+        "UseEmbeddedActivities",
+        "UseSoundboard",
+        "UseExternalSounds",
+        "SendVoiceMessages",
+        "SendPolls",
+        "UseExternalApps"
+      ]
+    },
+    {
+      "name": "Violence District",
+      "color": "#c0392b",
+      "hoist": false,
+      "mentionable": false,
+      "position": 19,
+      "permissions": [
+        "CreateInstantInvite",
+        "AddReactions",
+        "Stream",
+        "ViewChannel",
+        "SendMessages",
+        "EmbedLinks",
+        "AttachFiles",
+        "ReadMessageHistory",
+        "UseExternalEmojis",
+        "Connect",
+        "Speak",
+        "UseVAD",
+        "ChangeNickname",
+        "UseApplicationCommands",
+        "RequestToSpeak",
+        "CreatePublicThreads",
+        "CreatePrivateThreads",
+        "UseExternalStickers",
+        "SendMessagesInThreads",
+        "UseEmbeddedActivities",
+        "UseSoundboard",
+        "UseExternalSounds",
+        "SendVoiceMessages",
+        "SendPolls",
+        "UseExternalApps"
+      ]
+    },
+    {
+      "name": "Project Power",
+      "color": "#e67e22",
+      "hoist": false,
+      "mentionable": false,
+      "position": 18,
+      "permissions": [
+        "CreateInstantInvite",
+        "AddReactions",
+        "Stream",
+        "ViewChannel",
+        "SendMessages",
+        "EmbedLinks",
+        "AttachFiles",
+        "ReadMessageHistory",
+        "UseExternalEmojis",
+        "Connect",
+        "Speak",
+        "UseVAD",
+        "ChangeNickname",
+        "UseApplicationCommands",
+        "RequestToSpeak",
+        "CreatePublicThreads",
+        "CreatePrivateThreads",
+        "UseExternalStickers",
+        "SendMessagesInThreads",
+        "UseEmbeddedActivities",
+        "UseSoundboard",
+        "UseExternalSounds",
+        "SendVoiceMessages",
+        "SendPolls",
+        "UseExternalApps"
+      ]
+    },
+    {
+      "name": "Fisch",
+      "color": "#3498db",
+      "hoist": false,
+      "mentionable": false,
+      "position": 17,
+      "permissions": [
+        "CreateInstantInvite",
+        "AddReactions",
+        "Stream",
+        "ViewChannel",
+        "SendMessages",
+        "EmbedLinks",
+        "AttachFiles",
+        "ReadMessageHistory",
+        "UseExternalEmojis",
+        "Connect",
+        "Speak",
+        "UseVAD",
+        "ChangeNickname",
+        "UseApplicationCommands",
+        "RequestToSpeak",
+        "CreatePublicThreads",
+        "CreatePrivateThreads",
+        "UseExternalStickers",
+        "SendMessagesInThreads",
+        "UseEmbeddedActivities",
+        "UseSoundboard",
+        "UseExternalSounds",
+        "SendVoiceMessages",
+        "SendPolls",
+        "UseExternalApps"
+      ]
+    },
+    {
+      "name": "Grow a Garden",
+      "color": "#2ecc71",
+      "hoist": false,
+      "mentionable": false,
+      "position": 16,
+      "permissions": [
+        "CreateInstantInvite",
+        "AddReactions",
+        "Stream",
+        "ViewChannel",
+        "SendMessages",
+        "EmbedLinks",
+        "AttachFiles",
+        "ReadMessageHistory",
+        "UseExternalEmojis",
+        "Connect",
+        "Speak",
+        "UseVAD",
+        "ChangeNickname",
+        "UseApplicationCommands",
+        "RequestToSpeak",
+        "CreatePublicThreads",
+        "CreatePrivateThreads",
+        "UseExternalStickers",
+        "SendMessagesInThreads",
+        "UseEmbeddedActivities",
+        "UseSoundboard",
+        "UseExternalSounds",
+        "SendVoiceMessages",
+        "SendPolls",
+        "UseExternalApps"
+      ]
+    },
+    {
+      "name": "JJS",
+      "color": "#f1c40f",
+      "hoist": false,
+      "mentionable": false,
+      "position": 15,
+      "permissions": [
+        "CreateInstantInvite",
+        "AddReactions",
+        "Stream",
+        "ViewChannel",
+        "SendMessages",
+        "EmbedLinks",
+        "AttachFiles",
+        "ReadMessageHistory",
+        "UseExternalEmojis",
+        "Connect",
+        "Speak",
+        "UseVAD",
+        "ChangeNickname",
+        "UseApplicationCommands",
+        "RequestToSpeak",
+        "CreatePublicThreads",
+        "CreatePrivateThreads",
+        "UseExternalStickers",
+        "SendMessagesInThreads",
+        "UseEmbeddedActivities",
+        "UseSoundboard",
+        "UseExternalSounds",
+        "SendVoiceMessages",
+        "SendPolls",
+        "UseExternalApps"
+      ]
+    },
+    {
+      "name": "Horse Life",
+      "color": "#d35400",
+      "hoist": false,
+      "mentionable": false,
+      "position": 14,
+      "permissions": [
+        "CreateInstantInvite",
+        "AddReactions",
+        "Stream",
+        "ViewChannel",
+        "SendMessages",
+        "EmbedLinks",
+        "AttachFiles",
+        "ReadMessageHistory",
+        "UseExternalEmojis",
+        "Connect",
+        "Speak",
+        "UseVAD",
+        "ChangeNickname",
+        "UseApplicationCommands",
+        "RequestToSpeak",
+        "CreatePublicThreads",
+        "CreatePrivateThreads",
+        "UseExternalStickers",
+        "SendMessagesInThreads",
+        "UseEmbeddedActivities",
+        "UseSoundboard",
+        "UseExternalSounds",
+        "SendVoiceMessages",
+        "SendPolls",
+        "UseExternalApps"
+      ]
+    },
+    {
+      "name": "Bee Swarm",
+      "color": "#f39c12",
+      "hoist": false,
+      "mentionable": false,
+      "position": 13,
+      "permissions": [
+        "CreateInstantInvite",
+        "AddReactions",
+        "Stream",
+        "ViewChannel",
+        "SendMessages",
+        "EmbedLinks",
+        "AttachFiles",
+        "ReadMessageHistory",
+        "UseExternalEmojis",
+        "Connect",
+        "Speak",
+        "UseVAD",
+        "ChangeNickname",
+        "UseApplicationCommands",
+        "RequestToSpeak",
+        "CreatePublicThreads",
+        "CreatePrivateThreads",
+        "UseExternalStickers",
+        "SendMessagesInThreads",
+        "UseEmbeddedActivities",
+        "UseSoundboard",
+        "UseExternalSounds",
+        "SendVoiceMessages",
+        "SendPolls",
+        "UseExternalApps"
+      ]
+    },
+    {
+      "name": "DHRP",
+      "color": "#8e44ad",
+      "hoist": false,
+      "mentionable": false,
+      "position": 12,
+      "permissions": [
+        "CreateInstantInvite",
+        "AddReactions",
+        "Stream",
+        "ViewChannel",
+        "SendMessages",
+        "EmbedLinks",
+        "AttachFiles",
+        "ReadMessageHistory",
+        "UseExternalEmojis",
+        "Connect",
+        "Speak",
+        "UseVAD",
+        "ChangeNickname",
+        "UseApplicationCommands",
+        "RequestToSpeak",
+        "CreatePublicThreads",
+        "CreatePrivateThreads",
+        "UseExternalStickers",
+        "SendMessagesInThreads",
+        "UseEmbeddedActivities",
+        "UseSoundboard",
+        "UseExternalSounds",
+        "SendVoiceMessages",
+        "SendPolls",
+        "UseExternalApps"
+      ]
+    },
+    {
+      "name": "Other Social Games",
+      "color": "#95a5a6",
+      "hoist": false,
+      "mentionable": false,
+      "position": 11,
+      "permissions": [
+        "CreateInstantInvite",
+        "AddReactions",
+        "Stream",
+        "ViewChannel",
+        "SendMessages",
+        "EmbedLinks",
+        "AttachFiles",
+        "ReadMessageHistory",
+        "UseExternalEmojis",
+        "Connect",
+        "Speak",
+        "UseVAD",
+        "ChangeNickname",
+        "UseApplicationCommands",
+        "RequestToSpeak",
+        "CreatePublicThreads",
+        "CreatePrivateThreads",
+        "UseExternalStickers",
+        "SendMessagesInThreads",
+        "UseEmbeddedActivities",
+        "UseSoundboard",
+        "UseExternalSounds",
+        "SendVoiceMessages",
+        "SendPolls",
+        "UseExternalApps"
+      ]
+    },
+    {
+      "name": "Tester",
+      "color": "#3498db",
+      "hoist": true,
+      "mentionable": false,
+      "position": 10,
+      "permissions": []
+    },
+    {
+      "name": "Co owner",
+      "color": "#000000",
+      "hoist": true,
+      "mentionable": false,
+      "position": 8,
+      "permissions": []
+    },
+    {
+      "name": "Goated amazing huzzorus humble huge dih uwu sama machine Je-woah!",
+      "color": "#ffd4e3",
+      "hoist": false,
+      "mentionable": false,
+      "position": 5,
+      "permissions": []
+    },
+    {
+      "name": "Anti Sky",
+      "color": "#000000",
+      "hoist": false,
+      "mentionable": false,
+      "position": 3,
+      "permissions": []
+    }
+  ],
+  "categories": [
+    {
+      "name": "WELCOME",
+      "position": 0,
+      "channels": [
+        {
+          "name": "welcome",
+          "type": "text",
+          "position": 0,
+          "topic": "Welcome to Section42! Check out Discord's welcome screen when you join",
+          "permissionOverwrites": [
+            {
+              "roleName": "@everyone",
+              "allow": [
+                "AddReactions",
+                "ViewChannel"
+              ],
+              "deny": [
+                "SendMessages"
+              ]
+            },
+            {
+              "roleName": "Admin",
+              "allow": [
+                "ViewChannel",
+                "SendMessages",
+                "ManageMessages"
+              ],
+              "deny": []
+            }
+          ]
+        },
+        {
+          "name": "rules",
+          "type": "text",
+          "position": 1,
+          "topic": "Server rules and guidelines - please read before participating",
+          "permissionOverwrites": [
+            {
+              "roleName": "@everyone",
+              "allow": [
+                "ViewChannel",
+                "ReadMessageHistory"
+              ],
+              "deny": [
+                "SendMessages"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "server-info",
+          "type": "text",
+          "position": 2,
+          "topic": "Information about Section42, roles, and how to get involved",
+          "permissionOverwrites": [
+            {
+              "roleName": "@everyone",
+              "allow": [
+                "ViewChannel",
+                "ReadMessageHistory"
+              ],
+              "deny": [
+                "SendMessages"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ANNOUNCEMENTS",
+      "position": 1,
+      "channels": [
+        {
+          "name": "announcements",
+          "type": "text",
+          "position": 0,
+          "topic": "Official Section42 announcements and important updates",
+          "permissionOverwrites": [
+            {
+              "roleName": "temp announce",
+              "allow": [
+                "SendMessages"
+              ],
+              "deny": []
+            },
+            {
+              "roleName": "@everyone",
+              "allow": [
+                "AddReactions",
+                "ViewChannel"
+              ],
+              "deny": [
+                "SendMessages"
+              ]
+            },
+            {
+              "roleName": "TikTok",
+              "allow": [
+                "SendMessages"
+              ],
+              "deny": []
+            }
+          ]
+        },
+        {
+          "name": "updates",
+          "type": "text",
+          "position": 1,
+          "topic": "Game updates, patch notes, and development progress",
+          "permissionOverwrites": [
+            {
+              "roleName": "@everyone",
+              "allow": [
+                "AddReactions",
+                "ViewChannel"
+              ],
+              "deny": [
+                "SendMessages"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "role-info",
+          "type": "text",
+          "position": 2,
+          "topic": "Information about server roles and how to obtain them",
+          "permissionOverwrites": [
+            {
+              "roleName": "@everyone",
+              "allow": [
+                "AddReactions",
+                "ViewChannel"
+              ],
+              "deny": [
+                "SendMessages"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Roles",
+      "position": 2,
+      "channels": [
+        {
+          "name": "👤",
+          "type": "other",
+          "position": 0,
+          "topic": "",
+          "permissionOverwrites": [
+            {
+              "roleName": "@everyone",
+              "allow": [],
+              "deny": [
+                "SendMessages"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "GAME DEVELOPMENT",
+      "position": 3,
+      "channels": [
+        {
+          "name": "game-ideas",
+          "type": "text",
+          "position": 0,
+          "topic": "Game ideas - Everyone can read, Developer+ can post",
+          "permissionOverwrites": [
+            {
+              "roleName": "Moderator",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages"
+              ],
+              "deny": []
+            },
+            {
+              "roleName": "@everyone",
+              "allow": [
+                "AddReactions",
+                "ViewChannel"
+              ],
+              "deny": [
+                "SendMessages"
+              ]
+            },
+            {
+              "roleName": "Admin",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages",
+                "ManageMessages"
+              ],
+              "deny": []
+            },
+            {
+              "roleName": "Developer",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages",
+                "AttachFiles"
+              ],
+              "deny": []
+            }
+          ]
+        },
+        {
+          "name": "game-concepts",
+          "type": "text",
+          "position": 1,
+          "topic": "Game concepts - Everyone can read, Developer+ can post",
+          "permissionOverwrites": [
+            {
+              "roleName": "Moderator",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages"
+              ],
+              "deny": []
+            },
+            {
+              "roleName": "@everyone",
+              "allow": [
+                "AddReactions",
+                "ViewChannel"
+              ],
+              "deny": [
+                "SendMessages"
+              ]
+            },
+            {
+              "roleName": "Admin",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages",
+                "ManageMessages"
+              ],
+              "deny": []
+            },
+            {
+              "roleName": "Developer",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages",
+                "AttachFiles"
+              ],
+              "deny": []
+            }
+          ]
+        },
+        {
+          "name": "development-updates",
+          "type": "text",
+          "position": 2,
+          "topic": "Updates on Section42 game development progress",
+          "permissionOverwrites": [
+            {
+              "roleName": "@everyone",
+              "allow": [
+                "AddReactions",
+                "ViewChannel"
+              ],
+              "deny": [
+                "SendMessages"
+              ]
+            },
+            {
+              "roleName": "Admin",
+              "allow": [
+                "ViewChannel",
+                "SendMessages",
+                "ManageMessages"
+              ],
+              "deny": []
+            },
+            {
+              "roleName": "Developer",
+              "allow": [
+                "ViewChannel",
+                "SendMessages",
+                "AttachFiles"
+              ],
+              "deny": []
+            }
+          ]
+        },
+        {
+          "name": "collaboration",
+          "type": "text",
+          "position": 3,
+          "topic": "Find developers, builders, and scripters to work with",
+          "permissionOverwrites": [
+            {
+              "roleName": "@everyone",
+              "allow": [],
+              "deny": [
+                "ViewChannel"
+              ]
+            },
+            {
+              "roleName": "Content Creator",
+              "allow": [
+                "ViewChannel",
+                "SendMessages"
+              ],
+              "deny": []
+            },
+            {
+              "roleName": "Developer",
+              "allow": [
+                "ViewChannel",
+                "SendMessages"
+              ],
+              "deny": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "COMMUNITY",
+      "position": 4,
+      "channels": [
+        {
+          "name": "general-chat",
+          "type": "text",
+          "position": 0,
+          "topic": "General discussion - Everyone can chat here! Get Pic Perms role to send images",
+          "permissionOverwrites": [
+            {
+              "roleName": "Pic Perms",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages",
+                "AttachFiles"
+              ],
+              "deny": []
+            },
+            {
+              "roleName": "Moderator",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages",
+                "ManageMessages"
+              ],
+              "deny": []
+            },
+            {
+              "roleName": "Pic Muted",
+              "allow": [],
+              "deny": [
+                "AttachFiles"
+              ]
+            },
+            {
+              "roleName": "@everyone",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages"
+              ],
+              "deny": [
+                "AttachFiles"
+              ]
+            },
+            {
+              "roleName": "Admin",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages",
+                "ManageMessages"
+              ],
+              "deny": []
+            }
+          ]
+        },
+        {
+          "name": "bot-commands",
+          "type": "text",
+          "position": 1,
+          "topic": "Bot commands - Everyone can use bot commands here!",
+          "permissionOverwrites": [
+            {
+              "roleName": "Moderator",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages",
+                "ManageMessages"
+              ],
+              "deny": []
+            },
+            {
+              "roleName": "@everyone",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages"
+              ],
+              "deny": []
+            },
+            {
+              "roleName": "Admin",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages",
+                "ManageMessages"
+              ],
+              "deny": []
+            }
+          ]
+        },
+        {
+          "name": "events",
+          "type": "text",
+          "position": 2,
+          "topic": "Community events - Moderator+ can post, others can view/react",
+          "permissionOverwrites": [
+            {
+              "roleName": "Moderator",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages"
+              ],
+              "deny": []
+            },
+            {
+              "roleName": "@everyone",
+              "allow": [
+                "AddReactions",
+                "ViewChannel"
+              ],
+              "deny": [
+                "SendMessages"
+              ]
+            },
+            {
+              "roleName": "Admin",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages",
+                "ManageMessages"
+              ],
+              "deny": []
+            }
+          ]
+        },
+        {
+          "name": "gaming-chat",
+          "type": "text",
+          "position": 3,
+          "topic": "Talk about games, Roblox experiences, and gaming in general!",
+          "permissionOverwrites": [
+            {
+              "roleName": "Pic Perms",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages",
+                "AttachFiles"
+              ],
+              "deny": []
+            },
+            {
+              "roleName": "Pic Muted",
+              "allow": [],
+              "deny": [
+                "AttachFiles"
+              ]
+            },
+            {
+              "roleName": "Moderator",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages",
+                "ManageMessages"
+              ],
+              "deny": []
+            },
+            {
+              "roleName": "@everyone",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages"
+              ],
+              "deny": [
+                "AttachFiles"
+              ]
+            },
+            {
+              "roleName": "Admin",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages",
+                "ManageMessages"
+              ],
+              "deny": []
+            }
+          ]
+        },
+        {
+          "name": "music-chat",
+          "type": "text",
+          "position": 4,
+          "topic": "Share your favorite music, discuss artists, and talk about music production!",
+          "permissionOverwrites": [
+            {
+              "roleName": "Pic Perms",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages",
+                "AttachFiles"
+              ],
+              "deny": []
+            },
+            {
+              "roleName": "Pic Muted",
+              "allow": [],
+              "deny": [
+                "AttachFiles"
+              ]
+            },
+            {
+              "roleName": "Moderator",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages",
+                "ManageMessages"
+              ],
+              "deny": []
+            },
+            {
+              "roleName": "@everyone",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages"
+              ],
+              "deny": [
+                "AttachFiles"
+              ]
+            },
+            {
+              "roleName": "Admin",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages",
+                "ManageMessages"
+              ],
+              "deny": []
+            }
+          ]
+        },
+        {
+          "name": "content-chat",
+          "type": "text",
+          "position": 5,
+          "topic": "Discuss YouTube videos, TikToks, streams, and other content!",
+          "permissionOverwrites": [
+            {
+              "roleName": "Pic Perms",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages",
+                "AttachFiles"
+              ],
+              "deny": []
+            },
+            {
+              "roleName": "Pic Muted",
+              "allow": [],
+              "deny": [
+                "AttachFiles"
+              ]
+            },
+            {
+              "roleName": "Moderator",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages",
+                "ManageMessages"
+              ],
+              "deny": []
+            },
+            {
+              "roleName": "@everyone",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages"
+              ],
+              "deny": [
+                "AttachFiles"
+              ]
+            },
+            {
+              "roleName": "Admin",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages",
+                "ManageMessages"
+              ],
+              "deny": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "CONTENT CREATORS",
+      "position": 5,
+      "channels": [
+        {
+          "name": "creator-showcase",
+          "type": "text",
+          "position": 0,
+          "topic": "Creator showcase - Everyone can read, Content Creator+ can post",
+          "permissionOverwrites": [
+            {
+              "roleName": "Moderator",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages"
+              ],
+              "deny": []
+            },
+            {
+              "roleName": "@everyone",
+              "allow": [
+                "AddReactions",
+                "ViewChannel"
+              ],
+              "deny": [
+                "SendMessages"
+              ]
+            },
+            {
+              "roleName": "Admin",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages",
+                "ManageMessages"
+              ],
+              "deny": []
+            },
+            {
+              "roleName": "Content Creator",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages",
+                "EmbedLinks",
+                "AttachFiles"
+              ],
+              "deny": []
+            }
+          ]
+        },
+        {
+          "name": "self-promotion",
+          "type": "text",
+          "position": 1,
+          "topic": "Promote your channels, videos, and content here",
+          "permissionOverwrites": [
+            {
+              "roleName": "@everyone",
+              "allow": [],
+              "deny": [
+                "SendMessages"
+              ]
+            },
+            {
+              "roleName": "Content Creator",
+              "allow": [
+                "ViewChannel",
+                "SendMessages",
+                "EmbedLinks",
+                "AttachFiles"
+              ],
+              "deny": []
+            }
+          ]
+        },
+        {
+          "name": "collaborations",
+          "type": "text",
+          "position": 2,
+          "topic": "Content Creator + Developer collaboration - Both roles can post",
+          "permissionOverwrites": [
+            {
+              "roleName": "Moderator",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages"
+              ],
+              "deny": []
+            },
+            {
+              "roleName": "@everyone",
+              "allow": [
+                "AddReactions",
+                "ViewChannel"
+              ],
+              "deny": [
+                "SendMessages"
+              ]
+            },
+            {
+              "roleName": "Admin",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages",
+                "ManageMessages"
+              ],
+              "deny": []
+            },
+            {
+              "roleName": "Content Creator",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages"
+              ],
+              "deny": []
+            },
+            {
+              "roleName": "Developer",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages"
+              ],
+              "deny": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "MEDIA & SHOWCASES",
+      "position": 6,
+      "channels": [
+        {
+          "name": "screenshots",
+          "type": "text",
+          "position": 0,
+          "topic": "Screenshots - Everyone can read, Content Creator+ can post",
+          "permissionOverwrites": [
+            {
+              "roleName": "Moderator",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages"
+              ],
+              "deny": []
+            },
+            {
+              "roleName": "@everyone",
+              "allow": [
+                "AddReactions",
+                "ViewChannel"
+              ],
+              "deny": [
+                "SendMessages"
+              ]
+            },
+            {
+              "roleName": "Admin",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages",
+                "ManageMessages"
+              ],
+              "deny": []
+            },
+            {
+              "roleName": "Content Creator",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages",
+                "AttachFiles"
+              ],
+              "deny": []
+            }
+          ]
+        },
+        {
+          "name": "videos-clips",
+          "type": "text",
+          "position": 1,
+          "topic": "Video clips - Everyone can read, Content Creator+ can post",
+          "permissionOverwrites": [
+            {
+              "roleName": "Moderator",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages"
+              ],
+              "deny": []
+            },
+            {
+              "roleName": "@everyone",
+              "allow": [
+                "AddReactions",
+                "ViewChannel"
+              ],
+              "deny": [
+                "SendMessages"
+              ]
+            },
+            {
+              "roleName": "Admin",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages",
+                "ManageMessages"
+              ],
+              "deny": []
+            },
+            {
+              "roleName": "Content Creator",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages",
+                "EmbedLinks",
+                "AttachFiles"
+              ],
+              "deny": []
+            }
+          ]
+        },
+        {
+          "name": "fan-art",
+          "type": "text",
+          "position": 2,
+          "topic": "Fan art - Everyone can read, Content Creator+ can post",
+          "permissionOverwrites": [
+            {
+              "roleName": "Moderator",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages"
+              ],
+              "deny": []
+            },
+            {
+              "roleName": "@everyone",
+              "allow": [
+                "AddReactions",
+                "ViewChannel"
+              ],
+              "deny": [
+                "SendMessages"
+              ]
+            },
+            {
+              "roleName": "Admin",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages",
+                "ManageMessages"
+              ],
+              "deny": []
+            },
+            {
+              "roleName": "Content Creator",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages",
+                "AttachFiles"
+              ],
+              "deny": []
+            }
+          ]
+        },
+        {
+          "name": "achievements",
+          "type": "text",
+          "position": 3,
+          "topic": "Achievements - Everyone can read, Content Creator+ can post",
+          "permissionOverwrites": [
+            {
+              "roleName": "Moderator",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages"
+              ],
+              "deny": []
+            },
+            {
+              "roleName": "@everyone",
+              "allow": [
+                "AddReactions",
+                "ViewChannel"
+              ],
+              "deny": [
+                "SendMessages"
+              ]
+            },
+            {
+              "roleName": "Admin",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages",
+                "ManageMessages"
+              ],
+              "deny": []
+            },
+            {
+              "roleName": "Content Creator",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages",
+                "AttachFiles"
+              ],
+              "deny": []
+            }
+          ]
+        },
+        {
+          "name": "clips",
+          "type": "text",
+          "position": 4,
+          "topic": "Clips - Everyone can read, Content Creator+ can post",
+          "permissionOverwrites": [
+            {
+              "roleName": "@everyone",
+              "allow": [
+                "AddReactions",
+                "ViewChannel"
+              ],
+              "deny": [
+                "SendMessages"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "VOICE CHANNELS",
+      "position": 7,
+      "channels": [
+        {
+          "name": "General Chat",
+          "type": "voice",
+          "position": 0,
+          "topic": "",
+          "permissionOverwrites": [
+            {
+              "roleName": "@everyone",
+              "allow": [
+                "ViewChannel",
+                "Connect",
+                "Speak"
+              ],
+              "deny": []
+            }
+          ]
+        },
+        {
+          "name": "Section42 Gaming",
+          "type": "voice",
+          "position": 1,
+          "topic": "",
+          "permissionOverwrites": [
+            {
+              "roleName": "@everyone",
+              "allow": [
+                "ViewChannel",
+                "Connect",
+                "Speak"
+              ],
+              "deny": []
+            }
+          ]
+        },
+        {
+          "name": "Content Creation",
+          "type": "voice",
+          "position": 2,
+          "topic": "",
+          "permissionOverwrites": [
+            {
+              "roleName": "@everyone",
+              "allow": [
+                "ViewChannel",
+                "Connect",
+                "Speak"
+              ],
+              "deny": []
+            },
+            {
+              "roleName": "Content Creator",
+              "allow": [
+                "ViewChannel",
+                "Connect",
+                "Speak"
+              ],
+              "deny": []
+            }
+          ]
+        },
+        {
+          "name": "Live Streaming",
+          "type": "voice",
+          "position": 3,
+          "topic": "",
+          "permissionOverwrites": [
+            {
+              "roleName": "@everyone",
+              "allow": [
+                "ViewChannel",
+                "Connect",
+                "Speak"
+              ],
+              "deny": []
+            },
+            {
+              "roleName": "Content Creator",
+              "allow": [
+                "ViewChannel",
+                "Connect",
+                "Speak"
+              ],
+              "deny": []
+            }
+          ]
+        },
+        {
+          "name": "AFK",
+          "type": "voice",
+          "position": 4,
+          "topic": "",
+          "permissionOverwrites": [
+            {
+              "roleName": "@everyone",
+              "allow": [
+                "ViewChannel",
+                "Connect"
+              ],
+              "deny": [
+                "Speak"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "STAFF & MODERATION",
+      "position": 8,
+      "channels": [
+        {
+          "name": "ah",
+          "type": "voice",
+          "position": 0,
+          "topic": "",
+          "permissionOverwrites": [
+            {
+              "roleName": "@everyone",
+              "allow": [],
+              "deny": [
+                "ViewChannel",
+                "Connect"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "staff-chat",
+          "type": "text",
+          "position": 0,
+          "topic": "Private staff discussion and coordination",
+          "permissionOverwrites": [
+            {
+              "roleName": "Moderator",
+              "allow": [
+                "ViewChannel",
+                "SendMessages"
+              ],
+              "deny": []
+            },
+            {
+              "roleName": "@everyone",
+              "allow": [],
+              "deny": [
+                "ViewChannel"
+              ]
+            },
+            {
+              "roleName": "Admin",
+              "allow": [
+                "ViewChannel",
+                "SendMessages",
+                "ManageMessages"
+              ],
+              "deny": []
+            }
+          ]
+        },
+        {
+          "name": "mod-logs",
+          "type": "text",
+          "position": 1,
+          "topic": "Moderation actions and logs",
+          "permissionOverwrites": [
+            {
+              "roleName": "@everyone",
+              "allow": [],
+              "deny": [
+                "ViewChannel"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "analytics",
+          "type": "text",
+          "position": 2,
+          "topic": "Server statistics and growth metrics",
+          "permissionOverwrites": [
+            {
+              "roleName": "@everyone",
+              "allow": [],
+              "deny": [
+                "ViewChannel"
+              ]
+            },
+            {
+              "roleName": "Admin",
+              "allow": [
+                "ViewChannel",
+                "SendMessages"
+              ],
+              "deny": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "SUPPORT TICKETS",
+      "position": 9,
+      "channels": [
+        {
+          "name": "create-ticket",
+          "type": "text",
+          "position": 0,
+          "topic": "React with 🎫 to create a support ticket - Staff will help you!",
+          "permissionOverwrites": [
+            {
+              "roleName": "Moderator",
+              "allow": [
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages",
+                "ManageMessages"
+              ],
+              "deny": []
+            },
+            {
+              "roleName": "@everyone",
+              "allow": [
+                "AddReactions",
+                "ViewChannel"
+              ],
+              "deny": [
+                "SendMessages"
+              ]
+            },
+            {
+              "roleName": "Admin",
+              "allow": [
+                "ManageChannels",
+                "AddReactions",
+                "ViewChannel",
+                "SendMessages",
+                "ManageMessages"
+              ],
+              "deny": []
+            }
+          ]
+        },
+        {
+          "name": "ticket-logs",
+          "type": "text",
+          "position": 1,
+          "topic": "Ticket creation and closure logs for staff tracking",
+          "permissionOverwrites": [
+            {
+              "roleName": "Moderator",
+              "allow": [
+                "ViewChannel",
+                "SendMessages"
+              ],
+              "deny": []
+            },
+            {
+              "roleName": "@everyone",
+              "allow": [],
+              "deny": [
+                "ViewChannel"
+              ]
+            },
+            {
+              "roleName": "Admin",
+              "allow": [
+                "ViewChannel",
+                "SendMessages",
+                "ManageMessages"
+              ],
+              "deny": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ROBLOX GAMES",
+      "position": 10,
+      "channels": [
+        {
+          "name": "game-updates",
+          "type": "text",
+          "position": 0,
+          "topic": "Official updates and announcements for Section42 Roblox games",
+          "permissionOverwrites": [
+            {
+              "roleName": "@everyone",
+              "allow": [
+                "AddReactions",
+                "ViewChannel"
+              ],
+              "deny": [
+                "SendMessages"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "bug-reports",
+          "type": "text",
+          "position": 1,
+          "topic": "Report bugs and issues you find in our Roblox games",
+          "permissionOverwrites": [
+            {
+              "roleName": "@everyone",
+              "allow": [
+                "AddReactions",
+                "ViewChannel"
+              ],
+              "deny": [
+                "SendMessages"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "feedback-suggestions",
+          "type": "text",
+          "position": 2,
+          "topic": "Share your feedback and suggestions for game improvements",
+          "permissionOverwrites": [
+            {
+              "roleName": "@everyone",
+              "allow": [
+                "AddReactions",
+                "ViewChannel"
+              ],
+              "deny": [
+                "SendMessages"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "gameplay-discussion",
+          "type": "text",
+          "position": 3,
+          "topic": "Discuss gameplay, strategies, and share your experiences",
+          "permissionOverwrites": [
+            {
+              "roleName": "@everyone",
+              "allow": [
+                "AddReactions",
+                "ViewChannel"
+              ],
+              "deny": [
+                "SendMessages"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "blackblood333 superultra larp",
+      "position": 11,
+      "channels": [
+        {
+          "name": "gern",
+          "type": "text",
+          "position": 0,
+          "topic": "",
+          "permissionOverwrites": [
+            {
+              "roleName": "@everyone",
+              "allow": [],
+              "deny": [
+                "ViewChannel",
+                "Connect"
+              ]
+            },
+            {
+              "roleName": "bb333",
+              "allow": [
+                "CreateInstantInvite",
+                "ManageChannels",
+                "AddReactions",
+                "PrioritySpeaker",
+                "Stream",
+                "ViewChannel",
+                "SendMessages",
+                "SendTTSMessages",
+                "ManageMessages",
+                "EmbedLinks",
+                "AttachFiles",
+                "ReadMessageHistory",
+                "MentionEveryone",
+                "UseExternalEmojis",
+                "Connect",
+                "Speak",
+                "MuteMembers",
+                "DeafenMembers",
+                "UseVAD",
+                "ManageRoles",
+                "ManageWebhooks",
+                "ManageThreads",
+                "CreatePublicThreads",
+                "CreatePrivateThreads",
+                "UseExternalStickers",
+                "SendMessagesInThreads",
+                "UseSoundboard",
+                "UseExternalSounds",
+                "SendVoiceMessages",
+                "SendPolls"
+              ],
+              "deny": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ugh bro",
+      "position": 12,
+      "channels": [
+        {
+          "name": "h",
+          "type": "text",
+          "position": 0,
+          "topic": "",
+          "permissionOverwrites": [
+            {
+              "roleName": "Bots",
+              "allow": [
+                "ViewChannel",
+                "Connect"
+              ],
+              "deny": []
+            },
+            {
+              "roleName": "@everyone",
+              "allow": [],
+              "deny": [
+                "ViewChannel",
+                "Connect"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "channels": []
+}
