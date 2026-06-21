@@ -1,6 +1,8 @@
 const { REST, Routes } = require('discord.js');
 const { restoreReactionRoles } = require('./reactionRoles');
+const { scheduleAutoCloses } = require('../commands/tournament');
 const inviteTracker = require('../utils/inviteTracker');
+const { getCounter } = require('../utils/memberCounterStore');
 
 module.exports = {
     name: 'ready',
@@ -28,12 +30,26 @@ module.exports = {
             try {
                 console.log(`Started refreshing ${commandsData.length} application (/) commands.`);
                 
-                const data = await rest.put(
+                // Clear global commands to prevent duplicates
+                await rest.put(
                     Routes.applicationCommands(client.user.id),
-                    { body: commandsData },
+                    { body: [] },
                 );
+                console.log('Cleared global commands');
                 
-                console.log(`Successfully reloaded ${data.length} application (/) commands.`);
+                // Register commands for each guild specifically (instant update)
+                for (const guildId of ALLOWED_GUILD_IDS) {
+                    const guild = client.guilds.cache.get(guildId);
+                    if (guild) {
+                        await rest.put(
+                            Routes.applicationGuildCommands(client.user.id, guildId),
+                            { body: commandsData },
+                        );
+                        console.log(`Reloaded commands for guild: ${guild.name}`);
+                    }
+                }
+                
+                console.log(`Successfully reloaded ${commandsData.length} application (/) commands.`);
             } catch (error) {
                 console.error('Error registering slash commands:', error);
             }
@@ -41,5 +57,31 @@ module.exports = {
 
         // Restore reaction roles on startup
         await restoreReactionRoles(client, ALLOWED_GUILD_IDS);
+
+        // Restore tournament auto-close timers
+        scheduleAutoCloses(client);
+
+        // Update member counters on startup (in case members joined/left while offline)
+        for (const guildId of ALLOWED_GUILD_IDS) {
+            const guild = client.guilds.cache.get(guildId);
+            if (guild) {
+                const entry = getCounter(guildId);
+                if (entry) {
+                    try {
+                        const channel = await guild.channels.fetch(entry.channelId).catch(() => null);
+                        if (channel) {
+                            await guild.members.fetch();
+                            const newName = entry.format.replace('{count}', guild.memberCount);
+                            if (channel.name !== newName) {
+                                await channel.setName(newName);
+                                console.log(`[MemberCounter] Updated counter for ${guild.name}: ${newName}`);
+                            }
+                        }
+                    } catch (error) {
+                        console.error(`[MemberCounter] Failed to update on startup for ${guildId}:`, error);
+                    }
+                }
+            }
+        }
     }
 };

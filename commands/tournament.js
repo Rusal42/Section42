@@ -5,14 +5,37 @@ const path = require('path');
 // Store active tournaments in memory
 const activeTournaments = new Map();
 
+// Store active auto-close timeouts (not persisted)
+const activeTimeouts = new Map();
+
 // Load persisted tournaments on startup
 const tournamentsFile = path.join(__dirname, '..', 'data', 'tournaments.json');
+function hydrateTournament(value) {
+    const tournament = { ...value };
+    if (value.participants) {
+        tournament.participants = new Map(Object.entries(value.participants));
+    } else {
+        tournament.participants = new Map();
+    }
+    if (value.bracket) {
+        tournament.bracket = {
+            ...value.bracket,
+            matches: value.bracket.matches || [],
+            eliminated: value.bracket.eliminated || []
+        };
+    }
+    tournament.prize = value.prize || null;
+    tournament.closesAt = value.closesAt || null;
+    delete tournament.closeTimeout;
+    return tournament;
+}
+
 function loadTournaments() {
     try {
         if (fs.existsSync(tournamentsFile)) {
             const data = JSON.parse(fs.readFileSync(tournamentsFile, 'utf8'));
             for (const [key, value] of Object.entries(data)) {
-                activeTournaments.set(key, value);
+                activeTournaments.set(key, hydrateTournament(value));
             }
         }
     } catch (error) {
@@ -23,7 +46,13 @@ function loadTournaments() {
 // Save tournaments to file
 function saveTournaments() {
     try {
-        const data = Object.fromEntries(activeTournaments);
+        const data = {};
+        for (const [key, tournament] of activeTournaments) {
+            data[key] = {
+                ...tournament,
+                participants: Object.fromEntries(tournament.participants)
+            };
+        }
         fs.writeFileSync(tournamentsFile, JSON.stringify(data, null, 2));
     } catch (error) {
         console.error('Error saving tournaments:', error);
@@ -32,6 +61,36 @@ function saveTournaments() {
 
 // Load on module load
 loadTournaments();
+
+// Parse duration strings like 5s, 5m, 5h, 5d
+function parseDuration(input) {
+    if (!input || typeof input !== 'string') return null;
+    const match = input.trim().match(/^(\d+)([smhd])$/i);
+    if (!match) return null;
+
+    const value = parseInt(match[1], 10);
+    const unit = match[2].toLowerCase();
+    const multipliers = {
+        s: 1000,
+        m: 60 * 1000,
+        h: 60 * 60 * 1000,
+        d: 24 * 60 * 60 * 1000
+    };
+
+    return value * multipliers[unit];
+}
+
+function formatDuration(ms) {
+    const seconds = Math.floor(ms / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    if (days > 0) return `${days}d ${hours % 24}h`;
+    if (hours > 0) return `${hours}h ${minutes % 60}m`;
+    if (minutes > 0) return `${minutes}m ${seconds % 60}s`;
+    return `${seconds}s`;
+}
 
 // Helper function to generate bracket structure
 function generateBracket(participants) {
@@ -91,6 +150,10 @@ function formatBracket(tournament) {
         .setTitle(`${tournament.title} - Round ${tournament.bracket.currentRound}`)
         .setDescription(tournament.description)
         .setTimestamp();
+    
+    if (tournament.prize) {
+        embed.addFields({ name: '🏆 Prize', value: tournament.prize, inline: false });
+    }
     
     if (tournament.bracket.champion) {
         embed.addFields({
@@ -232,6 +295,14 @@ module.exports = {
                     option.setName('description')
                         .setDescription('Tournament description/rules')
                         .setRequired(false))
+                .addStringOption(option =>
+                    option.setName('duration')
+                        .setDescription('Signup duration, e.g. 5s, 5m, 5h, 5d')
+                        .setRequired(false))
+                .addStringOption(option =>
+                    option.setName('prize')
+                        .setDescription('Prize for the tournament winner')
+                        .setRequired(false))
                 .addIntegerOption(option =>
                     option.setName('max_participants')
                         .setDescription('Maximum participants (default: 16)')
@@ -262,7 +333,7 @@ module.exports = {
         }
 
         if (args.length === 0) {
-            return message.reply('Usage: `!tournament start <title> | <description> | [max_participants]`');
+            return message.reply('Usage: `!tournament start <title> | <description> | [prize] | [duration] | [max_participants]`\nDuration format: `5s`, `5m`, `5h`, `5d`');
         }
 
         const subcommand = args[0].toLowerCase();
@@ -302,25 +373,58 @@ async function handleStartText(message, args) {
     const input = args.join(' ').split(' | ');
     const title = input[0] || 'Deepwoken Tournament';
     const description = input[1] || 'React with ✅ to enter the tournament!';
-    const maxParticipants = parseInt(input[2]) || 16;
+    let duration = null;
+    let prize = null;
+    let maxParticipants = 16;
 
-    await startTournament(message.channel, message.author, title, description, maxParticipants, message.guild.id);
+    for (let i = 2; i < input.length; i++) {
+        const part = input[i].trim();
+        if (!part) continue;
+
+        if (parseDuration(part) !== null) {
+            duration = part;
+        } else if (/^\d+$/.test(part)) {
+            const n = parseInt(part, 10);
+            if (n >= 2 && n <= 64) {
+                maxParticipants = n;
+            } else {
+                prize = part;
+            }
+        } else {
+            prize = part;
+        }
+    }
+
+    await startTournament(message.channel, message.author, title, description, maxParticipants, message.guild.id, duration, prize);
 }
 
 async function handleStartSlash(interaction) {
     const title = interaction.options.getString('title');
     const description = interaction.options.getString('description') || 'React with ✅ to enter the tournament!';
+    const duration = interaction.options.getString('duration');
+    const prize = interaction.options.getString('prize');
     const maxParticipants = interaction.options.getInteger('max_participants') || 16;
 
     await interaction.reply({ content: 'Starting tournament...', ephemeral: true });
-    await startTournament(interaction.channel, interaction.user, title, description, maxParticipants, interaction.guild.id);
+    await startTournament(interaction.channel, interaction.user, title, description, maxParticipants, interaction.guild.id, duration, prize);
 }
 
-async function startTournament(channel, host, title, description, maxParticipants, guildId) {
+async function startTournament(channel, host, title, description, maxParticipants, guildId, durationStr, prize) {
+    const durationMs = parseDuration(durationStr);
+    const closesAt = durationMs ? Date.now() + durationMs : null;
+
+    let descriptionText = `${description}\n\n**React with ✅ to enter!**\n\nMax Participants: ${maxParticipants}`;
+    if (prize) {
+        descriptionText += `\n🏆 Prize: **${prize}**`;
+    }
+    if (closesAt) {
+        descriptionText += `\n⏰ Signups close in ${formatDuration(durationMs)}`;
+    }
+
     const signupEmbed = new EmbedBuilder()
         .setColor('#8B0000')
         .setTitle(`${title} - SIGNUPS OPEN`)
-        .setDescription(`${description}\n\n**React with ✅ to enter!**\n\nMax Participants: ${maxParticipants}`)
+        .setDescription(descriptionText)
         .setFooter({ text: `Hosted by ${host.username} | Tournament will close when full or manually`, iconURL: host.displayAvatarURL() })
         .setTimestamp();
 
@@ -333,18 +437,68 @@ async function startTournament(channel, host, title, description, maxParticipant
         guildId: guildId,
         title: title,
         description: description,
+        prize: prize || null,
         maxParticipants: maxParticipants,
         hostId: host.id,
         participants: new Map(),
         phase: 'signup',
         bracket: null,
-        createdAt: Date.now()
+        createdAt: Date.now(),
+        closesAt: closesAt
     };
 
     activeTournaments.set(signupMessage.id, tournament);
     saveTournaments();
 
+    if (durationMs) {
+        const timeout = setTimeout(() => {
+            autoCloseTournament(channel.client, tournament.messageId);
+        }, durationMs);
+        activeTimeouts.set(signupMessage.id, timeout);
+    }
+
     await channel.send(`Tournament started! Message ID: \`${signupMessage.id}\` (use this to close signup with /tournament close or !tournament close)`);
+}
+
+async function autoCloseTournament(client, messageId) {
+    const tournament = activeTournaments.get(messageId);
+    if (!tournament || tournament.phase !== 'signup') {
+        activeTimeouts.delete(messageId);
+        return;
+    }
+
+    if (activeTimeouts.has(messageId)) {
+        activeTimeouts.delete(messageId);
+    }
+
+    try {
+        const channel = await client.channels.fetch(tournament.channelId);
+        if (!channel) return;
+        await closeTournament(channel, messageId, client.user);
+    } catch (error) {
+        console.error(`[Tournament] Auto-close failed for ${messageId}:`, error);
+    }
+}
+
+function scheduleAutoCloses(client) {
+    for (const [messageId, tournament] of activeTournaments) {
+        if (tournament.phase !== 'signup' || !tournament.closesAt) continue;
+
+        const remaining = tournament.closesAt - Date.now();
+        if (activeTimeouts.has(messageId)) {
+            clearTimeout(activeTimeouts.get(messageId));
+            activeTimeouts.delete(messageId);
+        }
+
+        if (remaining <= 0) {
+            autoCloseTournament(client, messageId);
+        } else {
+            const timeout = setTimeout(() => {
+                autoCloseTournament(client, messageId);
+            }, remaining);
+            activeTimeouts.set(messageId, timeout);
+        }
+    }
 }
 
 async function handleCloseText(message, args) {
@@ -362,6 +516,11 @@ async function handleCloseSlash(interaction) {
 }
 
 async function closeTournament(channel, messageId, closer) {
+    if (activeTimeouts.has(messageId)) {
+        clearTimeout(activeTimeouts.get(messageId));
+        activeTimeouts.delete(messageId);
+    }
+
     const tournament = activeTournaments.get(messageId);
     if (!tournament) {
         return channel.send('Tournament not found. Make sure you copied the correct message ID.');
@@ -413,7 +572,13 @@ async function closeTournament(channel, messageId, closer) {
             .setColor('#8B0000')
             .setTitle(`${tournament.title} - SIGNUPS CLOSED`)
             .setDescription(`**${tournament.participants.size} participants registered**\n\nTournament has begun!`)
-            .addFields({ name: 'Participants', value: participantList || 'None', inline: false })
+            .addFields({ name: 'Participants', value: participantList || 'None', inline: false });
+
+        if (tournament.prize) {
+            closedEmbed.addFields({ name: '🏆 Prize', value: tournament.prize, inline: false });
+        }
+
+        closedEmbed
             .setFooter({ text: `Hosted by ${closer.username}`, iconURL: closer.displayAvatarURL() })
             .setTimestamp();
 
@@ -423,8 +588,9 @@ async function closeTournament(channel, messageId, closer) {
         const bracketEmbed = formatBracket(tournament);
         const buttons = createTournamentButtons(tournament, messageId);
         
+        const prizeLine = tournament.prize ? `🏆 Prize: **${tournament.prize}**\n` : '';
         const bracketMessage = await channel.send({
-            content: `🏆 **${tournament.title}** has begun! Good luck to all ${tournament.participants.size} participants!`,
+            content: `${prizeLine}🏆 **${tournament.title}** has begun! Good luck to all ${tournament.participants.size} participants!`,
             embeds: [bracketEmbed],
             components: buttons
         });
@@ -458,6 +624,11 @@ async function cancelTournament(channel, messageId) {
     const tournament = activeTournaments.get(messageId);
     if (!tournament) {
         return channel.send('Tournament not found.');
+    }
+
+    if (activeTimeouts.has(messageId)) {
+        clearTimeout(activeTimeouts.get(messageId));
+        activeTimeouts.delete(messageId);
     }
 
     activeTournaments.delete(messageId);
@@ -563,8 +734,9 @@ async function handleNextRound(interaction, tournament, messageId) {
         await updateBracketMessage(interaction, tournament, messageId);
         
         // Announce champion
+        const prizeText = tournament.prize ? `\n\n🏆 Prize: **${tournament.prize}**` : '';
         await interaction.channel.send({
-            content: `**${tournament.title} CHAMPION**\n\nCongratulations to <@${winners[0].userId}> **${winners[0].username}**!`,
+            content: `**${tournament.title} CHAMPION**\n\nCongratulations to <@${winners[0].userId}> **${winners[0].username}**!${prizeText}`,
             allowedMentions: { users: [winners[0].userId] }
         });
         
@@ -606,3 +778,4 @@ async function updateBracketMessage(interaction, tournament, messageId) {
 
 // Export the handler for button interactions
 module.exports.handleTournamentButton = handleTournamentButton;
+module.exports.scheduleAutoCloses = scheduleAutoCloses;

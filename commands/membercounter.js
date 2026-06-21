@@ -30,13 +30,11 @@ module.exports = {
         if (sub === 'setup') {
             const existing = getCounter(guild.id);
             if (existing) {
-                const ch = guild.channels.cache.get(existing.channelId);
+                const ch = await guild.channels.fetch(existing.channelId).catch(() => null);
                 if (ch) {
-                    return interaction.reply({
-                        content: `A member counter already exists: <#${ch.id}>\nRun \`/membercounter remove\` first to replace it.`,
-                        ephemeral: true
-                    });
+                    await ch.delete('Replacing old member counter channel').catch(() => {});
                 }
+                removeCounter(guild.id);
             }
 
             const format = interaction.options.getString('format') || 'Members: {count}';
