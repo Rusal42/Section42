@@ -28,15 +28,6 @@ module.exports = {
         const guild = interaction.guild;
 
         if (sub === 'setup') {
-            const existing = getCounter(guild.id);
-            if (existing) {
-                const ch = await guild.channels.fetch(existing.channelId).catch(() => null);
-                if (ch) {
-                    await ch.delete('Replacing old member counter channel').catch(() => {});
-                }
-                removeCounter(guild.id);
-            }
-
             const format = interaction.options.getString('format') || 'Members: {count}';
 
             if (!format.includes('{count}')) {
@@ -47,6 +38,15 @@ module.exports = {
             }
 
             await interaction.deferReply({ ephemeral: true });
+
+            const existing = getCounter(guild.id);
+            if (existing) {
+                const ch = await guild.channels.fetch(existing.channelId).catch(() => null);
+                if (ch) {
+                    await ch.delete('Replacing old member counter channel').catch(() => {});
+                }
+                removeCounter(guild.id);
+            }
 
             const channelName = format.replace('{count}', guild.memberCount);
 
