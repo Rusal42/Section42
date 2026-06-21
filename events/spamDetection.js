@@ -1,4 +1,4 @@
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, ChannelType } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
 
@@ -37,9 +37,35 @@ function saveSpamData(data) {
 }
 
 // Configuration
-const SPAM_THRESHOLD = 10; // Messages in 10 seconds
+const SPAM_THRESHOLD = 7; // Messages in time window to trigger
 const TIME_WINDOW = 10000; // 10 seconds in milliseconds
 const CLEANUP_INTERVAL = 60000; // Clean up old data every minute
+const CROSS_CHANNEL_THRESHOLD = 3; // Identical messages across this many channels
+const CROSS_CHANNEL_WINDOW = 30000; // 30 seconds for cross-channel detection
+
+// Purge a user's recent messages from ALL text channels in a guild
+async function purgeUserMessages(guild, userId, minutesBack = 10) {
+    const cutoff = Date.now() - (minutesBack * 60 * 1000);
+    let totalDeleted = 0;
+
+    const textChannels = guild.channels.cache.filter(c => c.type === ChannelType.GuildText || c.type === 0);
+
+    for (const [, channel] of textChannels) {
+        try {
+            const messages = await channel.messages.fetch({ limit: 100 });
+            const userMessages = messages.filter(m => m.author.id === userId && m.createdTimestamp > cutoff);
+
+            if (userMessages.size > 0) {
+                await channel.bulkDelete(userMessages, true);
+                totalDeleted += userMessages.size;
+            }
+        } catch (error) {
+            // Ignore permission errors for channels the bot can't access
+        }
+    }
+
+    return totalDeleted;
+}
 
 module.exports = {
     name: 'messageCreate',
@@ -108,50 +134,79 @@ module.exports = {
         const now = Date.now();
         const userId = message.author.id;
 
-        // Pattern 1: Same message in multiple channels quickly
+        // Pattern 1: High message velocity in a single channel
         const recentMessages = channelData.messages.filter(m => now - m.timestamp < TIME_WINDOW);
         
         if (recentMessages.length >= SPAM_THRESHOLD) {
-            await this.handlePotentialHack(message, spamData, 'multi_channel_spam', {
+            await this.handlePotentialHack(message, spamData, 'rapid_spam', {
                 messageCount: recentMessages.length,
-                channels: [...new Set(recentMessages.map(m => m.channelId))].length,
+                channel: message.channel.name,
                 timeWindow: TIME_WINDOW / 1000
             });
             return;
         }
 
-        // Pattern 2: High message velocity across all channels
-        if (userData.count >= SPAM_THRESHOLD && now - userData.firstMessage < TIME_WINDOW) {
+        // Pattern 2: High message velocity across all channels in the guild
+        const allGuildMessages = [];
+        for (const [, chData] of Object.entries(guildData.channels || {})) {
+            allGuildMessages.push(...chData.messages.filter(m => now - m.timestamp < TIME_WINDOW));
+        }
+        if (allGuildMessages.length >= SPAM_THRESHOLD) {
+            const uniqueChannels = new Set(allGuildMessages.map(m => m.channelId));
             await this.handlePotentialHack(message, spamData, 'high_velocity_spam', {
-                messageCount: userData.count,
-                timeSpan: (now - userData.firstMessage) / 1000,
-                channels: Object.keys(userData.guilds[message.guild.id]?.channels || {}).length
+                messageCount: allGuildMessages.length,
+                timeSpan: TIME_WINDOW / 1000,
+                channels: uniqueChannels.size
             });
             return;
         }
 
-        // Pattern 3: Identical messages in multiple channels
+        // Pattern 3: Same/similar message in multiple DIFFERENT channels (classic hack behavior)
         const messageContent = message.content.toLowerCase().trim();
-        if (messageContent.length > 10) { // Ignore short messages
-            let identicalCount = 0;
+        if (messageContent.length > 10) {
             const affectedChannels = new Set();
 
-            for (const [channelId, channelData] of Object.entries(userData.guilds[message.guild.id]?.channels || {})) {
-                const identicalMessages = channelData.messages.filter(m => 
-                    m.content.toLowerCase().trim() === messageContent &&
-                    now - m.timestamp < TIME_WINDOW * 2 // 20 second window for identical messages
-                );
+            for (const [channelId, chData] of Object.entries(guildData.channels || {})) {
+                const similarMessages = chData.messages.filter(m => {
+                    if (now - m.timestamp > CROSS_CHANNEL_WINDOW) return false;
+                    const content = m.content.toLowerCase().trim();
+                    // Exact match or very similar (shares 80%+ of content)
+                    return content === messageContent || 
+                           (content.length > 10 && messageContent.includes(content.slice(0, Math.floor(content.length * 0.8))));
+                });
                 
-                if (identicalMessages.length > 0) {
-                    identicalCount += identicalMessages.length;
+                if (similarMessages.length > 0) {
                     affectedChannels.add(channelId);
                 }
             }
 
-            if (identicalCount >= 5 && affectedChannels.size >= 3) {
-                await this.handlePotentialHack(message, spamData, 'identical_spam', {
-                    messageCount: identicalCount,
+            if (affectedChannels.size >= CROSS_CHANNEL_THRESHOLD) {
+                await this.handlePotentialHack(message, spamData, 'cross_channel_spam', {
+                    messageCount: affectedChannels.size,
                     channels: affectedChannels.size,
+                    message: messageContent.substring(0, 100)
+                });
+                return;
+            }
+        }
+
+        // Pattern 4: Messages containing common spam/phishing indicators across channels
+        const spamIndicators = ['discord.gift', 'discordnitro', 'free nitro', 'steam community', '@everyone', 'click here', 'airdrop', 'claim your'];
+        const hasSpamContent = spamIndicators.some(indicator => messageContent.includes(indicator));
+        if (hasSpamContent) {
+            const uniqueChannels = new Set();
+            for (const [channelId, chData] of Object.entries(guildData.channels || {})) {
+                const spamMessages = chData.messages.filter(m => {
+                    if (now - m.timestamp > CROSS_CHANNEL_WINDOW) return false;
+                    return spamIndicators.some(ind => m.content.toLowerCase().includes(ind));
+                });
+                if (spamMessages.length > 0) uniqueChannels.add(channelId);
+            }
+
+            if (uniqueChannels.size >= 2) {
+                await this.handlePotentialHack(message, spamData, 'phishing_spam', {
+                    messageCount: uniqueChannels.size,
+                    channels: uniqueChannels.size,
                     message: messageContent.substring(0, 100)
                 });
                 return;
@@ -245,23 +300,9 @@ module.exports = {
                     await staffChannel.send({ content: '@here', embeds: [alertEmbed] });
                 }
 
-                // Try to delete the spam messages
-                for (const [channelId, channelData] of Object.entries(spamData.userMessageCounts[userId].guilds[guildId]?.channels || {})) {
-                    try {
-                        const channel = message.guild.channels.cache.get(channelId);
-                        if (channel) {
-                            // Delete recent messages from this user
-                            const messages = await channel.messages.fetch({ limit: 100 });
-                            const userMessages = messages.filter(m => m.author.id === userId && Date.now() - m.createdTimestamp < 300000); // Last 5 minutes
-                            
-                            if (userMessages.size > 0) {
-                                await channel.bulkDelete(userMessages, true);
-                            }
-                        }
-                    } catch (error) {
-                        console.log(`Could not delete messages in channel ${channelId}: ${error.message}`);
-                    }
-                }
+                // Purge all recent messages from the user across all channels
+                const totalDeleted = await purgeUserMessages(message.guild, userId, 10);
+                console.log(`Purged ${totalDeleted} messages from ${message.author.tag} across all channels`);
 
                 // Send announcement to announcements channel
                 const announcementsChannel = message.guild.channels.cache.find(c => 
@@ -314,5 +355,7 @@ module.exports = {
                 delete spamData.userMessageCounts[userId];
             }
         }
-    }
+    },
+
+    purgeUserMessages
 };

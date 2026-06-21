@@ -1,6 +1,7 @@
 const { EmbedBuilder, SlashCommandBuilder, PermissionFlagsBits, ChannelType } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
+const { purgeUserMessages } = require('../events/spamDetection');
 
 const QUARANTINE_FILE = path.join(__dirname, '..', 'data', 'quarantinedUsers.json');
 
@@ -195,6 +196,9 @@ module.exports = {
         // Set quarantine nickname
         await member.setNickname(`⚠️ QUARANTINED ⚠️`, reason).catch(() => {});
 
+        // Purge recent messages from the user across all channels
+        const totalDeleted = await purgeUserMessages(interaction.guild, user.id, 10);
+
         const embed = new EmbedBuilder()
             .setColor('#ff0000')
             .setTitle('🚨 User Quarantined')
@@ -207,6 +211,7 @@ module.exports = {
             )
             .addFields(
                 { name: 'Original Roles', value: `${quarantineData[guildId][user.id].originalRoles.length} roles removed`, inline: true },
+                { name: 'Messages Purged', value: `${totalDeleted} messages deleted (last 10 min)`, inline: true },
                 { name: 'Voice Status', value: member.voice.channel ? 'Disconnected from voice' : 'Not in voice', inline: true },
                 { name: 'Nickname', value: 'Changed to ⚠️ QUARANTINED ⚠️', inline: true }
             )
