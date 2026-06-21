@@ -38,14 +38,22 @@ function loadEvents(client) {
         for (const file of eventFiles) {
             const filePath = path.join(eventsPath, file);
             const event = require(filePath);
+            const events = Array.isArray(event) ? event : [event];
             
-            if (event.once) {
-                client.once(event.name, (...args) => event.execute(...args));
-            } else {
-                client.on(event.name, (...args) => event.execute(...args));
+            for (const ev of events) {
+                if (!ev || !ev.name || typeof ev.execute !== 'function') {
+                    console.warn(`[Loader] Skipping invalid event export from ${file}`);
+                    continue;
+                }
+                
+                if (ev.once) {
+                    client.once(ev.name, (...args) => ev.execute(...args));
+                } else {
+                    client.on(ev.name, (...args) => ev.execute(...args));
+                }
+                
+                console.log(`Loaded event: ${ev.name}${ev.once ? ' (once)' : ''}`);
             }
-            
-            console.log(`Loaded event: ${event.name}`);
         }
     }
 }

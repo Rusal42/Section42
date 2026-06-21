@@ -20,7 +20,7 @@ module.exports = {
             );
             
             if (validMembers.size === 0) {
-                return message.reply('There are no other members to pick from!');
+                return await message.reply('There are no other members to pick from!');
             }
             
             // Get a random member
@@ -38,8 +38,18 @@ module.exports = {
                 }
             };
             
-            // Send the embed
-            await message.channel.send({ embeds: [embed] });
+            // Send the embed, falling back to plain text if embeds are denied
+            try {
+                await message.channel.send({ embeds: [embed] });
+            } catch (sendError) {
+                if (sendError.code === 50013 || sendError.message?.includes('Missing Permissions')) {
+                    await message.channel.send(
+                        `**Random Pick!** I choose... ${randomMember.user.toString()}! (Picked by ${message.author.tag})`
+                    );
+                } else {
+                    throw sendError;
+                }
+            }
             
             // Delete the original command message
             if (message.deletable) {
@@ -48,7 +58,7 @@ module.exports = {
             
         } catch (error) {
             console.error('Error in pick command:', error);
-            message.reply('There was an error picking a random member. Make sure I have the proper permissions!');
+            await message.reply('There was an error picking a random member. Make sure I have the proper permissions!');
         }
     },
     
