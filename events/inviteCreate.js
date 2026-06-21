@@ -11,7 +11,7 @@ module.exports = {
                 inviterId: invite.inviter?.id,
                 channelId: invite.channelId
             });
-            console.log(`📨 New invite cached: ${invite.code} by ${invite.inviter?.tag || 'Unknown'}`);
+            console.log(`[Invites] New invite cached: ${invite.code} by ${invite.inviter?.tag || 'Unknown'}`);
         }
     }
 };

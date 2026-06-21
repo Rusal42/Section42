@@ -176,7 +176,7 @@ module.exports = {
                 .setTimestamp();
 
             rules.forEach(rule => {
-                const enabledStatus = rule.enabled ? '✅ Enabled' : '❌ Disabled';
+                const enabledStatus = rule.enabled ? 'Enabled' : 'Disabled';
                 const triggerType = this.getTriggerTypeLabel(rule.triggerType);
                 
                 const createdDate = rule.createdAt ? rule.createdAt.toLocaleDateString() : 'Unknown';
@@ -272,7 +272,7 @@ module.exports = {
                 .addFields(
                     { name: 'Rule ID', value: `\`${rule.id}\``, inline: true },
                     { name: 'Type', value: this.getTriggerTypeLabel(rule.triggerType), inline: true },
-                    { name: 'Status', value: '✅ Enabled', inline: true }
+                    { name: 'Status', value: 'Enabled', inline: true }
                 )
                 .setTimestamp();
 
@@ -412,7 +412,7 @@ module.exports = {
                 .setTitle('Auto-Moderation Rule Updated')
                 .setDescription(`Successfully ${newStatus ? 'enabled' : 'disabled'} rule: **${rule.name}**`)
                 .addFields(
-                    { name: 'Status', value: newStatus ? '✅ Enabled' : '❌ Disabled', inline: true },
+                    { name: 'Status', value: newStatus ? 'Enabled' : 'Disabled', inline: true },
                     { name: 'Rule ID', value: `\`${rule.id}\``, inline: true }
                 )
                 .setTimestamp();

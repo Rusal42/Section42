@@ -69,15 +69,15 @@ module.exports = {
             // Check if user has DMs enabled
             const dmChannel = await targetUser.createDM().catch(() => null);
             if (!dmChannel) {
-                return await replyChannel.send('❌ This user has DMs disabled or has blocked the bot.');
+                return await replyChannel.send('This user has DMs disabled or has blocked the bot.');
             }
             
             // Create Discord-compliant message
             let messageContent;
             if (customMessage) {
-                messageContent = `🌟 **Message from crucifyym's community** 🌟\n\n${customMessage}\n\n*This is a one-time message. You won't receive further DMs unless you interact with the community.*\n\n*To opt out of future messages, please react with 🚫 to this message.*`;
+                messageContent = `**Message from crucifyym's community**\n\n${customMessage}\n\n*This is a one-time message. You won't receive further DMs unless you interact with the community.*\n\n*To opt out of future messages, please react with the no-entry symbol to this message.*`;
             } else {
-                messageContent = `🌟 **crucifyym's community misses you!** 🌟\n\nHey there! We noticed you haven't been around lately and wanted to let you know you're missed! Come back and hang out with us whenever you're ready. 😊\n\n*This is a one-time message. You won't receive further DMs unless you interact with the community.*\n\n*To opt out of future messages, please react with 🚫 to this message.*`;
+                messageContent = `**crucifyym's community misses you!**\n\nHey there! We noticed you haven't been around lately and wanted to let you know you're missed! Come back and hang out with us whenever you're ready.\n\n*This is a one-time message. You won't receive further DMs unless you interact with the community.*\n\n*To opt out of future messages, please react with the no-entry symbol to this message.*`;
             }
             
             // Send the DM
@@ -100,18 +100,18 @@ module.exports = {
                 }
                 client.dOptOutUsers.add(targetUser.id);
                 
-                dmChannel.send('✅ You have opted out of future community messages. You can always opt back in by contacting server staff.');
+                dmChannel.send('You have opted out of future community messages. You can always opt back in by contacting server staff.');
             });
             
-            await replyChannel.send(`✅ Successfully sent DM to ${targetUser.tag}`);
+            await replyChannel.send(`Successfully sent DM to ${targetUser.tag}`);
             
         } catch (error) {
             console.error('Error sending DM:', error);
             
             if (error.code === 50007) {
-                await replyChannel.send('❌ Cannot send DM to this user. They may have DMs disabled or have blocked the bot.');
+                await replyChannel.send('Cannot send DM to this user. They may have DMs disabled or have blocked the bot.');
             } else {
-                await replyChannel.send('❌ Failed to send DM. Please check the console for details.');
+                await replyChannel.send('Failed to send DM. Please check the console for details.');
             }
         }
     }

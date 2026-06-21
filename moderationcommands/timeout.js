@@ -104,7 +104,7 @@ module.exports = {
             if (milliseconds > maxTimeout) {
                 const tooLongEmbed = new EmbedBuilder()
                     .setColor('#ff0000')
-                    .setTitle('❌ Duration Too Long')
+                    .setTitle('Duration Too Long')
                     .setDescription('Maximum timeout duration is 28 days.')
                     .setTimestamp();
                 
@@ -115,7 +115,7 @@ module.exports = {
             if (!targetMember) {
                 const notFoundEmbed = new EmbedBuilder()
                     .setColor('#ff0000')
-                    .setTitle('❌ User Not Found')
+                    .setTitle('User Not Found')
                     .setDescription('That user is not in this server.')
                     .setTimestamp();
                 
@@ -125,7 +125,7 @@ module.exports = {
             if (!targetMember.moderatable) {
                 const cantTimeoutEmbed = new EmbedBuilder()
                     .setColor('#ff0000')
-                    .setTitle('❌ Cannot Timeout User')
+                    .setTitle('Cannot Timeout User')
                     .setDescription('I cannot timeout this user. They may have higher permissions than me.')
                     .setTimestamp();
                 
@@ -140,31 +140,31 @@ module.exports = {
 
             const successEmbed = new EmbedBuilder()
                 .setColor('#b6dbd9')
-                .setTitle('🔇 User Timed Out')
+                .setTitle('User Timed Out')
                 .setDescription(`Successfully timed out ${targetUser.tag}`)
                 .addFields(
                     {
-                        name: '👤 Timed Out User',
+                        name: 'Timed Out User',
                         value: `${targetUser.tag} (${targetUser.id})`,
                         inline: true
                     },
                     {
-                        name: '👮 Moderator',
+                        name: 'Moderator',
                         value: `${message.author.tag}`,
                         inline: true
                     },
                     {
-                        name: '⏰ Duration',
+                        name: 'Duration',
                         value: displayDuration,
                         inline: true
                     },
                     {
-                        name: '📝 Reason',
+                        name: 'Reason',
                         value: reason,
                         inline: false
                     },
                     {
-                        name: '🕐 Timeout Ends',
+                        name: 'Timeout Ends',
                         value: `<t:${Math.floor(endTime.getTime() / 1000)}:F>`,
                         inline: false
                     }
@@ -175,14 +175,14 @@ module.exports = {
 
             message.reply({ embeds: [successEmbed] });
 
-            console.log(`🔇 ${message.author.tag} timed out ${targetUser.tag} for ${displayDuration}: ${reason}`);
+            console.log(`[Timeout] ${message.author.tag} timed out ${targetUser.tag} for ${displayDuration}: ${reason}`);
 
         } catch (error) {
             console.error('Error executing timeout command:', error);
             
             const errorEmbed = new EmbedBuilder()
                 .setColor('#ff0000')
-                .setTitle('❌ Error')
+                .setTitle('Error')
                 .setDescription('An error occurred while trying to timeout the user.')
                 .setTimestamp();
             

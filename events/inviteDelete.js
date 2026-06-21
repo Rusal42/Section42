@@ -7,7 +7,7 @@ module.exports = {
         const guildInvites = inviteTracker.inviteCache.get(invite.guild.id);
         if (guildInvites) {
             guildInvites.delete(invite.code);
-            console.log(`🗑️ Invite deleted from cache: ${invite.code}`);
+            console.log(`[Invites] Invite deleted from cache: ${invite.code}`);
         }
     }
 };

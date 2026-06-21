@@ -77,7 +77,7 @@ module.exports = {
                         
                         const channel = message.client.channels.cache.get(state.channelId);
                         if (channel) {
-                            await channel.send('✅ Arrise sequence complete! Everyone has been pinged.');
+                            await channel.send('Arrise sequence complete! Everyone has been pinged.');
                         }
                         return;
                     }

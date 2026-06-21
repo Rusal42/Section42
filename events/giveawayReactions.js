@@ -44,7 +44,7 @@ module.exports = {
                 // Remove their reaction so they know they didn't enter
                 await reaction.users.remove(user.id);
                 
-                console.log(`📨 DM'd ${user.tag} about insufficient invites for giveaway`);
+                console.log(`[Giveaway] DM'd ${user.tag} about insufficient invites for giveaway`);
             } catch (error) {
                 // User has DMs disabled or other error
                 console.log(`Could not DM ${user.tag} about invites: ${error.message}`);

@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { Collection } = require('discord.js');
+const { DEV_MODE } = require('../config/constants');
 
 function loadCommands(client) {
     const commands = new Map();
@@ -8,6 +9,7 @@ function loadCommands(client) {
     const slashCommandsData = [];
 
     const commandDirectories = ['commands', 'commands/fun-commands', 'ServerCreation', 'ownercommands', 'moderationcommands'];
+    if (DEV_MODE) commandDirectories.push('Test commands');
 
     commandDirectories.forEach(dirName => {
         const dirPath = path.join(__dirname, '..', dirName);

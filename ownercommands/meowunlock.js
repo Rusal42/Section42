@@ -91,7 +91,7 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setColor('#b6dbd9')
                 .setTitle('User Unlocked')
-                .setDescription(`✅ ${user.tag} is no longer meowlocked!`)
+                .setDescription(`${user.tag} is no longer meowlocked!`)
                 .setFooter({ text: `Unlocked by ${message.author.tag}`, iconURL: message.author.displayAvatarURL() })
                 .setTimestamp();
             return message.channel.send({ embeds: [embed] });

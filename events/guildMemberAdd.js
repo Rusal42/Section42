@@ -4,7 +4,7 @@ const inviteTracker = require('../utils/inviteTracker');
 module.exports = {
     name: 'guildMemberAdd',
     async execute(member) {
-        console.log(`👋 New member joined: ${member.user.tag}`);
+        console.log(`[MemberAdd] New member joined: ${member.user.tag}`);
         
         // Track invite
         let inviterInfo = null;
@@ -14,7 +14,7 @@ module.exports = {
                 inviteTracker.trackInvite(usedInvite.inviterId, member.id);
                 const inviter = await member.guild.members.fetch(usedInvite.inviterId).catch(() => null);
                 inviterInfo = inviter ? inviter.user.tag : 'Unknown';
-                console.log(`📨 ${member.user.tag} was invited by ${inviterInfo}`);
+                console.log(`[MemberAdd] ${member.user.tag} was invited by ${inviterInfo}`);
             }
         } catch (error) {
             console.error('Error tracking invite:', error);
@@ -44,7 +44,7 @@ module.exports = {
             // Create welcome embed
             const welcomeEmbed = new EmbedBuilder()
                 .setTitle('Welcome to Section42!')
-                .setDescription(`${member.user.toString()} has joined the server! 🎉\n\nMake sure to check out <#${member.guild.channels.cache.find(c => c.name === 'rules')?.id || 'rules'}> and get your roles!`)
+                .setDescription(`${member.user.toString()} has joined the server!\n\nMake sure to check out <#${member.guild.channels.cache.find(c => c.name === 'rules')?.id || 'rules'}> and get your roles!`)
                 .setColor('#ff6b35')
                 .setImage('https://media.discordapp.net/attachments/1421592736221626572/1421592800008552498/section42-banner.png')
                 .setFooter({ 
@@ -69,7 +69,7 @@ module.exports = {
                 
                 if (defaultRole) {
                     await member.roles.add(defaultRole);
-                    console.log(`✅ Gave ${member.user.tag} the ${defaultRole.name} role`);
+                    console.log(`[MemberAdd] Gave ${member.user.tag} the ${defaultRole.name} role`);
                 }
             } catch (error) {
                 console.log('No default role found or could not assign role:', error.message);

@@ -27,7 +27,7 @@ module.exports = {
         //     await this.pingInactiveMembers(client);
         // }, 7200000); // 2 hours
         
-        console.log('✅ Activity monitoring system started!');
+        console.log('[Activity] Activity monitoring system started!');
     },
     
     async checkActivity(client) {

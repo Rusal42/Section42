@@ -49,7 +49,7 @@ class InviteTracker {
             }
             
             this.inviteCache.set(guild.id, guildInvites);
-            console.log(`📨 Cached ${invites.size} invites for ${guild.name}`);
+            console.log(`[Invites] Cached ${invites.size} invites for ${guild.name}`);
         } catch (error) {
             console.error(`Error caching invites for ${guild.name}:`, error.message);
         }

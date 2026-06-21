@@ -229,11 +229,11 @@ class ActivityTracker {
         const today = new Date().toDateString();
         const todayMessages = this.dailyStats.get(today) || 0;
         
-        if (todayMessages === 0) return { level: 'DEAD', emoji: '💀', color: '#e74c3c' };
-        if (todayMessages < 10) return { level: 'SLOW', emoji: '😴', color: '#f39c12' };
-        if (todayMessages < 50) return { level: 'MODERATE', emoji: '🚶', color: '#f1c40f' };
-        if (todayMessages < 100) return { level: 'ACTIVE', emoji: '🏃', color: '#2ecc71' };
-        return { level: 'BOOMING', emoji: '🔥', color: '#e74c3c' };
+        if (todayMessages === 0) return { level: 'DEAD', emoji: '', color: '#e74c3c' };
+        if (todayMessages < 10) return { level: 'SLOW', emoji: '', color: '#f39c12' };
+        if (todayMessages < 50) return { level: 'MODERATE', emoji: '', color: '#f1c40f' };
+        if (todayMessages < 100) return { level: 'ACTIVE', emoji: '', color: '#2ecc71' };
+        return { level: 'BOOMING', emoji: '', color: '#e74c3c' };
     }
 }
 

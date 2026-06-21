@@ -67,15 +67,22 @@ client.on('messageCreate', async message => {
 });
 
 client.on('interactionCreate', async interaction => {
-    if (!ALLOWED_GUILD_IDS.includes(interaction.guild.id)) return;
+    if (!interaction.guild || !ALLOWED_GUILD_IDS.includes(interaction.guild.id)) return;
 
     // Handle button interactions for reaction roles
     if (interaction.isButton()) {
         if (interaction.customId.startsWith('reactionrole_')) {
             await handleReactionRoleButton(interaction);
         } else if (interaction.customId.startsWith('tournament_')) {
-            const { handleTournamentButton } = require('./commands/tournament');
-            await handleTournamentButton(interaction);
+            try {
+                const { handleTournamentButton } = require('./commands/tournament');
+                await handleTournamentButton(interaction);
+            } catch (error) {
+                console.error('Tournament button error:', error);
+                if (!interaction.replied && !interaction.deferred) {
+                    await interaction.reply({ content: 'Something went wrong with this tournament button.', ephemeral: true }).catch(() => {});
+                }
+            }
         }
         return;
     }

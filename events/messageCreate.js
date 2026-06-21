@@ -58,7 +58,7 @@ module.exports = {
                     // This is likely a response to a welcome!
                     tracker.greetingResponses.set(message.author.id, (tracker.greetingResponses.get(message.author.id) || 0) + 1);
                     
-                    console.log(`👋 ${message.author.tag} greeted new member! (${tracker.greetingResponses.get(message.author.id)} total greetings)`);
+                    console.log(`[Greet] ${message.author.tag} greeted new member! (${tracker.greetingResponses.get(message.author.id)} total greetings)`);
                     
                     break;
                 }

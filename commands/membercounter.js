@@ -67,7 +67,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setColor('#cc00ff')
-                .setTitle('✅ Member Counter Created')
+                .setTitle('Member Counter Created')
                 .setDescription(`<#${channel.id}> will now update automatically whenever someone joins or leaves.`)
                 .addFields(
                     { name: 'Format', value: `\`${format}\``, inline: true },
@@ -93,7 +93,7 @@ module.exports = {
             removeCounter(guild.id);
 
             return interaction.reply({
-                content: '🗑️ Member counter channel removed.',
+                content: 'Member counter channel removed.',
                 ephemeral: true
             });
         }

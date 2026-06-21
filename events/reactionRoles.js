@@ -137,7 +137,7 @@ async function restoreReactionRoles(client, ALLOWED_GUILD_IDS) {
                                         }
                                         
                                         await member.roles.add(role);
-                                        console.log(`✅ Restored ${roleName} role to ${user.tag}`);
+                                        console.log(`[ReactionRoles] Restored ${roleName} role to ${user.tag}`);
                                     }
                                 } catch (error) {
                                     // Skip logging for users who left the server
@@ -158,7 +158,7 @@ async function restoreReactionRoles(client, ALLOWED_GUILD_IDS) {
             console.error(`Error processing guild ${guildId}:`, error);
         }
     }
-    console.log('✅ Reaction role restoration complete!');
+    console.log('[ReactionRoles] Reaction role restoration complete!');
 }
 
 module.exports = {

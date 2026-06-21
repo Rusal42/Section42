@@ -1,5 +1,32 @@
 {
-  "userMessageCounts": {},
+  "userMessageCounts": {
+    "746068840978448565": {
+      "count": 2,
+      "firstMessage": 1782045508547,
+      "guilds": {
+        "1421592736221626572": {
+          "count": 2,
+          "channels": {
+            "1518225757262839920": {
+              "count": 2,
+              "messages": [
+                {
+                  "content": "<@&1497648484134686883> yall are gonna love this update on the bot",
+                  "timestamp": 1782045508547,
+                  "channelId": "1518225757262839920"
+                },
+                {
+                  "content": "https://cdn.discordapp.com/attachments/1517526686680354856/1517528398665224283/sonn.gif",
+                  "timestamp": 1782045511900,
+                  "channelId": "1518225757262839920"
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
   "recentMessages": {},
   "quarantinedUsers": {}
 }
