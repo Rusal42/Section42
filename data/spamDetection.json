@@ -1,24 +1,29 @@
 {
   "userMessageCounts": {
     "746068840978448565": {
-      "count": 2,
+      "count": 5,
       "firstMessage": 1782045508547,
       "guilds": {
         "1421592736221626572": {
-          "count": 2,
+          "count": 5,
           "channels": {
-            "1518225757262839920": {
-              "count": 2,
+            "1518237253405638756": {
+              "count": 3,
               "messages": [
                 {
-                  "content": "<@&1497648484134686883> yall are gonna love this update on the bot",
-                  "timestamp": 1782045508547,
-                  "channelId": "1518225757262839920"
+                  "content": "/tournament test",
+                  "timestamp": 1782163177262,
+                  "channelId": "1518237253405638756"
                 },
                 {
-                  "content": "https://cdn.discordapp.com/attachments/1517526686680354856/1517528398665224283/sonn.gif",
-                  "timestamp": 1782045511900,
-                  "channelId": "1518225757262839920"
+                  "content": "!doss 556870729480536085",
+                  "timestamp": 1782163291392,
+                  "channelId": "1518237253405638756"
+                },
+                {
+                  "content": "!doss 779407202976268328",
+                  "timestamp": 1782163336022,
+                  "channelId": "1518237253405638756"
                 }
               ]
             }

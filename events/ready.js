@@ -1,14 +1,40 @@
-const { REST, Routes } = require('discord.js');
+const { REST, Routes, ActivityType } = require('discord.js');
 const { restoreReactionRoles } = require('./reactionRoles');
 const { scheduleAutoCloses } = require('../commands/tournament');
 const inviteTracker = require('../utils/inviteTracker');
 const { getCounter } = require('../utils/memberCounterStore');
+const { STATUSES, ROTATION_INTERVAL } = require('../config/botStatus');
 
 module.exports = {
     name: 'ready',
     once: true,
     async execute(client) {
         console.log(`Logged in as ${client.user.tag}!`);
+        
+        // Rotate status through configured statuses
+        if (STATUSES.length > 0) {
+            const activityTypeMap = {
+                Playing: ActivityType.Playing,
+                Streaming: ActivityType.Streaming,
+                Listening: ActivityType.Listening,
+                Watching: ActivityType.Watching,
+                Competing: ActivityType.Competing
+            };
+
+            let statusIndex = 0;
+            const rotateStatus = () => {
+                const status = STATUSES[statusIndex];
+                client.user.setPresence({
+                    activities: [{
+                        name: status.text,
+                        type: activityTypeMap[status.type] || ActivityType.Listening
+                    }]
+                });
+                statusIndex = (statusIndex + 1) % STATUSES.length;
+            };
+            rotateStatus();
+            setInterval(rotateStatus, ROTATION_INTERVAL * 1000);
+        }
         
         // Get ALLOWED_GUILD_IDS from client or use default
         const ALLOWED_GUILD_IDS = ['1421592736221626572', '1392710210862321694'];
