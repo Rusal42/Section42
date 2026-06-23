@@ -5,6 +5,17 @@ module.exports = {
     name: 'guildMemberAdd',
     async execute(member) {
         console.log(`[MemberAdd] New member joined: ${member.user.tag}`);
+
+        // Prevent duplicate welcome messages for the same member
+        if (!member.client.recentJoins) {
+            member.client.recentJoins = new Set();
+        }
+        if (member.client.recentJoins.has(member.id)) {
+            console.log(`[MemberAdd] Skipping duplicate welcome for ${member.user.tag}`);
+            return;
+        }
+        member.client.recentJoins.add(member.id);
+        setTimeout(() => member.client.recentJoins.delete(member.id), 5000);
         
         // Track invite
         let inviterInfo = null;

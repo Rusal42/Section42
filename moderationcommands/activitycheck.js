@@ -280,6 +280,7 @@ module.exports = {
             messageId: checkMessage.id,
             channelId: channel.id,
             guildId: guild.id,
+            client: interactionOrMessage.client,
             checkRoleId: checkRole.id,
             removeRoleId: removeRole.id,
             rewardRoleId: rewardRole?.id || null,
@@ -478,7 +479,7 @@ module.exports = {
         checkData.ended = true;
         
         try {
-            const guild = await global.client.guilds.fetch(checkData.guildId);
+            const guild = await checkData.client.guilds.fetch(checkData.guildId);
             const channel = await guild.channels.fetch(checkData.channelId);
             const message = await channel.messages.fetch(checkData.messageId);
 
@@ -548,9 +549,4 @@ module.exports = {
     getActiveChecks() {
         return activeChecks;
     }
-};
-
-// Make client available globally for endCheck
-module.exports.setClient = (client) => {
-    global.client = client;
 };

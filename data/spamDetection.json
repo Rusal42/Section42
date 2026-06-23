@@ -1,29 +1,40 @@
 {
   "userMessageCounts": {
-    "746068840978448565": {
-      "count": 5,
-      "firstMessage": 1782045508547,
+    "1121589782397587507": {
+      "count": 6,
+      "firstMessage": 1782220480393,
       "guilds": {
         "1421592736221626572": {
-          "count": 5,
+          "count": 6,
           "channels": {
-            "1518237253405638756": {
-              "count": 3,
+            "1421914199314927707": {
+              "count": 6,
               "messages": [
                 {
-                  "content": "/tournament test",
-                  "timestamp": 1782163177262,
-                  "channelId": "1518237253405638756"
-                },
+                  "content": "whatever floats ur boat",
+                  "timestamp": 1782221964799,
+                  "channelId": "1421914199314927707"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "746068840978448565": {
+      "count": 1,
+      "firstMessage": 1782222090274,
+      "guilds": {
+        "1421592736221626572": {
+          "count": 1,
+          "channels": {
+            "1421914199314927707": {
+              "count": 1,
+              "messages": [
                 {
-                  "content": "!doss 556870729480536085",
-                  "timestamp": 1782163291392,
-                  "channelId": "1518237253405638756"
-                },
-                {
-                  "content": "!doss 779407202976268328",
-                  "timestamp": 1782163336022,
-                  "channelId": "1518237253405638756"
+                  "content": "<@1129799308116492379>",
+                  "timestamp": 1782222090274,
+                  "channelId": "1421914199314927707"
                 }
               ]
             }

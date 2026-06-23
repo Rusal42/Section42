@@ -1,15 +1,43 @@
 {
   "userStats": {
     "746068840978448565": {
-      "messages": 5,
-      "lastSeen": 1782163336022,
-      "streak": 1,
+      "messages": 17,
+      "lastSeen": 1782222090273,
+      "streak": 2,
+      "dailyMessages": 6,
+      "lastActiveDate": "Tue Jun 23 2026"
+    },
+    "1388998122557931662": {
+      "messages": 3,
+      "lastSeen": 1782220166987,
+      "streak": 0,
       "dailyMessages": 3,
-      "lastActiveDate": "Mon Jun 22 2026"
+      "lastActiveDate": "Tue Jun 23 2026"
+    },
+    "1516805550631948352": {
+      "messages": 7,
+      "lastSeen": 1782220172357,
+      "streak": 0,
+      "dailyMessages": 7,
+      "lastActiveDate": "Tue Jun 23 2026"
+    },
+    "1086812219435646986": {
+      "messages": 7,
+      "lastSeen": 1782221403081,
+      "streak": 0,
+      "dailyMessages": 7,
+      "lastActiveDate": "Tue Jun 23 2026"
+    },
+    "1121589782397587507": {
+      "messages": 6,
+      "lastSeen": 1782221964799,
+      "streak": 0,
+      "dailyMessages": 6,
+      "lastActiveDate": "Tue Jun 23 2026"
     }
   },
   "dailyStats": {
-    "Sun Jun 21 2026": 2
+    "Tue Jun 23 2026": 29
   },
-  "lastSaved": "2026-06-22T21:22:16.022Z"
+  "lastSaved": "2026-06-23T13:41:30.274Z"
 }

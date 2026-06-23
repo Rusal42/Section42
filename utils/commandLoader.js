@@ -9,7 +9,7 @@ function loadCommands(client) {
     const slashCommandsData = [];
 
     const commandDirectories = ['commands', 'commands/fun-commands', 'ServerCreation', 'ownercommands', 'moderationcommands'];
-    if (DEV_MODE) commandDirectories.push('Test commands');
+    if (DEV_MODE) commandDirectories.push('Test commands', 'clothingcommands');
 
     commandDirectories.forEach(dirName => {
         const dirPath = path.join(__dirname, '..', dirName);
