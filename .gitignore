@@ -1,6 +1,9 @@
 # Environment variables
 .env
 
+# Bot runtime data (kept local, not pushed between machines)
+data/
+
 # Node modules
 node_modules/
 

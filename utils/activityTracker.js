@@ -1,8 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 const { OWNER_IDS } = require('../config/constants');
+const { getDataPath } = require('../utils/dataPath');
 
-const activityDataPath = path.join(__dirname, '../data/activityData.json');
+const activityDataPath = getDataPath('activityData.json');
 
 class ActivityTracker {
     constructor() {

@@ -1,6 +1,7 @@
 const { EmbedBuilder, SlashCommandBuilder, PermissionFlagsBits, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
+const { getDataPath } = require('../utils/dataPath');
 
 // Store active tournaments in memory
 const activeTournaments = new Map();
@@ -9,7 +10,7 @@ const activeTournaments = new Map();
 const activeTimeouts = new Map();
 
 // Load persisted tournaments on startup
-const tournamentsFile = path.join(__dirname, '..', 'data', 'tournaments.json');
+const tournamentsFile = getDataPath('tournaments.json');
 function hydrateTournament(value) {
     const tournament = { ...value };
     if (value.participants) {

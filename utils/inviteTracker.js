@@ -1,7 +1,8 @@
 const fs = require('fs');
 const path = require('path');
+const { getDataPath } = require('../utils/dataPath');
 
-const INVITE_DATA_PATH = path.join(__dirname, '..', 'data', 'invites.json');
+const INVITE_DATA_PATH = getDataPath('invites.json');
 
 class InviteTracker {
     constructor() {

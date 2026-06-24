@@ -1,5 +1,6 @@
 const { EmbedBuilder, SlashCommandBuilder, PermissionFlagsBits, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const path = require('path');
+const { getDataPath } = require('../utils/dataPath');
 
 // Import shared tournament utilities from main tournament command
 const tournament = require(path.join(__dirname, '..', 'commands', 'tournament'));
@@ -12,7 +13,7 @@ const { activeTournaments, handleTournamentButton } = tournament;
 const fs = require('fs');
 
 // Store reference to the tournament module's internals
-const tournamentsFile = path.join(__dirname, '..', 'data', 'tournaments.json');
+const tournamentsFile = getDataPath('tournaments.json');
 
 module.exports = {
     name: 'tournamenttest',

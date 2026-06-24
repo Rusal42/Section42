@@ -2,8 +2,9 @@ const { EmbedBuilder, PermissionsBitField } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
 const { OWNER_IDS } = require('../config/constants');
+const { getDataPath } = require('../utils/dataPath');
 
-const meowlockPath = path.join(__dirname, '../data/meowlock.json');
+const meowlockPath = getDataPath('meowlock.json');
 
 function isOwner(userId) {
     return OWNER_IDS.includes(userId);

@@ -144,8 +144,8 @@ module.exports = {
 
             try {
                 const fs = require('fs');
-                const path = require('path');
-                const infractionsPath = path.join(__dirname, '..', 'data', 'infractions.json');
+                const { getDataPath } = require('../utils/dataPath');
+                const infractionsPath = getDataPath('infractions.json');
                 
                 if (fs.existsSync(infractionsPath)) {
                     const infractions = JSON.parse(fs.readFileSync(infractionsPath, 'utf8'));

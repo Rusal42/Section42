@@ -1,8 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 const { EmbedBuilder } = require('discord.js');
+const { getDataPath } = require('../utils/dataPath');
 
-const meowlockPath = path.join(__dirname, '../data/meowlock.json');
+const meowlockPath = getDataPath('meowlock.json');
 
 function loadMeowlocks() {
     if (fs.existsSync(meowlockPath)) {

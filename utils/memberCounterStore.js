@@ -1,7 +1,8 @@
 const fs = require('fs');
 const path = require('path');
+const { getDataPath } = require('../utils/dataPath');
 
-const STORE_PATH = path.join(__dirname, '..', 'data', 'memberCounters.json');
+const STORE_PATH = getDataPath('memberCounters.json');
 
 function load() {
     try {

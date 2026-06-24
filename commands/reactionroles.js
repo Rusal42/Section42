@@ -1,11 +1,12 @@
 const { EmbedBuilder, SlashCommandBuilder, PermissionFlagsBits, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
+const { getDataPath } = require('../utils/dataPath');
 
-const REACTION_ROLES_FILE = path.join(__dirname, '..', 'data', 'customReactionRoles.json');
+const REACTION_ROLES_FILE = getDataPath('customReactionRoles.json');
 
 // Ensure data directory exists
-const dataDir = path.join(__dirname, '..', 'data');
+const dataDir = getDataPath();
 if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true });
 }

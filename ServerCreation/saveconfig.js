@@ -2,6 +2,7 @@ const { EmbedBuilder, PermissionsBitField } = require('discord.js');
 const { OWNER_IDS } = require('../config/constants');
 const fs = require('fs');
 const path = require('path');
+const { getDataPath } = require('../utils/dataPath');
 
 module.exports = {
     name: 'saveconfig',
@@ -131,7 +132,7 @@ module.exports = {
             }
 
             // Save to file
-            const configDir = path.join(__dirname, '..', 'data', 'saved-configs');
+            const configDir = getDataPath('saved-configs');
             if (!fs.existsSync(configDir)) {
                 fs.mkdirSync(configDir, { recursive: true });
             }

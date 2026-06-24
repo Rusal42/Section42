@@ -1,10 +1,11 @@
 const fs = require('fs');
 const path = require('path');
+const { getDataPath } = require('../utils/dataPath');
 
-const MESSAGE_TRACKER_FILE = path.join(__dirname, '..', 'data', 'trackedMessages.json');
+const MESSAGE_TRACKER_FILE = getDataPath('trackedMessages.json');
 
 // Ensure data directory exists
-const dataDir = path.join(__dirname, '..', 'data');
+const dataDir = getDataPath();
 if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true });
 }

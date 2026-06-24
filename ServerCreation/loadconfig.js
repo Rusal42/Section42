@@ -2,6 +2,7 @@ const { EmbedBuilder, PermissionsBitField, ChannelType } = require('discord.js')
 const { OWNER_IDS } = require('../config/constants');
 const fs = require('fs');
 const path = require('path');
+const { getDataPath } = require('../utils/dataPath');
 
 module.exports = {
     name: 'loadconfig',
@@ -17,7 +18,7 @@ module.exports = {
             return message.channel.send({ embeds: [errorEmbed] });
         }
 
-        const configDir = path.join(__dirname, '..', 'data', 'saved-configs');
+        const configDir = getDataPath('saved-configs');
         
         if (!fs.existsSync(configDir)) {
             const errorEmbed = new EmbedBuilder()

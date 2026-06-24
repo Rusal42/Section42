@@ -2,11 +2,13 @@ const { EmbedBuilder, SlashCommandBuilder, PermissionFlagsBits, ChannelType } = 
 const fs = require('fs');
 const path = require('path');
 const { purgeUserMessages } = require('../events/spamDetection');
+const { QUARANTINE_CONFIG } = require('../config/constants');
+const { getDataPath } = require('../utils/dataPath');
 
-const QUARANTINE_FILE = path.join(__dirname, '..', 'data', 'quarantinedUsers.json');
+const QUARANTINE_FILE = getDataPath('quarantinedUsers.json');
 
 // Ensure data directory exists
-const dataDir = path.join(__dirname, '..', 'data');
+const dataDir = getDataPath();
 if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true });
 }
@@ -166,8 +168,12 @@ module.exports = {
         // Set quarantine role permissions
         const textChannels = interaction.guild.channels.cache.filter(c => c.type === ChannelType.GuildText);
         const voiceChannels = interaction.guild.channels.cache.filter(c => c.type === ChannelType.GuildVoice);
+        const ticketChannel = interaction.guild.channels.cache.get(QUARANTINE_CONFIG.TICKET_CHANNEL_ID);
+        const supportCategory = interaction.guild.channels.cache.get(QUARANTINE_CONFIG.SUPPORT_TICKETS_CATEGORY_ID);
 
+        // Deny access to all text channels except the create-ticket channel
         for (const channel of textChannels) {
+            if (channel.id === QUARANTINE_CONFIG.TICKET_CHANNEL_ID) continue;
             await channel.permissionOverwrites.edit(quarantineRole, {
                 SendMessages: false,
                 AddReactions: false,
@@ -177,11 +183,31 @@ module.exports = {
             });
         }
 
+        // Deny access to all voice channels
         for (const channel of voiceChannels) {
             await channel.permissionOverwrites.edit(quarantineRole, {
                 Connect: false,
                 Speak: false,
                 ViewChannel: false
+            });
+        }
+
+        // Deny access to any future channels created in the support tickets category (except the ticket channel)
+        if (supportCategory && supportCategory.type === ChannelType.GuildCategory) {
+            await supportCategory.permissionOverwrites.edit(quarantineRole, {
+                ViewChannel: false
+            });
+        }
+
+        // Allow the quarantined user to ONLY see and use the create-ticket channel
+        if (ticketChannel) {
+            await ticketChannel.permissionOverwrites.edit(quarantineRole, {
+                ViewChannel: true,
+                SendMessages: true,
+                ReadMessageHistory: true,
+                AddReactions: false,
+                CreatePublicPoll: false,
+                SendMessagesInThreads: false
             });
         }
 

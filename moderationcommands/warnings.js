@@ -1,8 +1,9 @@
 const { EmbedBuilder, PermissionsBitField } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
+const { getDataPath } = require('../utils/dataPath');
 
-const infractionsPath = path.join(__dirname, '..', 'data', 'infractions.json');
+const infractionsPath = getDataPath('infractions.json');
 
 function loadInfractions() {
     try {

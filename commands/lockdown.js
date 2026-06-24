@@ -1,11 +1,12 @@
 const { EmbedBuilder, SlashCommandBuilder, PermissionFlagsBits, ChannelType } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
+const { getDataPath } = require('../utils/dataPath');
 
-const LOCKDOWN_FILE = path.join(__dirname, '..', 'data', 'lockdown.json');
+const LOCKDOWN_FILE = getDataPath('lockdown.json');
 
 // Ensure data directory exists
-const dataDir = path.join(__dirname, '..', 'data');
+const dataDir = getDataPath();
 if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true });
 }
