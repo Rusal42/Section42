@@ -136,9 +136,8 @@ module.exports = {
             });
         }
 
-        // Store original roles and info
+        // Store quarantine info
         quarantineData[guildId][user.id] = {
-            originalRoles: member.roles.cache.map(r => r.id).filter(id => id !== interaction.guild.id),
             quarantinedAt: Date.now(),
             quarantinedBy: interaction.user.id,
             reason,
@@ -151,9 +150,6 @@ module.exports = {
         };
 
         saveQuarantineData(quarantineData);
-
-        // Remove all roles except @everyone
-        await member.roles.set([], reason);
 
         // Create quarantine role if it doesn't exist
         let quarantineRole = interaction.guild.roles.cache.find(r => r.name === 'Quarantined');
@@ -233,10 +229,10 @@ module.exports = {
                 `**User ID:** ${user.id}\n` +
                 `**Reason:** ${reason}\n` +
                 `**Quarantined by:** ${interaction.user.tag}\n\n` +
-                `All roles removed and user restricted.`
+                `User restricted via Quarantined role. Original roles kept.`
             )
             .addFields(
-                { name: 'Original Roles', value: `${quarantineData[guildId][user.id].originalRoles.length} roles removed`, inline: true },
+                { name: 'Original Roles', value: 'Kept (not removed)', inline: true },
                 { name: 'Messages Purged', value: `${totalDeleted} messages deleted (last 10 min)`, inline: true },
                 { name: 'Voice Status', value: member.voice.channel ? 'Disconnected from voice' : 'Not in voice', inline: true },
                 { name: 'Nickname', value: 'Changed to ⚠️ QUARANTINED ⚠️', inline: true }
@@ -282,15 +278,6 @@ module.exports = {
             });
         }
 
-        // Restore original roles
-        const rolesToRestore = [];
-        for (const roleId of quarantineInfo.originalRoles) {
-            const role = interaction.guild.roles.cache.get(roleId);
-            if (role) rolesToRestore.push(role);
-        }
-
-        await member.roles.set(rolesToRestore, reason);
-
         // Remove quarantine role
         const quarantineRole = interaction.guild.roles.cache.find(r => r.name === 'Quarantined');
         if (quarantineRole) {
@@ -316,10 +303,10 @@ module.exports = {
                 `**User ID:** ${user.id}\n` +
                 `**Reason:** ${reason}\n` +
                 `**Unquarantined by:** ${interaction.user.tag}\n\n` +
-                `Original roles and access restored.`
+                `Quarantined role removed. Original roles were kept.`
             )
             .addFields(
-                { name: 'Roles Restored', value: `${rolesToRestore.length} roles restored`, inline: true },
+                { name: 'Original Roles', value: 'Kept during quarantine', inline: true },
                 { name: 'Nickname', value: quarantineInfo.originalNickname || 'Reset to default', inline: true },
                 { name: 'Quarantine Duration', value: this.formatDuration(Date.now() - quarantineInfo.quarantinedAt), inline: true }
             )

@@ -49,9 +49,9 @@ function loadEvents(client) {
                 }
                 
                 if (ev.once) {
-                    client.once(ev.name, (...args) => ev.execute(...args));
+                    client.once(ev.name, (...args) => ev.execute.call(ev, ...args));
                 } else {
-                    client.on(ev.name, (...args) => ev.execute(...args));
+                    client.on(ev.name, (...args) => ev.execute.call(ev, ...args));
                 }
                 
                 console.log(`Loaded event: ${ev.name}${ev.once ? ' (once)' : ''}`);

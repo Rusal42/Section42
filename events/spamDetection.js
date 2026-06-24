@@ -39,13 +39,13 @@ function saveSpamData(data) {
 }
 
 // Configuration
-const SPAM_THRESHOLD = 5; // Messages in time window to trigger
+const SPAM_THRESHOLD = 4; // Messages in time window to trigger
 const TIME_WINDOW = 10000; // 10 seconds in milliseconds
-const REPEAT_SPAM_THRESHOLD = 4; // Similar messages in a channel to trigger
+const REPEAT_SPAM_THRESHOLD = 3; // Similar messages in a channel to trigger
 const REPEAT_SPAM_WINDOW = 30000; // 30 seconds for repeat detection
 const CROSS_CHANNEL_THRESHOLD = 2; // Similar messages across this many channels
 const CROSS_CHANNEL_WINDOW = 30000; // 30 seconds for cross-channel detection
-const SIMILARITY_THRESHOLD = 0.75; // Minimum content similarity (0.0 - 1.0)
+const SIMILARITY_THRESHOLD = 0.65; // Minimum content similarity (0.0 - 1.0)
 const MAX_MESSAGE_AGE = 10; // Minutes to look back for deletion
 const TIMEOUT_DURATION = 15 * 60 * 1000; // 15 minutes auto-timeout
 
@@ -242,7 +242,6 @@ async function handleAutoTimeout(message, spamData, spamType, details, spamConte
 
 async function handleAutoQuarantine(message, spamData, spamType, details, spamContent) {
     const userId = message.author.id;
-    const guildId = message.guild.id;
 
     console.log(`🚨 Potential hacked account detected: ${message.author.tag} (${spamType})`);
 
@@ -259,12 +258,6 @@ async function handleAutoQuarantine(message, spamData, spamType, details, spamCo
     try {
         const member = await message.guild.members.fetch(userId);
         if (member) {
-            // Store original roles
-            const originalRoles = member.roles.cache.map(r => r.id).filter(id => id !== guildId);
-
-            // Remove all roles except @everyone
-            await member.roles.set([], 'Auto-quarantine: Potential hacked account');
-
             // Create or get quarantine role
             let quarantineRole = message.guild.roles.cache.find(r => r.name === 'Quarantined');
             if (!quarantineRole) {
@@ -351,7 +344,7 @@ async function handleAutoQuarantine(message, spamData, spamType, details, spamCo
                         `User has been quarantined automatically for suspected compromised account activity. Please investigate.`
                     )
                     .addFields(
-                        { name: 'Original Roles', value: `${originalRoles.length} roles removed`, inline: true },
+                        { name: 'Original Roles', value: 'Kept (not removed)', inline: true },
                         { name: 'Similar Messages Deleted', value: `${similarDeleted}`, inline: true },
                         { name: 'Total Recent Messages Purged', value: `${totalPurged}`, inline: true },
                         { name: 'Action Required', value: 'Investigate and decide on permanent action', inline: true }
@@ -369,67 +362,71 @@ async function handleAutoQuarantine(message, spamData, spamType, details, spamCo
 const messageCreateEvent = {
     name: 'messageCreate',
     async execute(message) {
-        // Ignore bot messages
-        if (message.author.bot) return;
+        try {
+            // Ignore bot messages
+            if (message.author.bot) return;
 
-        // Ignore DMs
-        if (!message.guild) return;
+            // Ignore DMs
+            if (!message.guild) return;
 
-        // Check if user is already flagged
-        const spamData = loadSpamData();
-        if (spamData.quarantinedUsers[message.author.id]) return;
+            // Check if user is already flagged
+            const spamData = loadSpamData();
+            if (spamData.quarantinedUsers[message.author.id]) return;
 
-        const userId = message.author.id;
-        const guildId = message.guild.id;
-        const now = Date.now();
+            const userId = message.author.id;
+            const guildId = message.guild.id;
+            const now = Date.now();
 
-        // Initialize user data if not exists
-        if (!spamData.userMessageCounts[userId]) {
-            spamData.userMessageCounts[userId] = {
-                count: 0,
-                firstMessage: now,
-                guilds: {}
-            };
+            // Initialize user data if not exists
+            if (!spamData.userMessageCounts[userId]) {
+                spamData.userMessageCounts[userId] = {
+                    count: 0,
+                    firstMessage: now,
+                    guilds: {}
+                };
+            }
+
+            if (!spamData.userMessageCounts[userId].guilds[guildId]) {
+                spamData.userMessageCounts[userId].guilds[guildId] = {
+                    count: 0,
+                    channels: {}
+                };
+            }
+
+            if (!spamData.userMessageCounts[userId].guilds[guildId].channels[message.channel.id]) {
+                spamData.userMessageCounts[userId].guilds[guildId].channels[message.channel.id] = {
+                    count: 0,
+                    messages: []
+                };
+            }
+
+            // Track message
+            const userData = spamData.userMessageCounts[userId];
+            const guildData = userData.guilds[guildId];
+            const channelData = guildData.channels[message.channel.id];
+
+            userData.count++;
+            guildData.count++;
+            channelData.count++;
+            channelData.messages.push({
+                content: message.content,
+                timestamp: now,
+                channelId: message.channel.id
+            });
+
+            // Record message for similarity-based cleanup
+            recordMessage(message);
+
+            // Check for spam patterns
+            await this.checkSpamPatterns(message, spamData, userData, guildData, channelData);
+
+            // Clean up old messages
+            this.cleanupOldData(spamData, now);
+
+            saveSpamData(spamData);
+        } catch (error) {
+            console.error('[SpamDetection] Error processing message:', error);
         }
-
-        if (!spamData.userMessageCounts[userId].guilds[guildId]) {
-            spamData.userMessageCounts[userId].guilds[guildId] = {
-                count: 0,
-                channels: {}
-            };
-        }
-
-        if (!spamData.userMessageCounts[userId].guilds[guildId].channels[message.channel.id]) {
-            spamData.userMessageCounts[userId].guilds[guildId].channels[message.channel.id] = {
-                count: 0,
-                messages: []
-            };
-        }
-
-        // Track message
-        const userData = spamData.userMessageCounts[userId];
-        const guildData = userData.guilds[guildId];
-        const channelData = guildData.channels[message.channel.id];
-
-        userData.count++;
-        guildData.count++;
-        channelData.count++;
-        channelData.messages.push({
-            content: message.content,
-            timestamp: now,
-            channelId: message.channel.id
-        });
-
-        // Record message for similarity-based cleanup
-        recordMessage(message);
-
-        // Check for spam patterns
-        await this.checkSpamPatterns(message, spamData, userData, guildData, channelData);
-
-        // Clean up old messages
-        this.cleanupOldData(spamData, now);
-
-        saveSpamData(spamData);
     },
 
     async checkSpamPatterns(message, spamData, userData, guildData, channelData) {
@@ -439,7 +436,11 @@ const messageCreateEvent = {
 
         // Pattern 1: High message velocity in a single channel
         const recentMessages = channelData.messages.filter(m => now - m.timestamp < TIME_WINDOW);
+        if (recentMessages.length > 0) {
+            console.log(`[SpamDetection] ${message.author.tag} #${message.channel.name}: recent=${recentMessages.length}, threshold=${SPAM_THRESHOLD}`);
+        }
         if (recentMessages.length >= SPAM_THRESHOLD) {
+            console.log(`[SpamDetection] TRIGGER rapid_spam for ${message.author.tag}`);
             await handleAutoTimeout(message, spamData, 'rapid_spam', {
                 messageCount: recentMessages.length,
                 channel: message.channel.name,
@@ -455,6 +456,7 @@ const messageCreateEvent = {
         }
         if (allGuildMessages.length >= SPAM_THRESHOLD) {
             const uniqueChannels = new Set(allGuildMessages.map(m => m.channelId));
+            console.log(`[SpamDetection] TRIGGER high_velocity_spam for ${message.author.tag} (${allGuildMessages.length} msgs, ${uniqueChannels.size} channels)`);
             await handleAutoTimeout(message, spamData, 'high_velocity_spam', {
                 messageCount: allGuildMessages.length,
                 timeSpan: TIME_WINDOW / 1000,
@@ -471,6 +473,7 @@ const messageCreateEvent = {
             );
 
             if (channelMessages.length >= REPEAT_SPAM_THRESHOLD) {
+                console.log(`[SpamDetection] TRIGGER repeated_similar_spam for ${message.author.tag}`);
                 await handleAutoTimeout(message, spamData, 'repeated_similar_spam', {
                     messageCount: channelMessages.length,
                     channel: message.channel.name,
@@ -496,7 +499,11 @@ const messageCreateEvent = {
                 }
             }
 
+            if (affectedChannels.size > 0) {
+                console.log(`[SpamDetection] ${message.author.tag} cross-channel affected=${affectedChannels.size}, threshold=${CROSS_CHANNEL_THRESHOLD}`);
+            }
             if (affectedChannels.size >= CROSS_CHANNEL_THRESHOLD) {
+                console.log(`[SpamDetection] TRIGGER cross_channel_spam for ${message.author.tag}`);
                 await handleAutoQuarantine(message, spamData, 'cross_channel_spam', {
                     messageCount: affectedChannels.size,
                     channels: affectedChannels.size,
@@ -529,6 +536,7 @@ const messageCreateEvent = {
             }
 
             if (uniqueChannels.size >= 2) {
+                console.log(`[SpamDetection] TRIGGER phishing_spam for ${message.author.tag}`);
                 await handleAutoQuarantine(message, spamData, 'phishing_spam', {
                     messageCount: uniqueChannels.size,
                     channels: uniqueChannels.size,
