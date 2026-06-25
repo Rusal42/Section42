@@ -560,61 +560,6 @@ const messageCreateEvent = {
     }
 };
 
-const guildMemberUpdateEvent = {
-    name: 'guildMemberUpdate',
-    async execute(oldMember, newMember) {
-        // Detect if another bot/moderator muted or timed out this user
-        const wasTimedOut = oldMember.isCommunicationDisabled && oldMember.isCommunicationDisabled();
-        const isTimedOut = newMember.isCommunicationDisabled && newMember.isCommunicationDisabled();
-        const wasMuted = oldMember.roles.cache.some(r => r.name.toLowerCase() === 'muted');
-        const isMuted = newMember.roles.cache.some(r => r.name.toLowerCase() === 'muted');
-
-        if ((!wasTimedOut && isTimedOut) || (!wasMuted && isMuted)) {
-            const guild = newMember.guild;
-            const userId = newMember.id;
-            const key = `${guild.id}:${userId}`;
-
-            const recentLog = userRecentMessages.get(key);
-            if (!recentLog || recentLog.length === 0) return;
-
-            const spamContent = recentLog[recentLog.length - 1].content;
-
-            console.log(`User ${newMember.user.tag} was muted by another bot/moderator. Cleaning similar messages...`);
-
-            const deleted = await deleteSimilarMessages(guild, userId, spamContent, {
-                minutesBack: MAX_MESSAGE_AGE,
-                similarityThreshold: SIMILARITY_THRESHOLD
-            });
-            console.log(`Cleaned ${deleted} similar messages after ${newMember.user.tag} was muted externally`);
-
-            const purged = await purgeUserMessages(guild, userId, MAX_MESSAGE_AGE);
-            console.log(`Purged ${purged} total recent messages from ${newMember.user.tag}`);
-
-            const staffChannel = guild.channels.cache.find(c =>
-                c.name.toLowerCase().includes('staff') && c.type === 0
-            );
-
-            if (staffChannel) {
-                const alertEmbed = new EmbedBuilder()
-                    .setColor('#ff6600')
-                    .setTitle('🛡️ Spam Cleanup After External Mute')
-                    .setDescription(
-                        `**User:** ${newMember.user.tag}\n` +
-                        `**User ID:** ${userId}\n` +
-                        `User was muted by another bot/moderator. Similar spam messages have been cleaned up.`
-                    )
-                    .addFields(
-                        { name: 'Similar Messages Deleted', value: `${deleted}`, inline: true },
-                        { name: 'Total Recent Messages Purged', value: `${purged}`, inline: true }
-                    )
-                    .setTimestamp();
-
-                await staffChannel.send({ embeds: [alertEmbed] });
-            }
-        }
-    }
-};
-
 // Cleanup old in-memory records periodically
 setInterval(() => {
     const cutoff = Date.now() - (MAX_MESSAGE_AGE * 60 * 1000);
@@ -628,7 +573,7 @@ setInterval(() => {
     }
 }, 60000);
 
-const events = [messageCreateEvent, guildMemberUpdateEvent];
+const events = [messageCreateEvent];
 events.purgeUserMessages = purgeUserMessages;
 events.deleteSimilarMessages = deleteSimilarMessages;
 module.exports = events;
