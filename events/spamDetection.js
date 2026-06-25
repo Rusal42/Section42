@@ -39,15 +39,21 @@ function saveSpamData(data) {
 }
 
 // Configuration
-const SPAM_THRESHOLD = 4; // Messages in time window to trigger
-const TIME_WINDOW = 10000; // 10 seconds in milliseconds
-const REPEAT_SPAM_THRESHOLD = 3; // Similar messages in a channel to trigger
-const REPEAT_SPAM_WINDOW = 30000; // 30 seconds for repeat detection
+const SPAM_THRESHOLD = 5; // Messages within TIME_WINDOW to trigger velocity check
+const TIME_WINDOW = 1000; // 1 second — so 5 msgs/sec triggers
 const CROSS_CHANNEL_THRESHOLD = 2; // Similar messages across this many channels
 const CROSS_CHANNEL_WINDOW = 30000; // 30 seconds for cross-channel detection
 const SIMILARITY_THRESHOLD = 0.65; // Minimum content similarity (0.0 - 1.0)
 const MAX_MESSAGE_AGE = 10; // Minutes to look back for deletion
-const TIMEOUT_DURATION = 15 * 60 * 1000; // 15 minutes auto-timeout
+const OFFENSE_RESET_WINDOW = 5 * 60 * 1000; // 5 minutes — offenses reset after this
+
+// Escalating timeout durations: 1st, 2nd, 3rd, 4th+
+const TIMEOUT_STEPS = [
+    30 * 1000,        // 30 seconds
+    5 * 60 * 1000,    // 5 minutes
+    15 * 60 * 1000,   // 15 minutes
+    60 * 60 * 1000    // 1 hour
+];
 
 // In-memory recent message log per user for similarity cleanup
 const userRecentMessages = new Map();
@@ -171,10 +177,30 @@ async function purgeUserMessages(guild, userId, minutesBack = 10) {
     return totalDeleted;
 }
 
+function getEscalatedTimeout(spamData, userId) {
+    if (!spamData.offenses) spamData.offenses = {};
+    const now = Date.now();
+    const offense = spamData.offenses[userId];
+
+    if (!offense || (now - offense.lastAt) > OFFENSE_RESET_WINDOW) {
+        // First offense or reset
+        spamData.offenses[userId] = { count: 1, lastAt: now };
+        return TIMEOUT_STEPS[0];
+    }
+
+    // Within the reset window — escalate
+    offense.count++;
+    offense.lastAt = now;
+    const step = Math.min(offense.count - 1, TIMEOUT_STEPS.length - 1);
+    return TIMEOUT_STEPS[step];
+}
+
 async function handleAutoTimeout(message, spamData, spamType, details, spamContent) {
     const userId = message.author.id;
 
-    console.log(`🚨 Spam detected: ${message.author.tag} (${spamType})`);
+    const timeoutDuration = getEscalatedTimeout(spamData, userId);
+    const offenseCount = spamData.offenses[userId].count;
+    console.log(`🚨 Spam detected: ${message.author.tag} (${spamType}) — offense #${offenseCount}, timeout: ${timeoutDuration / 1000}s`);
 
     // Mark user so we stop processing their spam messages
     spamData.quarantinedUsers[userId] = {
@@ -189,10 +215,10 @@ async function handleAutoTimeout(message, spamData, spamType, details, spamConte
         const member = await message.guild.members.fetch(userId);
         if (!member) return;
 
-        // Timeout the user (Discord native mute)
+        // Timeout the user (Discord native mute) with escalating duration
         try {
-            await member.timeout(TIMEOUT_DURATION, `Auto-timeout: ${spamType}`);
-            console.log(`Timed out ${message.author.tag} for ${spamType}`);
+            await member.timeout(timeoutDuration, `Auto-timeout: ${spamType} (offense #${offenseCount})`);
+            console.log(`Timed out ${message.author.tag} for ${timeoutDuration / 1000}s`);
         } catch (timeoutError) {
             console.error(`Failed to timeout ${message.author.tag}:`, timeoutError);
         }
@@ -228,7 +254,7 @@ async function handleAutoTimeout(message, spamData, spamType, details, spamConte
                 .addFields(
                     { name: 'Similar Messages Deleted', value: `${similarDeleted}`, inline: true },
                     { name: 'Total Recent Messages Purged', value: `${totalPurged}`, inline: true },
-                    { name: 'Timeout Duration', value: `${TIMEOUT_DURATION / 60000} minutes`, inline: true },
+                    { name: 'Timeout Duration', value: `${timeoutDuration / 1000}s (offense #${offenseCount})`, inline: true },
                     { name: 'Action Required', value: 'Investigate and decide on permanent action', inline: true }
                 )
                 .setTimestamp();
@@ -434,54 +460,16 @@ const messageCreateEvent = {
         const userId = message.author.id;
         const messageContent = (message.content || '').toLowerCase().trim();
 
-        // Pattern 1: High message velocity in a single channel
+        // Pattern 1: High message velocity (5+ messages in 1 second)
         const recentMessages = channelData.messages.filter(m => now - m.timestamp < TIME_WINDOW);
-        if (recentMessages.length > 0) {
-            console.log(`[SpamDetection] ${message.author.tag} #${message.channel.name}: recent=${recentMessages.length}, threshold=${SPAM_THRESHOLD}`);
-        }
         if (recentMessages.length >= SPAM_THRESHOLD) {
-            console.log(`[SpamDetection] TRIGGER rapid_spam for ${message.author.tag}`);
+            console.log(`[SpamDetection] TRIGGER rapid_spam for ${message.author.tag} (${recentMessages.length} msgs/sec)`);
             await handleAutoTimeout(message, spamData, 'rapid_spam', {
                 messageCount: recentMessages.length,
                 channel: message.channel.name,
-                timeWindow: TIME_WINDOW / 1000
+                timeWindow: `${TIME_WINDOW}ms`
             }, message.content);
             return;
-        }
-
-        // Pattern 2: High message velocity across all channels in the guild
-        const allGuildMessages = [];
-        for (const [, chData] of Object.entries(guildData.channels || {})) {
-            allGuildMessages.push(...chData.messages.filter(m => now - m.timestamp < TIME_WINDOW));
-        }
-        if (allGuildMessages.length >= SPAM_THRESHOLD) {
-            const uniqueChannels = new Set(allGuildMessages.map(m => m.channelId));
-            console.log(`[SpamDetection] TRIGGER high_velocity_spam for ${message.author.tag} (${allGuildMessages.length} msgs, ${uniqueChannels.size} channels)`);
-            await handleAutoTimeout(message, spamData, 'high_velocity_spam', {
-                messageCount: allGuildMessages.length,
-                timeSpan: TIME_WINDOW / 1000,
-                channels: uniqueChannels.size
-            }, message.content);
-            return;
-        }
-
-        // Pattern 3: Repeated similar message in the same channel
-        if (messageContent.length > 5) {
-            const channelMessages = channelData.messages.filter(m =>
-                now - m.timestamp < REPEAT_SPAM_WINDOW &&
-                isSimilarContent(m.content, message.content, SIMILARITY_THRESHOLD)
-            );
-
-            if (channelMessages.length >= REPEAT_SPAM_THRESHOLD) {
-                console.log(`[SpamDetection] TRIGGER repeated_similar_spam for ${message.author.tag}`);
-                await handleAutoTimeout(message, spamData, 'repeated_similar_spam', {
-                    messageCount: channelMessages.length,
-                    channel: message.channel.name,
-                    timeWindow: REPEAT_SPAM_WINDOW / 1000,
-                    message: messageContent.substring(0, 100)
-                }, message.content);
-                return;
-            }
         }
 
         // Pattern 4: Same/similar message in multiple DIFFERENT channels
