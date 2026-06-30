@@ -444,6 +444,18 @@ module.exports = {
                     option.setName('message_id')
                         .setDescription('The tournament message ID')
                         .setRequired(true)))
+        .addSubcommand(subcommand =>
+            subcommand
+                .setName('addplayers')
+                .setDescription('Manually add players to a tournament signup (fallback if signup message was lost)')
+                .addStringOption(option =>
+                    option.setName('message_id')
+                        .setDescription('The tournament signup message ID')
+                        .setRequired(true))
+                .addStringOption(option =>
+                    option.setName('players')
+                        .setDescription('Space-separated @mentions or user IDs')
+                        .setRequired(true)))
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
 
     async execute(message, args) {
@@ -463,8 +475,10 @@ module.exports = {
             await handleCloseText(message, args.slice(1));
         } else if (subcommand === 'cancel') {
             await handleCancelText(message, args.slice(1));
+        } else if (subcommand === 'addplayers') {
+            await handleAddPlayersText(message, args.slice(1));
         } else {
-            message.reply('Unknown subcommand. Use: `start`, `close`, or `cancel`');
+            message.reply('Unknown subcommand. Use: `start`, `close`, `cancel`, or `addplayers`');
         }
     },
 
@@ -484,6 +498,8 @@ module.exports = {
             await handleCloseSlash(interaction);
         } else if (subcommand === 'cancel') {
             await handleCancelSlash(interaction);
+        } else if (subcommand === 'addplayers') {
+            await handleAddPlayersSlash(interaction);
         }
     }
 };
@@ -721,6 +737,107 @@ async function closeTournament(channel, messageId, closer) {
         console.error('Error closing tournament:', error);
         channel.send('Error closing tournament. The message may have been deleted.');
     }
+}
+
+async function handleAddPlayersText(message, args) {
+    const messageId = args[0];
+    if (!messageId) {
+        return message.reply('Usage: `!tournament addplayers <message_id> @user1 @user2 ...`');
+    }
+    const mentions = args.slice(1).join(' ');
+    await addPlayersToTournament(message.channel, messageId, mentions, message.author);
+}
+
+async function handleAddPlayersSlash(interaction) {
+    const messageId = interaction.options.getString('message_id');
+    const players = interaction.options.getString('players');
+    await interaction.reply({ content: 'Adding players to tournament...', ephemeral: true });
+    await addPlayersToTournament(interaction.channel, messageId, players, interaction.user);
+}
+
+async function addPlayersToTournament(channel, messageId, playersInput, closer) {
+    if (activeTimeouts.has(messageId)) {
+        clearTimeout(activeTimeouts.get(messageId));
+        activeTimeouts.delete(messageId);
+    }
+
+    const tournament = activeTournaments.get(messageId);
+    if (!tournament) {
+        return channel.send('Tournament not found. Make sure you used the correct message ID.');
+    }
+
+    if (tournament.phase !== 'signup') {
+        return channel.send('This tournament is already closed or completed.');
+    }
+
+    // Parse user IDs from mentions (<@123456>) or raw IDs
+    const idMatches = playersInput.match(/<@!?(\d+)>|(\d{17,20})/g) || [];
+    const userIds = idMatches.map(m => m.replace(/<@!?/, '').replace('>', ''));
+
+    if (userIds.length === 0) {
+        return channel.send('No valid users found. Provide @mentions or user IDs.');
+    }
+
+    for (const userId of userIds) {
+        const member = await channel.guild.members.fetch(userId).catch(() => null);
+        if (!member) continue;
+        const displayName = member.nickname || member.user.username;
+        tournament.participants.set(userId, {
+            userId: userId,
+            username: displayName,
+            globalName: member.user.username
+        });
+    }
+
+    if (tournament.participants.size < 2) {
+        return channel.send(`Not enough valid participants found (${tournament.participants.size}). Need at least 2.`);
+    }
+
+    // Cap at max participants
+    const allParticipants = Array.from(tournament.participants.values()).slice(0, tournament.maxParticipants);
+    tournament.participants = new Map(allParticipants.map(p => [p.userId, p]));
+
+    // Generate bracket
+    tournament.bracket = generateBracket(allParticipants);
+    tournament.phase = 'active';
+
+    const participantList = allParticipants.map((p, index) => `${index + 1}. <@${p.userId}> **${p.username}**`).join('\n');
+
+    const closedEmbed = new EmbedBuilder()
+        .setColor('#8B0000')
+        .setTitle(`${tournament.title} - SIGNUPS CLOSED`)
+        .setDescription(`**${tournament.participants.size} participants registered** *(manually added)*\n\nBracket generated below.`)
+        .addFields({ name: 'Participants', value: participantList || 'None', inline: false });
+
+    if (tournament.prize) {
+        closedEmbed.addFields({ name: 'Prize', value: tournament.prize, inline: false });
+    }
+
+    closedEmbed
+        .setFooter({ text: `Hosted by ${closer.username}`, iconURL: closer.displayAvatarURL() })
+        .setTimestamp();
+
+    // Try to update the original signup message; if gone, just send a new one
+    try {
+        const signupMessage = await channel.messages.fetch(messageId);
+        await signupMessage.edit({ embeds: [closedEmbed] });
+    } catch {
+        await channel.send({ embeds: [closedEmbed] });
+    }
+
+    // Send bracket message
+    const bracketEmbed = formatBracket(tournament);
+    const buttons = createTournamentButtons(tournament, messageId);
+
+    const bracketMessage = await channel.send({
+        embeds: [bracketEmbed],
+        components: buttons
+    });
+
+    tournament.bracketMessageId = bracketMessage.id;
+    saveTournaments();
+
+    await channel.send('Use the buttons on the bracket message to report match winners!');
 }
 
 async function handleCancelText(message, args) {
